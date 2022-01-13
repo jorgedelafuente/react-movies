@@ -87,6 +87,7 @@ const MovieListContainer = styled.div`
   flex-wrap: wrap;
   background: #141414;
   padding-top: 20px;
+  height: 95vh;
 `;
 
 const PosterImage = styled.img`
