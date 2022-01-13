@@ -1,25 +1,26 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 
 import { useAxios, baseImagePath } from "./../../Services/useAxios.js";
 
 const MovieList = (props) => {
   const { response, error, loading } = useAxios("popular");
+  const navigate = useNavigate();
 
   return (
     <MovieListContainer>
       {response &&
         response.results.map(
           ({ id, title, vote_average, release_date, poster_path }) => (
-            <Link key={id} to={`movie/${id}`}>
+            <div key={id} onClick={() => navigate(`movie/${id}`)}>
               <MovieCard>
                 <div>{release_date}</div>
                 <div>{title}</div>
                 <div>{vote_average}</div>
                 <img src={`${baseImagePath}${poster_path}`} alt="" />
               </MovieCard>
-            </Link>
+            </div>
           )
         )}
     </MovieListContainer>

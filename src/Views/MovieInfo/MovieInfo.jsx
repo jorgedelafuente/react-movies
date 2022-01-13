@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useAxios, baseImagePath } from "./../../Services/useAxios.js";
 
 const MovieInfo = (props) => {
   const params = useParams();
+
   const { response, error, loading } = useAxios("movieInfo", params.id);
 
   const {

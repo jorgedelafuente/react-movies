@@ -5,7 +5,7 @@ const apiKey = process.env.REACT_APP_APIKEY;
 axios.defaults.baseURL = " https://api.themoviedb.org/3";
 export const baseImagePath = "https://image.tmdb.org/t/p/w500/";
 
-export const useAxios = (paramOption, searchQuery = null) => {
+export const useAxios = (paramOption, searchQuery = "") => {
   const paramOptions = {
     popular: `/movie/popular${apiKey}&language=en-US&page=1`,
     movieInfo: `movie/${searchQuery}${apiKey}&language=en-US`,
@@ -27,8 +27,19 @@ export const useAxios = (paramOption, searchQuery = null) => {
   };
 
   useEffect(() => {
-    fetchData(paramOption, searchQuery);
+    if (paramOption !== "search") {
+      fetchData(paramOption, searchQuery);
+    }
   }, []);
+
+  useEffect(() => {
+    if (
+      (paramOption === "search" || paramOption === "movieInfo") &&
+      searchQuery !== ""
+    ) {
+      fetchData(paramOption, searchQuery);
+    }
+  }, [searchQuery]);
 
   return { response, error, loading };
 };
