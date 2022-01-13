@@ -34,47 +34,47 @@ const SearchInput = () => {
   };
   return (
     <SearchInputContainer>
-      <form onSubmit={onFormSubmit}>
-        <Input
-          type="text"
-          id="searchInput"
-          name="searchInput"
-          placeholder="Search Movies"
-          value={searchQuery}
-          onChange={handleChange}
-          autocomplete="off"
-        ></Input>
+      <div>
+        <form onSubmit={onFormSubmit}>
+          <Input
+            type="text"
+            id="searchInput"
+            name="searchInput"
+            placeholder="Use Enter Key to Submit"
+            value={searchQuery}
+            onChange={handleChange}
+            autocomplete="off"
+          ></Input>
 
-        <button type="submit">Submit</button>
-        <SearchResultsList>
-          {filmTitles.length > 0 && (
-            <div>
-              {filmTitles.map(({ title, id }) => (
-                <button key={id} onClick={() => handleClick(id)}>
-                  <>{title}</>
-                  <>{id}</>
-                </button>
-              ))}
-            </div>
-          )}
-        </SearchResultsList>
-      </form>
+          <InputButton type="submit">Submit</InputButton>
+          <SearchResultsList>
+            {filmTitles.length > 0 && (
+              <div>
+                {filmTitles.map(({ title, id }) => (
+                  <button key={id} onClick={() => handleClick(id)}>
+                    <>{title}</>
+                    <>{id}</>
+                  </button>
+                ))}
+              </div>
+            )}
+          </SearchResultsList>
+        </form>
+      </div>
     </SearchInputContainer>
   );
 };
 
 export default SearchInput;
 
-const Input = styled.input`
-  height: 30px;
+const Input = styled.input``;
+
+const InputButton = styled.button`
+  display: none;
 `;
 
 const SearchInputContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin: 0 auto;
-  text-align: center;
-  padding: 10px;
+  padding: 30px;
 `;
 
 const SearchResultsList = styled.div`

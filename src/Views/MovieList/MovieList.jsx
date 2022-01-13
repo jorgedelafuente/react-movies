@@ -11,18 +11,11 @@ const MovieList = (props) => {
   return (
     <MovieListContainer>
       {response &&
-        response.results.map(
-          ({ id, title, vote_average, release_date, poster_path }) => (
-            <div key={id} onClick={() => navigate(`movie/${id}`)}>
-              <MovieCard>
-                <div>{release_date}</div>
-                <div>{title}</div>
-                <div>{vote_average}</div>
-                <img src={`${baseImagePath}${poster_path}`} alt="" />
-              </MovieCard>
-            </div>
-          )
-        )}
+        response.results.map(({ id, poster_path }) => (
+          <MovieCard key={id} onClick={() => navigate(`movie/${id}`)}>
+            <img src={`${baseImagePath}${poster_path}`} alt="" />
+          </MovieCard>
+        ))}
     </MovieListContainer>
   );
 };
@@ -33,10 +26,16 @@ const MovieListContainer = styled.div`
   padding: 20px;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  background: #141414;
 `;
 
 const MovieCard = styled.div`
-  padding: 2px;
   width: 110px;
-  border: 1px solid black;
+  width: 300px;
+  margin: 20px;
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+  }
 `;

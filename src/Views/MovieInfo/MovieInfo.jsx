@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useAxios, baseImagePath } from "./../../Services/useAxios.js";
@@ -11,32 +11,69 @@ const MovieInfo = (props) => {
   const {
     release_date,
     title,
-    budget,
     vote_average,
     homepage,
     overview,
-    revenue,
     runtime,
     tagline,
     poster_path,
     backdrop_path,
   } = response || {};
+  console.log("TCL: poster_path", poster_path);
 
   return (
     <MovieListContainer>
       {response && (
         <>
-          <div>{release_date}</div>
-          <div>{title}</div>
-          <div>{budget}</div>
-          <div>{vote_average}</div>
-          <div>{homepage}</div>
-          <div>{overview}</div>
-          <div>{revenue}</div>
-          <div>{runtime}</div>
-          <div>{tagline}</div>
-          <img src={`${baseImagePath}${poster_path}`} alt="" />
-          <img src={`${baseImagePath}${backdrop_path}`} alt="" />
+          <div>
+            <PosterImage src={`${baseImagePath}${poster_path}`} alt="" />
+          </div>
+
+          <TextContent>
+            <h2>
+              <strong></strong>
+              {title}
+            </h2>
+
+            <h3>
+              <strong></strong>
+              {tagline}
+            </h3>
+
+            <br />
+
+            <p>
+              <strong>Overview : </strong>
+              {overview}
+            </p>
+
+            <br />
+
+            <div>
+              <strong>Averag Rating : </strong>
+              {vote_average}
+            </div>
+
+            <div>
+              <strong>Homepage : </strong>
+              {homepage}
+            </div>
+
+            <div>
+              <strong>Duration : </strong>
+              {runtime} minutes
+            </div>
+
+            <div>
+              <strong>Release Date : </strong>
+              {release_date}
+            </div>
+            <br />
+
+            <div>
+              <BackDropImage src={`${baseImagePath}${backdrop_path}`} alt="" />
+            </div>
+          </TextContent>
         </>
       )}
     </MovieListContainer>
@@ -46,5 +83,34 @@ const MovieInfo = (props) => {
 export default MovieInfo;
 
 const MovieListContainer = styled.div`
-  padding: 0 10%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap;
+  background: #141414;
+  padding-top: 20px;
+`;
+
+const PosterImage = styled.img`
+  height: 90%;
+  margin: 0 auto;
+`;
+
+const BackDropImage = styled.img`
+  margin-top: 20px;
+  padding-bottom: 20px;
+  margin: 0 auto;
+`;
+
+const TextContent = styled.div`
+  color: whitesmoke;
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+  padding: 15px;
+  margin: 10px;
+  height: 90%;
+  background-color: #282828;
+  border-radius: 25px;
+ç
 `;
