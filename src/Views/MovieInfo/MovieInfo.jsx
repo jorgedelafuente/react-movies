@@ -23,7 +23,7 @@ const MovieInfo = (props) => {
     <MovieListContainer>
       {response && (
         <>
-          <div>{release_date || ""}</div>
+          <div>{release_date}</div>
           <div>{title}</div>
           <div>{budget}</div>
           <div>{vote_average}</div>
