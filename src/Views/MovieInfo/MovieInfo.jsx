@@ -1,9 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import { useParams } from "react-router-dom";
 import { useAxios, baseImagePath } from "./../../Services/useAxios.js";
 
 const MovieInfo = (props) => {
-  const { response, error, loading } = useAxios("movieInfo", "movieId");
+  const params = useParams();
+  const { response, error, loading } = useAxios("movieInfo", params.id);
 
   const {
     release_date,

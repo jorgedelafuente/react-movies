@@ -5,12 +5,10 @@ const apiKey = process.env.REACT_APP_APIKEY;
 axios.defaults.baseURL = " https://api.themoviedb.org/3";
 export const baseImagePath = "https://image.tmdb.org/t/p/w500/";
 
-const movieId = "460458";
-
 export const useAxios = (paramOption, searchQuery = null) => {
   const paramOptions = {
     popular: `/movie/popular${apiKey}&language=en-US&page=1`,
-    movieInfo: `movie/${movieId}${apiKey}&language=en-US`,
+    movieInfo: `movie/${searchQuery}${apiKey}&language=en-US`,
     search: `/search/movie${apiKey}&query=${searchQuery}`,
   };
   const [response, setResponse] = useState(undefined);

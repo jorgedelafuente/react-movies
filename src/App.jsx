@@ -11,7 +11,7 @@ function App() {
         <NavBar />
         <Routes>
           <Route path="/" element={<MovieList />} />
-          <Route path="/movie/:slug" element={<MovieInfo />} />
+          <Route path="/movie/:id" element={<MovieInfo />} />
         </Routes>
       </Router>
     </>
