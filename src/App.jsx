@@ -9,7 +9,7 @@ function App() {
       <NavBar />
       <Routes>
         <Route path="/" element={<MovieList />} />
-        <Route path="/film/:slug" element={<MovieInfo />} />
+        <Route path="/movie/:slug" element={<MovieInfo />} />
       </Routes>
     </Router>
   );

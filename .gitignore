@@ -22,5 +22,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-MovieInfoMock.json
-MovieListMock.json
+src/MovieInfoMock.json
+src/MovieListMock.json
