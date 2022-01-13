@@ -8,60 +8,69 @@ const SearchInput = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { response, error, loading } = useAxios("search", searchQuery);
   const [filmTitles, setFilmTitles] = useState([]);
+  console.log("TCL: SearchInput -> filmTitles", filmTitles);
 
   const getTitles = (response) => {
-    let filmTitles = [];
+    let filmTitlesArray = [];
     if (response && response?.total_results !== 0) {
-      filmTitles = response.results.map(({ title, id }) => ({
+      filmTitlesArray = response.results.map(({ title, id }) => ({
         title,
         id,
       }));
-      setFilmTitles(filmTitles);
+      setFilmTitles(filmTitlesArray);
     }
   };
 
   function handleClick(id) {
     navigate(`/movie/${id}`);
+    setFilmTitles([]);
   }
 
   const handleChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
+  const clearSearchResults = () => {
+    setSearchQuery("");
+    setFilmTitles([]);
+  };
+
   const onFormSubmit = (e) => {
-    getTitles(response);
     e.preventDefault();
+    getTitles(response);
   };
   return (
-    <SearchInputContainer>
-      <div>
-        <form onSubmit={onFormSubmit}>
-          <Input
-            type="text"
-            id="searchInput"
-            name="searchInput"
-            placeholder="Use Enter Key to Submit"
-            value={searchQuery}
-            onChange={handleChange}
-            autocomplete="off"
-          ></Input>
-
-          <InputButton type="submit">Submit</InputButton>
-          <SearchResultsList>
-            {filmTitles.length > 0 && (
-              <div>
-                {filmTitles.map(({ title, id }) => (
-                  <button key={id} onClick={() => handleClick(id)}>
-                    <>{title}</>
-                    <>{id}</>
-                  </button>
-                ))}
-              </div>
-            )}
-          </SearchResultsList>
-        </form>
-      </div>
-    </SearchInputContainer>
+    <>
+      <form onSubmit={onFormSubmit}>
+        <SearchInputContainer>
+          <InputBox>
+            <Input
+              type="text"
+              id="searchInput"
+              name="searchInput"
+              placeholder="Use Enter Key to Submit"
+              value={searchQuery}
+              onChange={handleChange}
+              autocomplete="off"
+            ></Input>
+            <InputButton type="submit">Submit</InputButton>
+            <ClearButton type="button" onClick={clearSearchResults}>
+              -
+            </ClearButton>
+          </InputBox>
+        </SearchInputContainer>
+      </form>
+      <SearchResultsList>
+        {filmTitles.length > 0 &&
+          filmTitles.map(({ title, id }) => (
+            <div>
+              <SearchResultButton key={id} onClick={() => handleClick(id)}>
+                {title}
+              </SearchResultButton>
+            </div>
+          ))}
+      </SearchResultsList>
+    </>
   );
 };
 
@@ -73,10 +82,52 @@ const InputButton = styled.button`
   display: none;
 `;
 
+const ClearButton = styled.button`
+  background-color: black;
+  border: 1px solid : #282828;
+  color: white;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const InputBox = styled.div`
+  margin: 0 auto;
+  padding: 10px;
+`;
+
 const SearchInputContainer = styled.div`
-  padding: 30px;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
 `;
 
 const SearchResultsList = styled.div`
+  position: absolute;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: flex-start;
+  background-color: #141414;
+  background: rgba(204, 204, 204, 0.15);
+  margin-top: 60px;
+  padding: 0px 0px 15px 0px;
+`;
+
+const SearchResultButton = styled.button`
+  font-size: 15px;
+  padding: 2.5px;
+  margin-top: 10px;
+  margin-right: 10px;
+  background-color: #282828;
   color: white;
+  border-radius: 10px;
+  margin-right: 10px;
+  &:hover {
+    cursor: pointer;
+    background-color: whitesmoke;
+    color: #141414;
+  }
 `;

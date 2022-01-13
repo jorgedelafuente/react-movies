@@ -19,7 +19,6 @@ const MovieInfo = (props) => {
     poster_path,
     backdrop_path,
   } = response || {};
-  console.log("TCL: poster_path", poster_path);
 
   return (
     <MovieListContainer>
@@ -69,7 +68,6 @@ const MovieInfo = (props) => {
               {release_date}
             </div>
             <br />
-
             <div>
               <BackDropImage src={`${baseImagePath}${backdrop_path}`} alt="" />
             </div>
@@ -112,5 +110,5 @@ const TextContent = styled.div`
   height: 90%;
   background-color: #282828;
   border-radius: 25px;
-ç
+  min-height: 300px;
 `;
