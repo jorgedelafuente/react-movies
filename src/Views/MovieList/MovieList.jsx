@@ -1,22 +1,24 @@
 import React from "react";
 import styled from "styled-components";
-import MockData from "../../MovieListMock.json";
 
-import { baseImagePath } from "../../Services/config";
+import { useAxios, baseImagePath } from "./../../Services/useAxios.js";
 
 const MovieList = (props) => {
+  const { response, error, loading } = useAxios("popular");
+
   return (
     <MovieListContainer>
-      {MockData.results.map(
-        ({ id, title, vote_average, release_date, poster_path }) => (
-          <MovieCard key={id}>
-            <div>{release_date}</div>
-            <div>{title}</div>
-            <div>{vote_average}</div>
-            <img src={`${baseImagePath}${poster_path}`} alt="" />
-          </MovieCard>
-        )
-      )}
+      {response &&
+        response.results.map(
+          ({ id, title, vote_average, release_date, poster_path }) => (
+            <MovieCard key={id}>
+              <div>{release_date}</div>
+              <div>{title}</div>
+              <div>{vote_average}</div>
+              <img src={`${baseImagePath}${poster_path}`} alt="" />
+            </MovieCard>
+          )
+        )}
     </MovieListContainer>
   );
 };

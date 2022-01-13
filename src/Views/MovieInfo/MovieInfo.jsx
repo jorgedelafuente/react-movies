@@ -1,15 +1,15 @@
 import React from "react";
 import styled from "styled-components";
-import MockData from "../../MovieInfoMock.json";
-import { baseImagePath } from "../../Services/config";
+import { useAxios, baseImagePath } from "./../../Services/useAxios.js";
 
 const MovieInfo = (props) => {
+  const { response, error, loading } = useAxios("movieInfo", "movieId");
+
   const {
-    id,
-    title,
-    vote_average,
     release_date,
+    title,
     budget,
+    vote_average,
     homepage,
     overview,
     revenue,
@@ -17,22 +17,25 @@ const MovieInfo = (props) => {
     tagline,
     poster_path,
     backdrop_path,
-  } = MockData;
+  } = response || {};
+
   return (
     <MovieListContainer>
-      <div key={id}>
-        <div>{release_date}</div>
-        <div>{title}</div>
-        <div>{budget}</div>
-        <div>{vote_average}</div>
-        <div>{homepage}</div>
-        <div>{overview}</div>
-        <div>{revenue}</div>
-        <div>{runtime}</div>
-        <div>{tagline}</div>
-        <img src={`${baseImagePath}${poster_path}`} alt="" />
-        <img src={`${baseImagePath}${backdrop_path}`} alt="" />
-      </div>
+      {response && (
+        <>
+          <div>{release_date || ""}</div>
+          <div>{title}</div>
+          <div>{budget}</div>
+          <div>{vote_average}</div>
+          <div>{homepage}</div>
+          <div>{overview}</div>
+          <div>{revenue}</div>
+          <div>{runtime}</div>
+          <div>{tagline}</div>
+          <img src={`${baseImagePath}${poster_path}`} alt="" />
+          <img src={`${baseImagePath}${backdrop_path}`} alt="" />
+        </>
+      )}
     </MovieListContainer>
   );
 };
