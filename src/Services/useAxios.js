@@ -1,9 +1,17 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+/**
+ * useAxios.
+ *
+ * A hook that fetches from the paramOptions object which contain the api fetching options.
+ *
+ * @param {string} paramOption Reference to one of the keys in the paramOptions object.
+ * @param {string} searchQuery the dynamic part of the query which could be an ID or a search text phrase.
+ */
+
 const apiKey = process.env.REACT_APP_APIKEY;
 axios.defaults.baseURL = " https://api.themoviedb.org/3";
-export const baseImagePath = "https://image.tmdb.org/t/p/w500/";
 
 export const useAxios = (paramOption, searchQuery = "") => {
   const paramOptions = {

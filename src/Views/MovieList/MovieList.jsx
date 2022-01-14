@@ -2,7 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { useAxios, baseImagePath } from "./../../Services/useAxios.js";
+import { useAxios } from "./../../Services/useAxios.js";
+import { baseImagePath } from "../../Services/config.js";
 import Spinner from "../../Components/Spinner/Spinner.jsx";
 
 const MovieList = () => {

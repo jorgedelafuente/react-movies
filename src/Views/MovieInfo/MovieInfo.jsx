@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { useAxios, baseImagePath } from "./../../Services/useAxios.js";
+
+import { useAxios } from "./../../Services/useAxios.js";
+import { baseImagePath } from "../../Services/config.js";
 import Spinner from "../../Components/Spinner/Spinner.jsx";
 
 const MovieInfo = (props) => {

@@ -10,6 +10,7 @@ const DEFAULT_DEBOUNCED_TIME = 300;
  * @param {object} value Reference to the observable value.
  * @param {number} delay Elapsed time to fire value change.
  */
+
 export const useDebounce = (value, delay = DEFAULT_DEBOUNCED_TIME) => {
   const [debounced, setDebounced] = useState(value);
 
