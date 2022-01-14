@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import SearchInput from "./SearchInput.jsx";
+import SearchInput from "./SearchInput/SearchInput.jsx";
 
-const NavBar = (props) => {
+const NavBar = () => {
   return (
     <SearchInputContainer>
       <SearchInput />

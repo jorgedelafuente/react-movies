@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useAxios, baseImagePath } from "./../../Services/useAxios.js";
-import Spinner from "../../Components/Spinner/Spinner.js";
+import Spinner from "../../Components/Spinner/Spinner.jsx";
 
 const MovieInfo = (props) => {
   const params = useParams();
@@ -111,5 +111,4 @@ const TextContent = styled.div`
   height: 90%;
   background-color: #282828;
   border-radius: 25px;
-  /* min-height: 350px; */
 `;
