@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAxios } from "../../Services/useAxios.js";
@@ -7,9 +7,15 @@ import { useDebounce } from "../../Utils/UseDebounce.js";
 const SearchInput = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const debounced = useDebounce(searchQuery);
-  const { response } = useAxios("search", debounced);
+  const [debouncedQuery, setDebounceQuery] = useState("");
+  const debounce = useDebounce(searchQuery);
+
+  const { response } = useAxios("search", debouncedQuery);
   const [filmTitles, setFilmTitles] = useState([]);
+
+  useEffect(() => {
+    setDebounceQuery(debounce);
+  }, [debounce]);
 
   const getTitles = (response) => {
     let filmTitlesArray = [];
@@ -29,6 +35,13 @@ const SearchInput = () => {
 
   const handleChange = (event) => {
     setSearchQuery(event.target.value);
+    setDebounceQuery(event.target.value);
+  };
+
+  const handleEnterKey = (event) => {
+    if (event.key === "Enter") {
+      setDebounceQuery(debounce);
+    }
   };
 
   const clearSearchResults = () => {
@@ -37,11 +50,10 @@ const SearchInput = () => {
   };
 
   const onFormSubmit = (e) => {
-    setSearchQuery(searchQuery);
-
     e.preventDefault();
     getTitles(response);
   };
+
   return (
     <>
       <form onSubmit={onFormSubmit}>
@@ -54,6 +66,7 @@ const SearchInput = () => {
               placeholder="Use Enter Key to Submit"
               value={searchQuery}
               onChange={handleChange}
+              onKeyDown={handleEnterKey}
               autocomplete="off"
             ></Input>
             <InputButton type="submit">Submit</InputButton>
@@ -66,8 +79,8 @@ const SearchInput = () => {
       <SearchResultsList>
         {filmTitles.length > 0 &&
           filmTitles.map(({ title, id }) => (
-            <div>
-              <SearchResultButton key={id} onClick={() => handleClick(id)}>
+            <div key={id}>
+              <SearchResultButton onClick={() => handleClick(id)}>
                 {title}
               </SearchResultButton>
             </div>
