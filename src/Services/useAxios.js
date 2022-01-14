@@ -38,6 +38,7 @@ export const useAxios = (paramOption, searchQuery = "") => {
     if (paramOption !== "search") {
       fetchData(paramOption, searchQuery);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -47,6 +48,7 @@ export const useAxios = (paramOption, searchQuery = "") => {
     ) {
       fetchData(paramOption, searchQuery);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 
   return { response, error, loading };

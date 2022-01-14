@@ -31,6 +31,7 @@ const SearchInput = () => {
     setFilmTitles([]);
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const delayedSearch = useCallback(
     debounce((q) => sendQuery(q), 300),
     []
