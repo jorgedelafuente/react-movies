@@ -35,7 +35,7 @@ export const useAxios = (paramOption, searchQuery = "") => {
   };
 
   useEffect(() => {
-    if (paramOption !== "search") {
+    if (paramOption === "popular") {
       fetchData(paramOption, searchQuery);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
