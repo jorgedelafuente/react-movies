@@ -1,21 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAxios } from "../../Services/useAxios.js";
-import { useDebounce } from "../../Utils/UseDebounce.js";
+import debounce from "lodash/debounce";
 
 const SearchInput = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedQuery, setDebounceQuery] = useState("");
-  const debounce = useDebounce(searchQuery);
-
-  const { response } = useAxios("search", debouncedQuery);
+  const [apiSearchQuery, setApiSearchQuery] = useState("");
+  const { response } = useAxios("search", apiSearchQuery);
   const [filmTitles, setFilmTitles] = useState([]);
-
-  useEffect(() => {
-    setDebounceQuery(debounce);
-  }, [debounce]);
 
   const getTitles = (response) => {
     let filmTitlesArray = [];
@@ -28,19 +22,29 @@ const SearchInput = () => {
     }
   };
 
+  const sendQuery = (query) => {
+    setApiSearchQuery(query);
+  };
+
   function handleClick(id) {
     navigate(`/movie/${id}`);
     setFilmTitles([]);
   }
 
+  const delayedSearch = useCallback(
+    debounce((q) => sendQuery(q), 300),
+    []
+  );
+
   const handleChange = (event) => {
     setSearchQuery(event.target.value);
-    setDebounceQuery(event.target.value);
+    delayedSearch(event.target.value);
   };
 
   const handleEnterKey = (event) => {
     if (event.key === "Enter") {
-      setDebounceQuery(debounce);
+      delayedSearch(searchQuery);
+      getTitles(response);
     }
   };
 
@@ -51,6 +55,7 @@ const SearchInput = () => {
 
   const onFormSubmit = (e) => {
     e.preventDefault();
+    delayedSearch(searchQuery);
     getTitles(response);
   };
 
