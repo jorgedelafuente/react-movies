@@ -6,9 +6,8 @@ import { useAxios } from "./../Services/useAxios.js";
 const SearchInput = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const { response, error, loading } = useAxios("search", searchQuery);
+  const { response } = useAxios("search", searchQuery);
   const [filmTitles, setFilmTitles] = useState([]);
-  console.log("TCL: SearchInput -> filmTitles", filmTitles);
 
   const getTitles = (response) => {
     let filmTitlesArray = [];
@@ -114,6 +113,8 @@ const SearchResultsList = styled.div`
   background: rgba(204, 204, 204, 0.15);
   margin-top: 60px;
   padding: 0px 0px 15px 0px;
+  overflow: auto;
+  white-space: nowrap;
 `;
 
 const SearchResultButton = styled.button`

@@ -2,11 +2,14 @@ import React from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useAxios, baseImagePath } from "./../../Services/useAxios.js";
+import Spinner from "../../Components/Spinner/Spinner.js";
 
 const MovieInfo = (props) => {
   const params = useParams();
 
   const { response, error, loading } = useAxios("movieInfo", params.id);
+  if (loading) return <Spinner />;
+  if (error) return "An error has occurred: " + error.message;
 
   const {
     release_date,
@@ -108,5 +111,5 @@ const TextContent = styled.div`
   height: 90%;
   background-color: #282828;
   border-radius: 25px;
-  min-height: 300px;
+  /* min-height: 350px; */
 `;

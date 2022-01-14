@@ -6,15 +6,13 @@ import NavBar from "./Components/NavBar.jsx";
 
 function App() {
   return (
-    <>
-      <Router>
-        <NavBar />
-        <Routes>
-          <Route path="/" element={<MovieList />} />
-          <Route path="/movie/:id" element={<MovieInfo />} />
-        </Routes>
-      </Router>
-    </>
+    <Router>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<MovieList />} />
+        <Route path="/movie/:id" element={<MovieInfo />} />
+      </Routes>
+    </Router>
   );
 }
 

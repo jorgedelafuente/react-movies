@@ -3,10 +3,13 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { useAxios, baseImagePath } from "./../../Services/useAxios.js";
+import Spinner from "../../Components/Spinner/Spinner.js";
 
 const MovieList = (props) => {
-  const { response, error, loading } = useAxios("popular");
   const navigate = useNavigate();
+  const { response, error, loading } = useAxios("popular");
+  if (loading) return <Spinner />;
+  if (error) return "An error has occurred: " + error.message;
 
   return (
     <MovieListContainer>
