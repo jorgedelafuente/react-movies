@@ -24,6 +24,7 @@ export const useAxios = (paramOption, searchQuery = "") => {
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
+    // console.log("TCL: fetchData -> param", param);
     try {
       const result = await axios.request(paramOptions[paramOption]);
       setResponse(result.data);

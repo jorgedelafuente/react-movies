@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAxios } from "../../Services/useAxios.js";
@@ -8,8 +8,8 @@ const SearchInput = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [apiSearchQuery, setApiSearchQuery] = useState("");
-  const { response } = useAxios("search", apiSearchQuery);
   const [filmTitles, setFilmTitles] = useState([]);
+  const { response } = useAxios("search", apiSearchQuery);
 
   const getTitles = (response) => {
     let filmTitlesArray = [];
@@ -22,31 +22,29 @@ const SearchInput = () => {
     }
   };
 
-  const sendQuery = (query) => {
-    setApiSearchQuery(query);
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const delayedSearch = useCallback(
+    debounce((q) => setApiSearchQuery(q), 300),
+    []
+  );
+
+  useEffect(() => {
+    if (apiSearchQuery.length > 0 && searchQuery === apiSearchQuery) {
+      getTitles(response);
+    }
+  }, [searchQuery, apiSearchQuery, response]);
+
+  useEffect(() => {
+    clearSearchResults();
+  }, []);
 
   function handleClick(id) {
     navigate(`/movie/${id}`);
     setFilmTitles([]);
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const delayedSearch = useCallback(
-    debounce((q) => sendQuery(q), 300),
-    []
-  );
-
   const handleChange = (event) => {
     setSearchQuery(event.target.value);
-    delayedSearch(event.target.value);
-  };
-
-  const handleEnterKey = (event) => {
-    if (event.key === "Enter") {
-      delayedSearch(searchQuery);
-      getTitles(response);
-    }
   };
 
   const clearSearchResults = () => {
@@ -57,7 +55,6 @@ const SearchInput = () => {
   const onFormSubmit = (e) => {
     e.preventDefault();
     delayedSearch(searchQuery);
-    getTitles(response);
   };
 
   return (
@@ -72,8 +69,7 @@ const SearchInput = () => {
               placeholder="Use Enter Key to Submit"
               value={searchQuery}
               onChange={handleChange}
-              onKeyDown={handleEnterKey}
-              autocomplete="off"
+              autocomplete="false"
             ></Input>
             <InputButton type="submit">Submit</InputButton>
             <ClearButton type="button" onClick={clearSearchResults}>
@@ -82,15 +78,25 @@ const SearchInput = () => {
           </InputBox>
         </SearchInputContainer>
       </form>
-      <SearchResultsList>
-        {filmTitles.length > 0 &&
-          filmTitles.map(({ title, id }) => (
-            <div key={id}>
-              <SearchResultButton onClick={() => handleClick(id)}>
-                {title}
-              </SearchResultButton>
-            </div>
-          ))}
+      <SearchResultsList showList={filmTitles.length > 0}>
+        {filmTitles.length > 0 && (
+          <>
+            <ClearButton
+              type="button"
+              onClick={clearSearchResults}
+              buttonMode={"invert"}
+            >
+              Clear Results
+            </ClearButton>
+            {filmTitles.map(({ title, id }) => (
+              <div key={id}>
+                <SearchResultButton onClick={() => handleClick(id)}>
+                  {title}
+                </SearchResultButton>
+              </div>
+            ))}
+          </>
+        )}
       </SearchResultsList>
     </>
   );
@@ -108,6 +114,7 @@ const ClearButton = styled.button`
   background-color: black;
   border: 1px solid : #282828;
   color: white;
+  width: ${(props) => (props.buttonMode !== "invert" ? "auto" : "125px")};
   &:hover {
     cursor: pointer;
   }
@@ -127,17 +134,19 @@ const SearchInputContainer = styled.div`
 `;
 
 const SearchResultsList = styled.div`
-  position: absolute;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-content: flex-start;
-  background-color: #141414;
-  background: rgba(204, 204, 204, 0.15);
-  margin-top: 60px;
-  padding: 0px 0px 15px 0px;
-  overflow: auto;
-  white-space: nowrap;
+  position: fixed;
+  display: ${(props) => (props.showList ? "flex" : "none")};
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 10px;
 `;
 
 const SearchResultButton = styled.button`
