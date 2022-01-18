@@ -17,4 +17,15 @@ REACT_APP_APIKEY=?api_key=<<<apikey>>>
 
 > npm run test
 
-5.) Visit the deploy app from : https://brave-noether-67f6e7.netlify.app/
+5.) Visit the deployed app at : https://react-movies-flax.vercel.app/
+
+###
+
+Tech Stack
+
+    React
+    Axios
+    Lodash
+    Styled Components
+    React Testing Library
+    Vercel
