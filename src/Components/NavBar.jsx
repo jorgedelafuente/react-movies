@@ -16,5 +16,4 @@ const SearchInputContainer = styled.div`
   display: flex;
   justify-content: center;
   align-content: center;
-  background: #141414;
 `;

@@ -6,7 +6,7 @@ import { useAxios } from "./../../Services/useAxios.js";
 import { baseImagePath } from "../../Services/config.js";
 import Spinner from "../../Components/Spinner/Spinner.jsx";
 
-const MovieInfo = (props) => {
+const MovieInfo = () => {
   const params = useParams();
 
   const { response, error, loading } = useAxios("movieInfo", params.id);
@@ -90,7 +90,6 @@ const MovieListContainer = styled.div`
   justify-content: center;
   align-content: center;
   flex-wrap: wrap;
-  background: #141414;
   padding-top: 20px;
 `;
 

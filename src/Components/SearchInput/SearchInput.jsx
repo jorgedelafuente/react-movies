@@ -161,6 +161,6 @@ const SearchResultButton = styled.button`
   &:hover {
     cursor: pointer;
     background-color: whitesmoke;
-    color: #141414;
+    color: black;
   }
 `;
