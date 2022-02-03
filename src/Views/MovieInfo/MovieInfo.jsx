@@ -110,6 +110,6 @@ const TextContent = styled.div`
   padding: 15px;
   margin: 10px;
   height: 90%;
-  background-color: #282828;
+  background-color: var(--secondary-background-color);
   border-radius: 25px;
 `;

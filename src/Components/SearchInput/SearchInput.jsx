@@ -112,7 +112,7 @@ const InputButton = styled.button`
 
 const ClearButton = styled.button`
   background-color: black;
-  border: 1px solid : #282828;
+  border: 1px solid var(--background-color);
   color: white;
   width: ${(props) => (props.buttonMode !== "invert" ? "auto" : "125px")};
   &:hover {
@@ -154,7 +154,7 @@ const SearchResultButton = styled.button`
   padding: 2.5px;
   margin-top: 10px;
   margin-right: 10px;
-  background-color: #282828;
+  background-color: var(--secondary-background-color);
   color: white;
   border-radius: 10px;
   margin-right: 10px;
