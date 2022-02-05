@@ -1,15 +1,15 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import { useAxios } from "../../Services/useAxios.js";
-import debounce from "lodash/debounce";
+import React, { useState, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { useAxios } from '../../Services/useAxios.js';
+import debounce from 'lodash/debounce';
 
 const SearchInput = () => {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [apiSearchQuery, setApiSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
+  const [apiSearchQuery, setApiSearchQuery] = useState('');
   const [filmTitles, setFilmTitles] = useState([]);
-  const { response } = useAxios("search", apiSearchQuery);
+  const { response } = useAxios('search', apiSearchQuery);
 
   const getTitles = (response) => {
     let filmTitlesArray = [];
@@ -48,7 +48,7 @@ const SearchInput = () => {
   };
 
   const clearSearchResults = () => {
-    setSearchQuery("");
+    setSearchQuery('');
     setFilmTitles([]);
   };
 
@@ -84,7 +84,7 @@ const SearchInput = () => {
             <ClearButton
               type="button"
               onClick={clearSearchResults}
-              buttonMode={"invert"}
+              buttonMode={'invert'}
             >
               Clear Results
             </ClearButton>
@@ -104,7 +104,9 @@ const SearchInput = () => {
 
 export default SearchInput;
 
-const Input = styled.input``;
+const Input = styled.input`
+  width: 200px;
+`;
 
 const InputButton = styled.button`
   display: none;
@@ -114,7 +116,7 @@ const ClearButton = styled.button`
   background-color: black;
   border: 1px solid var(--background-color);
   color: white;
-  width: ${(props) => (props.buttonMode !== "invert" ? "auto" : "125px")};
+  width: ${(props) => (props.buttonMode !== 'invert' ? 'auto' : '125px')};
   &:hover {
     cursor: pointer;
   }
@@ -135,7 +137,7 @@ const SearchInputContainer = styled.div`
 
 const SearchResultsList = styled.div`
   position: fixed;
-  display: ${(props) => (props.showList ? "flex" : "none")};
+  display: ${(props) => (props.showList ? 'flex' : 'none')};
   width: 100%;
   height: 100%;
   top: 0;
