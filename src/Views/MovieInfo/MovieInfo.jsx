@@ -96,7 +96,6 @@ const MovieListContainerParallax = styled.div`
   background-attachment: fixed;
   background-size: cover;
   margin: 0 auto;
-  border-radius: 25px;
 `;
 
 const PosterImage = styled.img`
