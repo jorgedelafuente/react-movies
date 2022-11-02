@@ -12,21 +12,22 @@ import axios from "axios";
 
 const apiKey = process.env.REACT_APP_APIKEY;
 axios.defaults.baseURL = " https://api.themoviedb.org/3";
+const source = axios.CancelToken.source();
+
+const paramOptions = {
+  popular: () => `/movie/popular${apiKey}&language=en-US&page=1`,
+  movieInfo: (searchQuery) => `movie/${searchQuery}${apiKey}&language=en-US`,
+  search: (searchQuery) => `/search/movie${apiKey}&query=${searchQuery}`,
+};
 
 export const useAxios = (paramOption, searchQuery = "") => {
-  const paramOptions = {
-    popular: `/movie/popular${apiKey}&language=en-US&page=1`,
-    movieInfo: `movie/${searchQuery}${apiKey}&language=en-US`,
-    search: `/search/movie${apiKey}&query=${searchQuery}`,
-  };
   const [response, setResponse] = useState(undefined);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
-    // console.log("TCL: fetchData -> param", param);
     try {
-      const result = await axios.request(paramOptions[paramOption]);
+      const result = await axios.request(paramOptions[paramOption](searchQuery));
       setResponse(result.data);
     } catch (error) {
       setError(error);
@@ -39,16 +40,19 @@ export const useAxios = (paramOption, searchQuery = "") => {
     if (paramOption === "popular") {
       fetchData(paramOption, searchQuery);
     }
+    return () => {
+      source.cancel("cleanup");
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (
-      (paramOption === "search" || paramOption === "movieInfo") &&
-      searchQuery !== ""
-    ) {
+    if ((paramOption === "search" || paramOption === "movieInfo") && searchQuery !== "") {
       fetchData(paramOption, searchQuery);
     }
+    return () => {
+      source.cancel("cleanup");
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 

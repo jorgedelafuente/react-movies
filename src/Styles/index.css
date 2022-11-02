@@ -1,5 +1,5 @@
-@import './variables.css';
-@import './scrollbar.css';
+@import "./variables.css";
+@import "./scrollbar.css";
 
 /*
   1. Use a more-intuitive box-sizing model.
@@ -32,7 +32,7 @@ body {
 body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  font-family: 'Netflix Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Netflix Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 /*
   6. Improve media defaults

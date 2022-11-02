@@ -1,17 +1,17 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import React from "react";
+import styled from "styled-components";
+import { useParams } from "react-router-dom";
 
-import { useAxios } from './../../Services/useAxios.js';
-import { baseImagePath, baseImagePathPoster } from '../../Services/config.js';
-import Spinner from '../../Components/Spinner/Spinner.jsx';
+import { useAxios } from "./../../Services/useAxios.js";
+import { baseImagePath, baseImagePathPoster } from "../../Services/config.js";
+import Spinner from "../../Components/Spinner/Spinner.jsx";
 
 const MovieInfo = () => {
   const params = useParams();
 
-  const { response, error, loading } = useAxios('movieInfo', params.id);
+  const { response, error, loading } = useAxios("movieInfo", params.id);
   if (loading) return <Spinner />;
-  if (error) return 'An error has occurred: ' + error.message;
+  if (error) return "An error has occurred: " + error.message;
 
   const {
     release_date,
@@ -28,17 +28,14 @@ const MovieInfo = () => {
   return (
     <>
       {response && (
-        <MovieListContainerParallax
-          src={`${baseImagePathPoster}${backdrop_path}`}
-        >
+        <MovieListContainerParallax src={`${baseImagePathPoster}${backdrop_path}`}>
           <div>
-            <PosterImage src={`${baseImagePath}${poster_path}`} alt="" />
+            <PosterImage src={`${baseImagePath}${poster_path}`} alt='' />
           </div>
 
           <TextContent>
             <h2>
-              <strong></strong>
-              {title}
+              <strong>{title}</strong>
             </h2>
 
             <h3>

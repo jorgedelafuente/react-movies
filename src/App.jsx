@@ -9,8 +9,8 @@ function App() {
     <Router>
       <NavBar />
       <Routes>
-        <Route index path="/" element={<MovieList />} />
-        <Route exact path="/movie/:id" element={<MovieInfo />} />
+        <Route index path='/' element={<MovieList />} />
+        <Route exact path='/movie/:id' element={<MovieInfo />} />
       </Routes>
     </Router>
   );
