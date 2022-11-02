@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import MovieInfo from "./Views/MovieInfo/MovieInfo.jsx";
 import MovieList from "./Views/MovieList/MovieList.jsx";
-import NavBar from "./Components/NavBar.jsx";
+import NavBar from "./Components/NavBar/NavBar.jsx";
 
 function App() {
   return (
