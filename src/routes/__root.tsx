@@ -63,14 +63,14 @@ function RootComponent() {
         >
           Posts
         </Link>{' '}
-        {/* <Link
+        <Link
           to="/layout-a"
           activeProps={{
             className: 'font-bold',
           }}
         >
           Layout
-        </Link>{' '} */}
+        </Link>{' '}
         <Link
           //   @ts-expect-error
           to="/this-route-does-not-exist"
