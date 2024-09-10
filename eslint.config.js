@@ -1,5 +1,5 @@
-import eslintConfigPrettier from 'eslint-config-prettier'
-import typescriptEslint from '@typescript-eslint/eslint-plugin'
+import eslintConfigPrettier from 'eslint-config-prettier';
+import typescriptEslint from '@typescript-eslint/eslint-plugin';
 
 export default [
   {
@@ -9,4 +9,4 @@ export default [
     rules: {},
   },
   eslintConfigPrettier,
-]
+];
