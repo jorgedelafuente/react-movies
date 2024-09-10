@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 backup
-node_modules
+.env
