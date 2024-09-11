@@ -16,6 +16,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as PostsImport } from './routes/posts'
 import { Route as FilmsImport } from './routes/films'
 import { Route as LayoutImport } from './routes/_layout'
+import { Route as IndexImport } from './routes/index'
 import { Route as PostsIndexImport } from './routes/posts.index'
 import { Route as PostsPostIdImport } from './routes/posts.$postId'
 import { Route as LayoutLayout2Import } from './routes/_layout/_layout-2'
@@ -25,7 +26,6 @@ import { Route as LayoutLayout2LayoutAImport } from './routes/_layout/_layout-2/
 // Create Virtual Routes
 
 const FavoritesLazyImport = createFileRoute('/favorites')()
-const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
 
@@ -49,10 +49,10 @@ const LayoutRoute = LayoutImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexLazyRoute = IndexLazyImport.update({
+const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+} as any)
 
 const PostsIndexRoute = PostsIndexImport.update({
   path: '/',
@@ -87,7 +87,7 @@ declare module '@tanstack/react-router' {
       id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexLazyImport
+      preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
     '/_layout': {
@@ -196,7 +196,7 @@ const PostsRouteChildren: PostsRouteChildren = {
 const PostsRouteWithChildren = PostsRoute._addFileChildren(PostsRouteChildren)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexLazyRoute
+  '/': typeof IndexRoute
   '': typeof LayoutLayout2RouteWithChildren
   '/films': typeof FilmsRoute
   '/posts': typeof PostsRouteWithChildren
@@ -208,7 +208,7 @@ export interface FileRoutesByFullPath {
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexLazyRoute
+  '/': typeof IndexRoute
   '': typeof LayoutLayout2RouteWithChildren
   '/films': typeof FilmsRoute
   '/favorites': typeof FavoritesLazyRoute
@@ -220,7 +220,7 @@ export interface FileRoutesByTo {
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexLazyRoute
+  '/': typeof IndexRoute
   '/_layout': typeof LayoutRouteWithChildren
   '/films': typeof FilmsRoute
   '/posts': typeof PostsRouteWithChildren
@@ -270,7 +270,7 @@ export interface FileRouteTypes {
 }
 
 export interface RootRouteChildren {
-  IndexLazyRoute: typeof IndexLazyRoute
+  IndexRoute: typeof IndexRoute
   LayoutRoute: typeof LayoutRouteWithChildren
   FilmsRoute: typeof FilmsRoute
   PostsRoute: typeof PostsRouteWithChildren
@@ -278,7 +278,7 @@ export interface RootRouteChildren {
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexLazyRoute: IndexLazyRoute,
+  IndexRoute: IndexRoute,
   LayoutRoute: LayoutRouteWithChildren,
   FilmsRoute: FilmsRoute,
   PostsRoute: PostsRouteWithChildren,
@@ -305,7 +305,7 @@ export const routeTree = rootRoute
       ]
     },
     "/": {
-      "filePath": "index.lazy.tsx"
+      "filePath": "index.tsx"
     },
     "/_layout": {
       "filePath": "_layout.tsx",

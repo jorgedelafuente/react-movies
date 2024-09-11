@@ -27,27 +27,13 @@ function NotFoundComponent() {
 function RootComponent() {
   return (
     <>
-      <div className="p-2 flex gap-2">
-        Navbar
-        <hr />
-        <div>
-          <Link to="/" className="[&.active]:font-bold">
-            Home
-          </Link>
-          <br />
-          <Link to="/favorites" className="[&.active]:font-bold">
-            favorites
-          </Link>
-        </div>
-      </div>
-      <hr />
-
       {/* TODO : navbar with search */}
       {/* TODO : navbar with wishlist */}
 
-      <div className="p-2 flex gap-2 text-lg">
+      <div className="p-4 flex gap-2 text-lg">
         <Link
           to="/"
+          className="[&.active]:font-bold"
           activeProps={{
             className: 'font-bold',
           }}
@@ -63,15 +49,15 @@ function RootComponent() {
         >
           Posts
         </Link>{' '}
-        <Link
+        {/* <Link
           to="/layout-a"
           activeProps={{
             className: 'font-bold',
           }}
         >
           Layout
-        </Link>{' '}
-        <Link
+        </Link>{' '} */}
+        {/* <Link
           //   @ts-expect-error
           to="/this-route-does-not-exist"
           activeProps={{
@@ -79,9 +65,11 @@ function RootComponent() {
           }}
         >
           This Route Does Not Exist
-        </Link>
+        </Link> */}
       </div>
+
       <hr />
+
       <Outlet />
       <ReactQueryDevtools buttonPosition="top-right" />
       <TanStackRouterDevtools position="bottom-right" />
