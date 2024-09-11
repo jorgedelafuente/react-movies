@@ -17,7 +17,11 @@ function Index() {
         <>Loading...</>
       ) : (
         popularFilms.map((item) => {
-          return <div key={item.id}>{item.title}</div>;
+          return (
+            <div className="text-3xl font-bold underline" key={item.id}>
+              {item.title}
+            </div>
+          );
         })
       )}
     </div>
