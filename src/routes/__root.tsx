@@ -7,6 +7,7 @@ import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { QueryClient } from '@tanstack/react-query';
+import Navbar from '../components/navbar/navbar.component';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -27,10 +28,7 @@ function NotFoundComponent() {
 function RootComponent() {
   return (
     <>
-      {/* TODO : navbar with search */}
-      {/* TODO : navbar with wishlist */}
-
-      <div className="p-4 flex gap-2 text-lg">
+      <Navbar>
         <Link
           to="/"
           className="[&.active]:font-bold"
@@ -41,13 +39,21 @@ function RootComponent() {
         >
           Home
         </Link>{' '}
+        {/* <Link
+            to={'/popular'}
+            activeProps={{
+              className: 'font-bold',
+            }}
+          >
+            Popular
+          </Link>{' '} */}
         <Link
-          to={'/posts'}
+          to={'/favorites'}
           activeProps={{
             className: 'font-bold',
           }}
         >
-          Posts
+          Favorites
         </Link>{' '}
         {/* <Link
           to="/layout-a"
@@ -66,7 +72,7 @@ function RootComponent() {
         >
           This Route Does Not Exist
         </Link> */}
-      </div>
+      </Navbar>
 
       <hr />
 

@@ -18,8 +18,20 @@ function Index() {
       ) : (
         popularFilms.map((item) => {
           return (
+            // TODO : create cards
             <div className="text-3xl font-bold underline" key={item.id}>
               {item.title}
+
+              {/* <Link
+                  to="/posts/$postId"
+                  params={{
+                    postId: post.id,
+                  }}
+                  className="block py-1 text-blue-600 hover:opacity-75"
+                  activeProps={{ className: 'font-bold underline' }}
+                >
+                  <div>{post.title.substring(0, 20)}</div>
+                </Link> */}
             </div>
           );
         })

@@ -1,8 +1,8 @@
 import { queryOptions } from '@tanstack/react-query';
 import { fetchFilm } from './films';
 
-export const postQueryOptions = (postId: string) =>
+export const filmQueryOptions = (filmId: string) =>
   queryOptions({
-    queryKey: ['posts', { postId }],
-    queryFn: () => fetchFilm(postId),
+    queryKey: ['film', { filmId }],
+    queryFn: () => fetchFilm(filmId),
   });

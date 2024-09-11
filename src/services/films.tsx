@@ -24,15 +24,15 @@ export const fetchFilms = async () => {
     .then((res) => res.data.results);
 };
 
-export const fetchFilm = async (postId: string) => {
-  console.info(`Fetching post with id ${postId}...`);
+export const fetchFilm = async (filmId: string) => {
+  console.info(`Fetching post with id ${filmId}...`);
   await new Promise((res) => setTimeout(res, 500));
   const post = await axios
-    .get<FilmType>(`https://jsonplaceholder.typicode.com/posts/${postId}`)
+    .get<FilmType>(`https://jsonplaceholder.typicode.com/posts/${filmId}`)
     .then((res) => res.data)
     .catch((err) => {
       if (err.status === 404) {
-        throw new FilmNotFoundError(`Post with id "${postId}" not found!`);
+        throw new FilmNotFoundError(`Post with id "${filmId}" not found!`);
       }
       throw err;
     });
