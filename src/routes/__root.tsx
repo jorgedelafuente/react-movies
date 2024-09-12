@@ -29,15 +29,8 @@ function RootComponent() {
   return (
     <>
       <Navbar>
-        <Link
-          to="/"
-          className="[&.active]:font-bold"
-          activeProps={{
-            className: 'font-bold',
-          }}
-          activeOptions={{ exact: true }}
-        >
-          Home
+        <Link to="/" className="text-white" activeOptions={{ exact: true }}>
+          <span className="text-white">Popular</span>
         </Link>{' '}
         {/* <Link
             to={'/popular'}
@@ -47,14 +40,9 @@ function RootComponent() {
           >
             Popular
           </Link>{' '} */}
-        <Link
-          to={'/favorites'}
-          activeProps={{
-            className: 'font-bold',
-          }}
-        >
-          Favorites
-        </Link>{' '}
+        {/* <Link to={'/favorites'}>
+          <span className="text-white">Favorites</span>
+        </Link>{' '} */}
         {/* <Link
           to="/layout-a"
           activeProps={{

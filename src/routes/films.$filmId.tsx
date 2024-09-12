@@ -8,21 +8,21 @@ import {
   useQueryErrorResetBoundary,
   useSuspenseQuery,
 } from '@tanstack/react-query';
-import { PostNotFoundError } from '../services/posts';
-import { postQueryOptions } from '../services/postQueryOptions';
+import { FilmNotFoundError } from '../services/films';
+import { filmQueryOptions } from '../services/filmQueryOptions';
 import type { ErrorComponentProps } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/posts/$postId')({
-  loader: ({ context: { queryClient }, params: { postId } }) => {
-    return queryClient.ensureQueryData(postQueryOptions(postId));
+export const Route = createFileRoute('/films/$filmId')({
+  loader: ({ context: { queryClient }, params: { filmId } }) => {
+    return queryClient.ensureQueryData(filmQueryOptions(filmId));
   },
-  errorComponent: PostErrorComponent,
-  component: PostComponent,
+  errorComponent: FilmErrorComponent,
+  component: FilmComponent,
 });
 
-export function PostErrorComponent({ error }: ErrorComponentProps) {
+export function FilmErrorComponent({ error }: ErrorComponentProps) {
   const router = useRouter();
-  if (error instanceof PostNotFoundError) {
+  if (error instanceof FilmNotFoundError) {
     return <div>{error.message}</div>;
   }
   const queryErrorResetBoundary = useQueryErrorResetBoundary();
@@ -45,14 +45,14 @@ export function PostErrorComponent({ error }: ErrorComponentProps) {
   );
 }
 
-function PostComponent() {
-  const postId = Route.useParams().postId;
-  const { data: post } = useSuspenseQuery(postQueryOptions(postId));
+function FilmComponent() {
+  const filmId = Route.useParams().filmId;
+  const { data: film } = useSuspenseQuery(filmQueryOptions(filmId));
 
   return (
     <div className="space-y-2">
-      <h4 className="text-xl font-bold underline">{post.title}</h4>
-      <div className="text-sm">{post.body}</div>
+      <h4 className="text-xl font-bold underline">{film.title}</h4>
+      {/* <div className="text-sm">{film.body}</div> */}
     </div>
   );
 }
