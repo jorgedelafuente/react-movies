@@ -8,6 +8,8 @@ axios.defaults.baseURL = ' https://api.themoviedb.org/3';
 
 const paramOptions = {
     popular: () => `/movie/popular${apiKey}&language=en-US&page=1`,
+    top_rated: () => `/movie/top_rated${apiKey}&language=en-US&page=1`,
+    upcoming: () => `/movie/upcoming${apiKey}&language=en-US&page=1`,
     movieInfo: (searchQuery: string) =>
         `movie/${searchQuery}${apiKey}&language=en-US`,
     search: (searchQuery: string) =>
