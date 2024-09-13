@@ -10,179 +10,179 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as LayoutImport } from './routes/_layout'
-import { Route as IndexImport } from './routes/index'
-import { Route as FilmFilmIdImport } from './routes/film.$filmId'
-import { Route as LayoutLayout2Import } from './routes/_layout/_layout-2'
-import { Route as LayoutLayout2LayoutBImport } from './routes/_layout/_layout-2/layout-b'
-import { Route as LayoutLayout2LayoutAImport } from './routes/_layout/_layout-2/layout-a'
+import { Route as rootRoute } from './routes/__root';
+import { Route as LayoutImport } from './routes/_layout';
+import { Route as IndexImport } from './routes/index';
+import { Route as FilmFilmIdImport } from './routes/film.$filmId';
+import { Route as LayoutLayout2Import } from './routes/_layout/_layout-2';
+import { Route as LayoutLayout2LayoutBImport } from './routes/_layout/_layout-2/layout-b';
+import { Route as LayoutLayout2LayoutAImport } from './routes/_layout/_layout-2/layout-a';
 
 // Create/Update Routes
 
 const LayoutRoute = LayoutImport.update({
-  id: '/_layout',
-  getParentRoute: () => rootRoute,
-} as any)
+    id: '/_layout',
+    getParentRoute: () => rootRoute,
+} as any);
 
 const IndexRoute = IndexImport.update({
-  path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
+    path: '/',
+    getParentRoute: () => rootRoute,
+} as any);
 
 const FilmFilmIdRoute = FilmFilmIdImport.update({
-  path: '/film/$filmId',
-  getParentRoute: () => rootRoute,
-} as any)
+    path: '/film/$filmId',
+    getParentRoute: () => rootRoute,
+} as any);
 
 const LayoutLayout2Route = LayoutLayout2Import.update({
-  id: '/_layout-2',
-  getParentRoute: () => LayoutRoute,
-} as any)
+    id: '/_layout-2',
+    getParentRoute: () => LayoutRoute,
+} as any);
 
 const LayoutLayout2LayoutBRoute = LayoutLayout2LayoutBImport.update({
-  path: '/layout-b',
-  getParentRoute: () => LayoutLayout2Route,
-} as any)
+    path: '/layout-b',
+    getParentRoute: () => LayoutLayout2Route,
+} as any);
 
 const LayoutLayout2LayoutARoute = LayoutLayout2LayoutAImport.update({
-  path: '/layout-a',
-  getParentRoute: () => LayoutLayout2Route,
-} as any)
+    path: '/layout-a',
+    getParentRoute: () => LayoutLayout2Route,
+} as any);
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
+    interface FileRoutesByPath {
+        '/': {
+            id: '/';
+            path: '/';
+            fullPath: '/';
+            preLoaderRoute: typeof IndexImport;
+            parentRoute: typeof rootRoute;
+        };
+        '/_layout': {
+            id: '/_layout';
+            path: '';
+            fullPath: '';
+            preLoaderRoute: typeof LayoutImport;
+            parentRoute: typeof rootRoute;
+        };
+        '/_layout/_layout-2': {
+            id: '/_layout/_layout-2';
+            path: '';
+            fullPath: '';
+            preLoaderRoute: typeof LayoutLayout2Import;
+            parentRoute: typeof LayoutImport;
+        };
+        '/film/$filmId': {
+            id: '/film/$filmId';
+            path: '/film/$filmId';
+            fullPath: '/film/$filmId';
+            preLoaderRoute: typeof FilmFilmIdImport;
+            parentRoute: typeof rootRoute;
+        };
+        '/_layout/_layout-2/layout-a': {
+            id: '/_layout/_layout-2/layout-a';
+            path: '/layout-a';
+            fullPath: '/layout-a';
+            preLoaderRoute: typeof LayoutLayout2LayoutAImport;
+            parentRoute: typeof LayoutLayout2Import;
+        };
+        '/_layout/_layout-2/layout-b': {
+            id: '/_layout/_layout-2/layout-b';
+            path: '/layout-b';
+            fullPath: '/layout-b';
+            preLoaderRoute: typeof LayoutLayout2LayoutBImport;
+            parentRoute: typeof LayoutLayout2Import;
+        };
     }
-    '/_layout': {
-      id: '/_layout'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof LayoutImport
-      parentRoute: typeof rootRoute
-    }
-    '/_layout/_layout-2': {
-      id: '/_layout/_layout-2'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof LayoutLayout2Import
-      parentRoute: typeof LayoutImport
-    }
-    '/film/$filmId': {
-      id: '/film/$filmId'
-      path: '/film/$filmId'
-      fullPath: '/film/$filmId'
-      preLoaderRoute: typeof FilmFilmIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/_layout/_layout-2/layout-a': {
-      id: '/_layout/_layout-2/layout-a'
-      path: '/layout-a'
-      fullPath: '/layout-a'
-      preLoaderRoute: typeof LayoutLayout2LayoutAImport
-      parentRoute: typeof LayoutLayout2Import
-    }
-    '/_layout/_layout-2/layout-b': {
-      id: '/_layout/_layout-2/layout-b'
-      path: '/layout-b'
-      fullPath: '/layout-b'
-      preLoaderRoute: typeof LayoutLayout2LayoutBImport
-      parentRoute: typeof LayoutLayout2Import
-    }
-  }
 }
 
 // Create and export the route tree
 
 interface LayoutLayout2RouteChildren {
-  LayoutLayout2LayoutARoute: typeof LayoutLayout2LayoutARoute
-  LayoutLayout2LayoutBRoute: typeof LayoutLayout2LayoutBRoute
+    LayoutLayout2LayoutARoute: typeof LayoutLayout2LayoutARoute;
+    LayoutLayout2LayoutBRoute: typeof LayoutLayout2LayoutBRoute;
 }
 
 const LayoutLayout2RouteChildren: LayoutLayout2RouteChildren = {
-  LayoutLayout2LayoutARoute: LayoutLayout2LayoutARoute,
-  LayoutLayout2LayoutBRoute: LayoutLayout2LayoutBRoute,
-}
+    LayoutLayout2LayoutARoute: LayoutLayout2LayoutARoute,
+    LayoutLayout2LayoutBRoute: LayoutLayout2LayoutBRoute,
+};
 
 const LayoutLayout2RouteWithChildren = LayoutLayout2Route._addFileChildren(
-  LayoutLayout2RouteChildren,
-)
+    LayoutLayout2RouteChildren
+);
 
 interface LayoutRouteChildren {
-  LayoutLayout2Route: typeof LayoutLayout2RouteWithChildren
+    LayoutLayout2Route: typeof LayoutLayout2RouteWithChildren;
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
-  LayoutLayout2Route: LayoutLayout2RouteWithChildren,
-}
+    LayoutLayout2Route: LayoutLayout2RouteWithChildren,
+};
 
 const LayoutRouteWithChildren =
-  LayoutRoute._addFileChildren(LayoutRouteChildren)
+    LayoutRoute._addFileChildren(LayoutRouteChildren);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '': typeof LayoutLayout2RouteWithChildren
-  '/film/$filmId': typeof FilmFilmIdRoute
-  '/layout-a': typeof LayoutLayout2LayoutARoute
-  '/layout-b': typeof LayoutLayout2LayoutBRoute
+    '/': typeof IndexRoute;
+    '': typeof LayoutLayout2RouteWithChildren;
+    '/film/$filmId': typeof FilmFilmIdRoute;
+    '/layout-a': typeof LayoutLayout2LayoutARoute;
+    '/layout-b': typeof LayoutLayout2LayoutBRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '': typeof LayoutLayout2RouteWithChildren
-  '/film/$filmId': typeof FilmFilmIdRoute
-  '/layout-a': typeof LayoutLayout2LayoutARoute
-  '/layout-b': typeof LayoutLayout2LayoutBRoute
+    '/': typeof IndexRoute;
+    '': typeof LayoutLayout2RouteWithChildren;
+    '/film/$filmId': typeof FilmFilmIdRoute;
+    '/layout-a': typeof LayoutLayout2LayoutARoute;
+    '/layout-b': typeof LayoutLayout2LayoutBRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/_layout': typeof LayoutRouteWithChildren
-  '/_layout/_layout-2': typeof LayoutLayout2RouteWithChildren
-  '/film/$filmId': typeof FilmFilmIdRoute
-  '/_layout/_layout-2/layout-a': typeof LayoutLayout2LayoutARoute
-  '/_layout/_layout-2/layout-b': typeof LayoutLayout2LayoutBRoute
+    __root__: typeof rootRoute;
+    '/': typeof IndexRoute;
+    '/_layout': typeof LayoutRouteWithChildren;
+    '/_layout/_layout-2': typeof LayoutLayout2RouteWithChildren;
+    '/film/$filmId': typeof FilmFilmIdRoute;
+    '/_layout/_layout-2/layout-a': typeof LayoutLayout2LayoutARoute;
+    '/_layout/_layout-2/layout-b': typeof LayoutLayout2LayoutBRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '' | '/film/$filmId' | '/layout-a' | '/layout-b'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/film/$filmId' | '/layout-a' | '/layout-b'
-  id:
-    | '__root__'
-    | '/'
-    | '/_layout'
-    | '/_layout/_layout-2'
-    | '/film/$filmId'
-    | '/_layout/_layout-2/layout-a'
-    | '/_layout/_layout-2/layout-b'
-  fileRoutesById: FileRoutesById
+    fileRoutesByFullPath: FileRoutesByFullPath;
+    fullPaths: '/' | '' | '/film/$filmId' | '/layout-a' | '/layout-b';
+    fileRoutesByTo: FileRoutesByTo;
+    to: '/' | '' | '/film/$filmId' | '/layout-a' | '/layout-b';
+    id:
+        | '__root__'
+        | '/'
+        | '/_layout'
+        | '/_layout/_layout-2'
+        | '/film/$filmId'
+        | '/_layout/_layout-2/layout-a'
+        | '/_layout/_layout-2/layout-b';
+    fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  LayoutRoute: typeof LayoutRouteWithChildren
-  FilmFilmIdRoute: typeof FilmFilmIdRoute
+    IndexRoute: typeof IndexRoute;
+    LayoutRoute: typeof LayoutRouteWithChildren;
+    FilmFilmIdRoute: typeof FilmFilmIdRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  LayoutRoute: LayoutRouteWithChildren,
-  FilmFilmIdRoute: FilmFilmIdRoute,
-}
+    IndexRoute: IndexRoute,
+    LayoutRoute: LayoutRouteWithChildren,
+    FilmFilmIdRoute: FilmFilmIdRoute,
+};
 
 export const routeTree = rootRoute
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+    ._addFileChildren(rootRouteChildren)
+    ._addFileTypes<FileRouteTypes>();
 
 /* prettier-ignore-end */
 

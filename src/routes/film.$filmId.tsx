@@ -56,10 +56,42 @@ function FilmComponent() {
             <Link to="/">
                 <span className="p-4 text-white">&#x2B05; Back</span>
             </Link>
-            <h4 className="text-xl font-bold underline">{film.title}</h4>
-            <div className="text-m">{film.overview}</div>
-            <div className="text-sm">{film.tagline}</div>
-            <img src="" alt="" />
+            <h2>
+                <strong>{film.title}</strong>
+            </h2>
+
+            <h3>
+                <strong>{film.tagline}</strong>
+            </h3>
+
+            <br />
+
+            <p>
+                <strong>Overview : </strong>
+                {film.overview}
+            </p>
+
+            <br />
+
+            <div>
+                <strong>Averag Rating : </strong>
+                {film.vote_average}
+            </div>
+
+            <div>
+                <strong>Homepage : </strong>
+                {film.homepage}
+            </div>
+
+            <div>
+                <strong>Duration : </strong>
+                {film.runtime} minutes
+            </div>
+
+            <div>
+                <strong>Release Date : </strong>
+                {film.release_date}
+            </div>
         </div>
     );
 }

@@ -3,6 +3,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { filmsQueryOptions } from '../services/filmsQueryOptions';
 import Card from '@/components/card/card.component';
 import Spinner from '@/components/spinner/Spinner/spinner.component';
+import { baseImagePath } from '@/services/config';
 
 export const Route = createFileRoute('/')({
     loader: ({ context: { queryClient } }) =>
@@ -15,7 +16,7 @@ function Index() {
         useSuspenseQuery(filmsQueryOptions);
 
     return (
-        <div className="flex flex-row flex-wrap justify-center gap-6 p-8 sm:p-4 md:p-10 lg:p-20">
+        <div className="flex flex-row flex-wrap justify-center gap-6 bg-black p-6 sm:p-4 md:p-10 lg:p-10">
             {isLoading ? (
                 <Spinner />
             ) : (
@@ -28,7 +29,23 @@ function Index() {
                                 filmId: item.id,
                             }}
                         >
-                            <Card>{item.title}</Card>
+                            <Card>
+                                <img
+                                    className="aspect-[1/1.5] rounded-md object-cover object-center hover:blur-md"
+                                    src={`${baseImagePath}${item.poster_path}`}
+                                    alt={item.title}
+                                />
+
+                                <div>
+                                    <h2>{item.title}</h2>
+                                    {item.overview}
+                                </div>
+
+                                {/* <MovieContent className="content">
+                                    <h2>{title}</h2>
+                                    {overview}
+                                </MovieContent>  */}
+                            </Card>
                         </Link>
                     );
                 })

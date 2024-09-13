@@ -7,4 +7,8 @@ export type FilmType = {
     backdrop_path: string;
     poster_path: string;
     tagline: string;
+    vote_average: string;
+    homepage: string;
+    runtime: string;
+    release_date: string;
 };

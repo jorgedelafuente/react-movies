@@ -15,49 +15,49 @@ axios.defaults.baseURL = ' https://api.themoviedb.org/3';
 const source = axios.CancelToken.source();
 
 const paramOptions = {
-  popular: () => `/movie/popular${apiKey}&language=en-US&page=1`,
-  movieInfo: (searchQuery) => `movie/${searchQuery}${apiKey}&language=en-US`,
-  search: (searchQuery) => `/search/movie${apiKey}&query=${searchQuery}`,
+    popular: () => `/movie/popular${apiKey}&language=en-US&page=1`,
+    movieInfo: (searchQuery) => `movie/${searchQuery}${apiKey}&language=en-US`,
+    search: (searchQuery) => `/search/movie${apiKey}&query=${searchQuery}`,
 };
 
 export const useAxios = (paramOption, searchQuery = '') => {
-  const [response, setResponse] = useState(undefined);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
+    const [response, setResponse] = useState(undefined);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(true);
 
-  const fetchData = async () => {
-    try {
-      const result = await axios.request(
-        paramOptions[paramOption](searchQuery)
-      );
-      setResponse(result.data);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (paramOption === 'popular') {
-      fetchData(paramOption, searchQuery);
-    }
-    return () => {
-      source.cancel('cleanup');
+    const fetchData = async () => {
+        try {
+            const result = await axios.request(
+                paramOptions[paramOption](searchQuery)
+            );
+            setResponse(result.data);
+        } catch (error) {
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
     };
-  }, []);
 
-  useEffect(() => {
-    if (
-      (paramOption === 'search' || paramOption === 'movieInfo') &&
-      searchQuery !== ''
-    ) {
-      fetchData(paramOption, searchQuery);
-    }
-    return () => {
-      source.cancel('cleanup');
-    };
-  }, [searchQuery]);
+    useEffect(() => {
+        if (paramOption === 'popular') {
+            fetchData(paramOption, searchQuery);
+        }
+        return () => {
+            source.cancel('cleanup');
+        };
+    }, []);
 
-  return { response, error, loading };
+    useEffect(() => {
+        if (
+            (paramOption === 'search' || paramOption === 'movieInfo') &&
+            searchQuery !== ''
+        ) {
+            fetchData(paramOption, searchQuery);
+        }
+        return () => {
+            source.cancel('cleanup');
+        };
+    }, [searchQuery]);
+
+    return { response, error, loading };
 };

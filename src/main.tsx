@@ -8,28 +8,28 @@ import './styles/index.css';
 
 const queryClient = new QueryClient();
 const router = createRouter({
-  routeTree,
-  context: {
-    queryClient,
-  },
-  defaultPreload: 'intent',
-  defaultStaleTime: 0,
+    routeTree,
+    context: {
+        queryClient,
+    },
+    defaultPreload: 'intent',
+    defaultStaleTime: 0,
 });
 
 declare module '@tanstack/react-router' {
-  interface Register {
-    router: typeof router;
-  }
+    interface Register {
+        router: typeof router;
+    }
 }
 
 const rootElement = document.getElementById('root')!;
 if (!rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement);
-  root.render(
-    <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </StrictMode>
-  );
+    const root = ReactDOM.createRoot(rootElement);
+    root.render(
+        <StrictMode>
+            <QueryClientProvider client={queryClient}>
+                <RouterProvider router={router} />
+            </QueryClientProvider>
+        </StrictMode>
+    );
 }

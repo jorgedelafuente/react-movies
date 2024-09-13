@@ -2,11 +2,11 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 
 export default [
-  {
-    plugins: {
-      typescriptEslint: typescriptEslint,
+    {
+        plugins: {
+            typescriptEslint: typescriptEslint,
+        },
+        rules: {},
     },
-    rules: {},
-  },
-  eslintConfigPrettier,
+    eslintConfigPrettier,
 ];
