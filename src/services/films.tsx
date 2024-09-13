@@ -15,7 +15,6 @@ const paramOptions = {
 };
 
 export const fetchFilms = async () => {
-    console.info('Fetching posts...');
     await new Promise((res) => setTimeout(res, 500));
     return axios
         .get<FilmList>(paramOptions.popular())
@@ -23,15 +22,14 @@ export const fetchFilms = async () => {
 };
 
 export const fetchFilm = async (filmId: string) => {
-    console.info(`Fetching post with id ${filmId}...`);
     await new Promise((res) => setTimeout(res, 500));
     const post = await axios
-        .get<FilmType>(`https://jsonplaceholder.typicode.com/posts/${filmId}`)
+        .get<FilmType>(paramOptions.movieInfo(filmId))
         .then((res) => res.data)
         .catch((err) => {
             if (err.status === 404) {
                 throw new FilmNotFoundError(
-                    `Post with id "${filmId}" not found!`
+                    `Film with id "${filmId}" not found!`
                 );
             }
             throw err;
@@ -39,3 +37,5 @@ export const fetchFilm = async (filmId: string) => {
 
     return post;
 };
+
+export const searchFilm = async () => {};

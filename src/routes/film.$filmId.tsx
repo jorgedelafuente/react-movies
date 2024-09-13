@@ -3,6 +3,7 @@ import {
     ErrorComponent,
     createFileRoute,
     useRouter,
+    Link,
 } from '@tanstack/react-router';
 import {
     useQueryErrorResetBoundary,
@@ -12,7 +13,7 @@ import { FilmNotFoundError } from '../services/films';
 import { filmQueryOptions } from '../services/filmQueryOptions';
 import type { ErrorComponentProps } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/films/$filmId')({
+export const Route = createFileRoute('/film/$filmId')({
     loader: ({ context: { queryClient }, params: { filmId } }) => {
         return queryClient.ensureQueryData(filmQueryOptions(filmId));
     },
@@ -48,12 +49,17 @@ export function FilmErrorComponent({ error }: ErrorComponentProps) {
 function FilmComponent() {
     const filmId = Route.useParams().filmId;
     const { data: film } = useSuspenseQuery(filmQueryOptions(filmId));
+    console.log('TCL: FilmComponent -> film', film);
 
     return (
         <div className="space-y-2">
-            individual film
+            <Link to="/">
+                <span className="p-4 text-white">&#x2B05; Back</span>
+            </Link>
             <h4 className="text-xl font-bold underline">{film.title}</h4>
-            {/* <div className="text-sm">{film.body}</div> */}
+            <div className="text-m">{film.overview}</div>
+            <div className="text-sm">{film.tagline}</div>
+            <img src="" alt="" />
         </div>
     );
 }

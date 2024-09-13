@@ -21,7 +21,7 @@ function Index() {
                 popularFilms.map((item) => {
                     return (
                         <Link
-                            to="/films/$filmId"
+                            to="/film/$filmId"
                             params={{
                                 filmId: item.id,
                             }}
