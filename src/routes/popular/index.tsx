@@ -5,7 +5,7 @@ import Spinner from '@/components/spinner/Spinner/spinner.component';
 import Container from '@/components/layout/container/container.component';
 import FilmList from '@/views/film-list/film-list.view';
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/popular/')({
    loader: ({ context: { queryClient } }) =>
       queryClient.ensureQueryData(filmsPopularQueryOptions),
    component: Index,

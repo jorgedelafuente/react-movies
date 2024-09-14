@@ -1,9 +1,9 @@
-import { ReactNode } from '@tanstack/react-router';
+import { ReactNode } from 'react';
 import './navbar.styles.css';
 
 const Navbar = ({ children }: { children: ReactNode }) => {
     return (
-        <div className="navbar flex justify-center gap-2 p-4 text-lg">
+        <div className="navbar border-slate flex border-spacing-x-60 justify-center gap-2 border-b-2 p-4 text-lg">
             <div className="custom-shape-divider-top">
                 <svg
                     data-name="Layer 1"

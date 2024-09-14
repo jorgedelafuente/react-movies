@@ -1,11 +1,8 @@
-import { ReactNode } from '@tanstack/react-router';
+import { ReactNode } from 'react';
+import './card.styles.css';
 
 const Card = ({ children }: { children: ReactNode }) => {
-    return (
-        <div className="border-white-700 shadow-l shadow-white-200 h-96 w-full border-spacing-8 gap-2 rounded-2xl p-8 sm:w-full md:w-80">
-            {children}
-        </div>
-    );
+    return <div className="custom-card">{children}</div>;
 };
 
 export default Card;

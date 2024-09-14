@@ -1,76 +1,45 @@
 import {
-    Link,
-    Outlet,
-    createRootRouteWithContext,
+   Link,
+   Outlet,
+   createRootRouteWithContext,
+   NotFoundRouteComponent,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
-
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { QueryClient } from '@tanstack/react-query';
-import Navbar from '../components/navbar/navbar.component';
+
+import Navbar from '@/components/layout/navbar/navbar.component';
+import NavLink from '@/components/link/navlink.component';
 
 export const Route = createRootRouteWithContext<{
-    queryClient: QueryClient;
+   queryClient: QueryClient;
 }>()({
-    component: RootComponent,
-    notFoundComponent: NotFoundComponent,
+   component: RootComponent,
+   notFoundComponent: NotFoundComponent as NotFoundRouteComponent,
 });
 
 function NotFoundComponent() {
-    return (
-        <div>
-            <p>This is the notFoundComponent configured on root route!!</p>
-            <Link to="/">Start Over</Link>
-        </div>
-    );
+   return (
+      <div>
+         <p>This is the notFoundComponent configured on root route!!</p>
+         <Link to="/">Start Over</Link>
+      </div>
+   );
 }
 
 function RootComponent() {
-    return (
-        <>
-            <Navbar>
-                <Link
-                    to="/"
-                    className="text-white"
-                    activeOptions={{ exact: true }}
-                >
-                    <span className="text-white">Popular</span>
-                </Link>{' '}
-                {/* <Link
-            to={'/popular'}
-            activeProps={{
-              className: 'font-bold',
-            }}
-          >
-            Popular
-          </Link>{' '} */}
-                {/* <Link to={'/favorites'}>
-          <span className="text-white">Favorites</span>
-        </Link>{' '} */}
-                {/* <Link
-          to="/layout-a"
-          activeProps={{
-            className: 'font-bold',
-          }}
-        >
-          Layout
-        </Link>{' '} */}
-                {/* <Link
-          //   @ts-expect-error
-          to="/this-route-does-not-exist"
-          activeProps={{
-            className: 'font-bold',
-          }}
-        >
-          This Route Does Not Exist
-        </Link> */}
-            </Navbar>
+   return (
+      <>
+         <Navbar>
+            <NavLink path="/popular" text="Popular" /> |
+            <NavLink path="/top-rated" text="Top Rated" /> |
+            <NavLink path="/upcoming" text="Upcoming" /> |
+            <input className="w-32 border" type="text" />
+         </Navbar>
 
-            <hr />
-
-            <Outlet />
-            <ReactQueryDevtools buttonPosition="top-right" />
-            <TanStackRouterDevtools position="bottom-right" />
-        </>
-    );
+         <Outlet />
+         <ReactQueryDevtools buttonPosition="top-right" />
+         <TanStackRouterDevtools position="bottom-right" />
+      </>
+   );
 }
