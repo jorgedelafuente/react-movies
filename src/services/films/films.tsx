@@ -52,4 +52,9 @@ export const fetchFilm = async (filmId: string) => {
    return post;
 };
 
-export const searchFilm = async () => {};
+export const searchFilm = async (searchQuery: string) => {
+   await new Promise((res) => setTimeout(res, 500));
+   return axios
+      .get<FilmList>(paramOptions.search(searchQuery))
+      .then((res) => res.data.results);
+};
