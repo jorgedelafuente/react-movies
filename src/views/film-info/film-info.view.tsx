@@ -66,7 +66,7 @@ const FilmInfo = ({
             {filmTrailer && (
                <div className="mt-4 rounded-lg">
                   <iframe
-                     className="rounded-lg"
+                     className="m-auto rounded-lg"
                      id={filmInfo.title}
                      title={filmInfo.title}
                      width="100%"
