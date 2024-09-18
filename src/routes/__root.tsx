@@ -9,6 +9,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { QueryClient } from '@tanstack/react-query';
 
 import { FilmErrorComponent } from '@/components/layout/error-component/error-component';
+import { NotFoundComponent } from '@/components/layout/not-found-component/not-found.component';
+
 import Navbar from '@/components/layout/navbar/navbar.component';
 import NavLink from '@/components/link/navlink.component';
 import SearchInput from '@/components/search-input/search-input';
@@ -20,15 +22,6 @@ export const Route = createRootRouteWithContext<{
    errorComponent: FilmErrorComponent,
    notFoundComponent: NotFoundComponent as NotFoundRouteComponent,
 });
-
-function NotFoundComponent() {
-   return (
-      <div>
-         <p>This is the notFoundComponent configured on root route!!</p>
-         <Link to="/">Start Over</Link>
-      </div>
-   );
-}
 
 function RootComponent() {
    return (

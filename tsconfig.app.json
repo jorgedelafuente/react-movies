@@ -30,6 +30,5 @@
     },
     "include": [
         "src",
-        "src/routes/film/.$filmId.tsx"
     ]
 }

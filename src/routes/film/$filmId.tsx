@@ -1,7 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
-import { filmQueryOptions } from '@/services/films/filmQueryOptions';
+import {
+   filmQueryOptions,
+   filmVideoQueryOptions,
+} from '@/services/films/filmQueryOptions';
 import { FilmErrorComponent } from '@/components/layout/error-component/error-component';
 
 import Spinner from '@/components/spinner/Spinner/spinner.component';
@@ -20,6 +23,21 @@ function FilmComponent() {
    const { data: filmInfo, isLoading } = useSuspenseQuery(
       filmQueryOptions(filmId)
    );
+   const { data: filmTrailerList } = useSuspenseQuery(
+      filmVideoQueryOptions(filmId)
+   );
 
-   return <>{isLoading ? <Spinner /> : <FilmInfo filmInfo={filmInfo} />}</>;
+   const filmTrailer = filmTrailerList.results.find(
+      (item) => item.type === 'Trailer' && item.name === 'Official Trailer'
+   );
+
+   return (
+      <>
+         {isLoading ? (
+            <Spinner />
+         ) : (
+            <FilmInfo filmInfo={filmInfo} filmTrailer={filmTrailer} />
+         )}
+      </>
+   );
 }

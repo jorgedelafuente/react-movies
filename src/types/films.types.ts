@@ -13,3 +13,12 @@ export type FilmInfoType = {
    runtime: string;
    release_date: string;
 };
+
+export type FilmVideoList = { results: FilmVideoType[] };
+
+export type FilmVideoType = {
+   site: string;
+   type: string;
+   name: string;
+   key: string;
+};

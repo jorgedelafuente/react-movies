@@ -1,8 +1,14 @@
-import { FilmInfoType } from '@/types/films.types';
+import type { FilmInfoType, FilmVideoType } from '@/types/films.types';
 import { baseImagePathPoster, baseImagePath } from '@/services/config';
 import './film-info.styles.css';
 
-const FilmInfo = ({ filmInfo }: { filmInfo: FilmInfoType }) => {
+const FilmInfo = ({
+   filmInfo,
+   filmTrailer,
+}: {
+   filmInfo: FilmInfoType;
+   filmTrailer?: FilmVideoType;
+}) => {
    return (
       <>
          <div
@@ -19,7 +25,7 @@ const FilmInfo = ({ filmInfo }: { filmInfo: FilmInfoType }) => {
                />
             </div>
 
-            <div className="text-content">
+            <div className="text-content rounded-lg">
                <h2>
                   <strong>{filmInfo.title}</strong>
                </h2>
@@ -57,6 +63,18 @@ const FilmInfo = ({ filmInfo }: { filmInfo: FilmInfoType }) => {
                   {filmInfo.release_date}
                </div>
             </div>
+            {filmTrailer && (
+               <div className="mt-4 rounded-lg">
+                  <iframe
+                     className="rounded-lg"
+                     id={filmInfo.title}
+                     title={filmInfo.title}
+                     width="100%"
+                     height="600"
+                     src={`https://www.youtube.com/embed/${filmTrailer.key}`}
+                  />
+               </div>
+            )}
          </div>
       </>
    );

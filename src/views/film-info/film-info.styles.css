@@ -32,7 +32,6 @@
    margin: 10px;
    height: 90%;
    background-color: var(--secondary-background-color);
-   border-radius: 25px;
    transition: opacity 0.3s;
    &:hover {
       opacity: 50%;
