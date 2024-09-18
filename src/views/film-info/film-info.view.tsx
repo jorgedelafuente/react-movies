@@ -12,7 +12,11 @@ const FilmInfo = ({ filmInfo }: { filmInfo: FilmInfoType }) => {
             }}
          >
             <div>
-               <img src={`${baseImagePath}${filmInfo.poster_path}`} alt="" />
+               <img
+                  loading="lazy"
+                  src={`${baseImagePath}${filmInfo.poster_path}`}
+                  alt=""
+               />
             </div>
 
             <div className="text-content">

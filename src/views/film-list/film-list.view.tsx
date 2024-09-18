@@ -18,6 +18,7 @@ const FilmList = ({ list }: { list: FilmInfoType[] }) => {
                >
                   <Card>
                      <img
+                        loading="lazy"
                         className="aspect-[1/1.5] rounded-md object-cover object-center"
                         src={`${baseImagePath}${item.poster_path}`}
                         alt={item.title}
