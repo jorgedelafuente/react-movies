@@ -11,6 +11,9 @@ const FilmInfo = ({
 }) => {
    return (
       <>
+         <div className="text-title">
+            <span>{filmInfo.title}</span>
+         </div>
          <div
             className="container-bg"
             style={{

@@ -41,3 +41,25 @@
       margin-top: 50px;
    }
 }
+
+.text-title {
+   background-color: black;
+   position: sticky;
+   top: 100px;
+   animation: adjust-header linear both;
+   animation-timeline: scroll();
+   animation-range: 0 200px;
+   padding: 10px;
+   margin: auto;
+   text-align: center;
+}
+
+@keyframes adjust-header {
+   to {
+      color: white;
+      background-color: transparent;
+      font-size: 24px;
+      font-weight: bold;
+      height: 24px;
+   }
+}
