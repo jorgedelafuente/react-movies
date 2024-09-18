@@ -56,6 +56,7 @@ export const fetchFilm = async (filmId: string) => {
 
    return post;
 };
+
 export const fetchFilmVideo = async (filmId: string) => {
    await new Promise((res) => setTimeout(res, 500));
    const post = await axios

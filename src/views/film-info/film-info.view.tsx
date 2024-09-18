@@ -25,7 +25,7 @@ const FilmInfo = ({
                />
             </div>
 
-            <div className="text-content rounded-lg">
+            <div className="text-content rounded-lg p-4">
                <h2>
                   <strong>{filmInfo.title}</strong>
                </h2>
@@ -70,7 +70,7 @@ const FilmInfo = ({
                      id={filmInfo.title}
                      title={filmInfo.title}
                      width="100%"
-                     height="600"
+                     height="800"
                      src={`https://www.youtube.com/embed/${filmTrailer.key}`}
                   />
                </div>
