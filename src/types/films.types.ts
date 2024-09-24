@@ -2,16 +2,17 @@ export type FilmList = { results: FilmInfoType[] };
 
 export type FilmInfoType = {
    title: string;
-   id: string;
+   id: number;
    original_title: string;
    overview: string;
    backdrop_path: string;
    poster_path: string;
    tagline: string;
-   vote_average: string;
    homepage: string;
-   runtime: string;
+   runtime: number;
    release_date: string;
+   vote_average?: number;
+   vote_count?: number;
 };
 
 export type FilmVideoList = { results: FilmVideoType[] };
