@@ -12,7 +12,7 @@ const FilmInfo = ({
    return (
       <>
          <div className="text-title">
-            <span>{filmInfo.title}</span>
+            <span data-testid="film-info-title">{filmInfo.title}</span>
          </div>
          <div
             className="container-bg"

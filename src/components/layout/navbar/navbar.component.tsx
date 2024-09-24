@@ -1,7 +1,13 @@
 import { ReactNode } from 'react';
 import './navbar.styles.css';
 
-const Navbar = ({ children }: { children: ReactNode }) => {
+const Navbar = ({
+   children,
+   title,
+}: {
+   children: ReactNode;
+   title?: string | ReactNode;
+}) => {
    return (
       <div className="navbar border-b-1 sticky top-0 z-10 m-auto flex border-spacing-x-60 flex-col items-center gap-2 bg-black p-4 text-lg">
          <div className="custom-shape-divider-top">
@@ -27,6 +33,7 @@ const Navbar = ({ children }: { children: ReactNode }) => {
                />
             </svg>
          </div>
+         {title}
          {children}
       </div>
    );
