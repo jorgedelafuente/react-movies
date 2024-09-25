@@ -2,7 +2,7 @@ import { ChangeEvent, useState, useEffect } from 'react';
 import { Link } from '@tanstack/react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { searchFilm } from '@/services/films/films';
-import { useDebounce } from '@/utils/hooks/UseDebounce';
+import { useDebounce } from '@/utils/hooks/useDebounce';
 import type { FilmInfoType } from '@/types/films.types';
 import Spinner from '../spinner/Spinner/spinner.component';
 import { sanitizeInput } from '@/utils/sanitizeInput';

@@ -42,7 +42,7 @@ const PopularIndexRoute = PopularIndexImport.update({
 const FilmFilmIdRoute = FilmFilmIdImport.update({
   path: '/film/$filmId',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() => import('./routes/film/$filmId.lazy').then((d) => d.Route))
 
 // Populate the FileRoutesByPath interface
 
