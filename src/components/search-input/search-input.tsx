@@ -5,6 +5,7 @@ import { searchFilm } from '@/services/films/films';
 import { useDebounce } from '@/utils/hooks/UseDebounce';
 import type { FilmInfoType } from '@/types/films.types';
 import Spinner from '../spinner/Spinner/spinner.component';
+import { sanitizeInput } from '@/utils/sanitizeInput';
 
 const SearchInput = () => {
    const [inputValue, setInputValue] = useState<string>('');
@@ -24,7 +25,9 @@ const SearchInput = () => {
    });
 
    const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-      setInputValue(e.target.value);
+      const sanitizedValue = sanitizeInput(e.target.value);
+
+      setInputValue(sanitizedValue);
    };
 
    useEffect(() => {
