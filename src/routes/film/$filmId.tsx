@@ -13,7 +13,7 @@ import { VIDEO_TYPES } from '@/views/film-info/film-info.constants';
 
 export const Route = createFileRoute('/film/$filmId')({
    loader: ({ context: { queryClient }, params: { filmId } }) => {
-      return queryClient.ensureQueryData(filmQueryOptions(filmId));
+      return queryClient.ensureQueryData(filmQueryOptions(Number(filmId)));
    },
    errorComponent: FilmErrorComponent,
    component: FilmComponent,
@@ -22,10 +22,10 @@ export const Route = createFileRoute('/film/$filmId')({
 function FilmComponent() {
    const filmId = Route.useParams().filmId;
    const { data: filmInfo, isLoading } = useSuspenseQuery(
-      filmQueryOptions(filmId)
+      filmQueryOptions(Number(filmId))
    );
    const { data: filmTrailerList } = useSuspenseQuery(
-      filmVideoQueryOptions(filmId)
+      filmVideoQueryOptions(Number(filmId))
    );
 
    const filmTrailer = filmTrailerList.results.filter(

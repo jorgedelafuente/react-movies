@@ -1,4 +1,6 @@
-export type FilmList = { results: FilmInfoType[] };
+export type FilmList = {
+   results: FilmInfoType[];
+};
 
 export type FilmInfoType = {
    title: string;
@@ -15,7 +17,9 @@ export type FilmInfoType = {
    vote_count?: number;
 };
 
-export type FilmVideoList = { results: FilmVideoType[] };
+export type FilmVideoList = {
+   results: FilmVideoType[];
+};
 
 export type FilmVideoType = {
    site: string;

@@ -14,8 +14,8 @@ const paramOptions = {
    popular: () => `/movie/popular${apiKey}&language=en-US&page=1`,
    top_rated: () => `/movie/top_rated${apiKey}&language=en-US&page=1`,
    upcoming: () => `/movie/upcoming${apiKey}&language=en-US&page=1`,
-   movieInfo: (filmId: string) => `movie/${filmId}${apiKey}&language=en-US`,
-   movieVideo: (filmId: string) =>
+   movieInfo: (filmId: number) => `movie/${filmId}${apiKey}&language=en-US`,
+   movieVideo: (filmId: number) =>
       `movie/${filmId}/videos${apiKey}&language=en-US`,
    search: (searchQuery: string) =>
       `/search/movie${apiKey}&query=${searchQuery}`,
@@ -42,7 +42,7 @@ export const fetchUpcoming = async () => {
       .then((res) => res.data.results);
 };
 
-export const fetchFilm = async (filmId: string) => {
+export const fetchFilm = async (filmId: number) => {
    await new Promise((res) => setTimeout(res, 500));
    const post = await axios
       .get<FilmInfoType>(paramOptions.movieInfo(filmId))
@@ -57,7 +57,7 @@ export const fetchFilm = async (filmId: string) => {
    return post;
 };
 
-export const fetchFilmVideo = async (filmId: string) => {
+export const fetchFilmVideo = async (filmId: number) => {
    await new Promise((res) => setTimeout(res, 500));
    const post = await axios
       .get<FilmVideoList>(paramOptions.movieVideo(filmId))

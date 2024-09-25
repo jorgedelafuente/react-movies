@@ -13,7 +13,7 @@ const FilmList = ({ list }: { list: FilmInfoType[] }) => {
                   key={item.id}
                   to="/film/$filmId"
                   params={{
-                     filmId: item.id,
+                     filmId: String(item.id),
                   }}
                >
                   <Card>
