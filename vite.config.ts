@@ -1,4 +1,5 @@
 /// <reference types="vitest/config" />
+
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
@@ -11,8 +12,8 @@ import autoprefixer from 'autoprefixer';
 export default defineConfig({
    plugins: [react(), TanStackRouterVite(), tsconfigPaths()],
    test: {
-      environment: 'jsdom',
       globals: true,
+      environment: 'jsdom',
       setupFiles: './src/tests/setupTests.ts',
       css: true,
    },
