@@ -1,6 +1,7 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render, cleanup, fireEvent } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import userEvent from '@testing-library/user-event';
+
 import SearchInput from './search-input';
 
 afterEach(cleanup);
@@ -16,7 +17,7 @@ describe('Search Input', () => {
       expect(textContent).toBe('');
    });
 
-   it('search input calls handleEvent when key is typed', () => {
+   it('search input value changes correctly', () => {
       const { getByTestId } = render(
          <QueryClientProvider client={new QueryClient()}>
             <SearchInput />
