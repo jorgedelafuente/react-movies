@@ -5,7 +5,6 @@ import type { FilmInfoType } from '@/types/films.types';
 import { baseImagePath } from '@/services/config';
 
 const FilmList = ({ list }: { list: FilmInfoType[] }) => {
-   console.log('TCL: FilmList -> list', list);
    return (
       <>
          {list.map((item) => {

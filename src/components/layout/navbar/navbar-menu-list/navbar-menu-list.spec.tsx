@@ -18,10 +18,13 @@ const router = createRouter({
 describe('NavbarMenuList', () => {
    it('NavbarMenuList should match snapshot', () => {
       const { container } = render(
-         <QueryClientProvider client={new QueryClient()}>
-            <RouterProvider router={router} defaultComponent={NavbarMenuList} />
-         </QueryClientProvider>
+         <RouterProvider router={router} defaultComponent={NavbarMenuList} />
       );
+      // const { container } = render(
+      //    <QueryClientProvider client={new QueryClient()}>
+      //       <RouterProvider router={router} defaultComponent={NavbarMenuList} />
+      //    </QueryClientProvider>
+      // );
       expect(container).toMatchSnapshot();
    });
 });
