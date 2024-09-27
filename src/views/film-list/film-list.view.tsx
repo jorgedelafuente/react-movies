@@ -1,10 +1,11 @@
 import { Link } from '@tanstack/react-router';
 
-import Card from '@/components/card/card.component';
+import Card from '@/components/atoms/card/card.component';
 import type { FilmInfoType } from '@/types/films.types';
 import { baseImagePath } from '@/services/config';
 
 const FilmList = ({ list }: { list: FilmInfoType[] }) => {
+   console.log('TCL: FilmList -> list', list);
    return (
       <>
          {list.map((item) => {

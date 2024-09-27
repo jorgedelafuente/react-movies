@@ -9,6 +9,8 @@ const FilmInfo = ({
    filmInfo: FilmInfoType;
    filmTrailer?: FilmVideoType;
 }) => {
+   console.log('TCL: filmInfo', filmInfo);
+   console.log('TCL: filmTrailer', filmTrailer);
    return (
       <>
          <div className="text-title">

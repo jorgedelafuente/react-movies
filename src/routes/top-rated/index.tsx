@@ -1,9 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { filmsTopRatedQueryOptions } from '@/services/films/filmsQueryOptions';
-import Spinner from '@/components/spinner/Spinner/spinner.component';
+
 import Container from '@/components/layout/container/container.component';
 import FilmList from '@/views/film-list/film-list.view';
+import Spinner from '@/components/atoms/spinner/Spinner/spinner.component';
 
 export const Route = createFileRoute('/top-rated/')({
    loader: ({ context: { queryClient } }) =>

@@ -11,8 +11,9 @@ import { FilmErrorComponent } from '@/components/layout/error-component/error-co
 import { NotFoundComponent } from '@/components/layout/not-found-component/not-found.component';
 
 import Navbar from '@/components/layout/navbar/navbar.component';
-import NavLink from '@/components/link/navlink.component';
-import SearchInput from '@/components/search-input/search-input';
+
+import SearchInput from '@/components/layout/navbar/search-input/search-input';
+import NavbarMenuList from '@/components/layout/navbar/navbar-menu-list/navbar-menu-list';
 
 export const Route = createRootRouteWithContext<{
    queryClient: QueryClient;
@@ -26,14 +27,8 @@ function RootComponent() {
    return (
       <>
          <Navbar>
-            <div>
-               <NavLink path="/popular" text="Popular" /> |{' '}
-               <NavLink path="/top-rated" text="Top Rated" /> |{' '}
-               <NavLink path="/upcoming" text="Upcoming" />
-            </div>
-            <div>
-               <SearchInput />
-            </div>
+            <NavbarMenuList />
+            <SearchInput />
          </Navbar>
 
          <Outlet />
