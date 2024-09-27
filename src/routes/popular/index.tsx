@@ -2,7 +2,6 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { filmsPopularQueryOptions } from '@/services/films/filmsQueryOptions';
 
-import Container from '@/components/layout/container/container.component';
 import FilmList from '@/views/film-list/film-list.view';
 import Spinner from '@/components/atoms/spinner/Spinner/spinner.component';
 
@@ -17,9 +16,5 @@ function Index() {
       filmsPopularQueryOptions
    );
 
-   return (
-      <Container>
-         {isLoading ? <Spinner /> : <FilmList list={popularFilms} />}
-      </Container>
-   );
+   return <>{isLoading ? <Spinner /> : <FilmList list={popularFilms} />}</>;
 }
