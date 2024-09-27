@@ -5,7 +5,7 @@ const Navbar = ({
    children,
    title,
 }: {
-   children: ReactNode;
+   children?: ReactNode;
    title?: string | ReactNode;
 }) => {
    return (
