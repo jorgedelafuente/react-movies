@@ -1,11 +1,12 @@
 import { ChangeEvent, useState, useEffect } from 'react';
 import { Link } from '@tanstack/react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { searchFilm } from '@/services/films/films';
 import { useDebounce } from '@/utils/useDebounce';
-import type { FilmInfoType } from '@/types/films.types';
-import Spinner from '../spinner/Spinner/spinner.component';
 import { sanitizeInput } from '@/utils/sanitizeInput';
+import type { FilmInfoType } from '@/types/films.types';
+import Spinner from '@/components/atoms/spinner/Spinner/spinner.component';
 
 const SearchInput = () => {
    const [inputValue, setInputValue] = useState<string>('');
@@ -40,7 +41,7 @@ const SearchInput = () => {
    };
 
    return (
-      <>
+      <div>
          <input
             className="w-48 border-2 border-solid border-slate-200 bg-black px-2 placeholder-slate-500 focus:ring-blue-500"
             type="search"
@@ -66,7 +67,7 @@ const SearchInput = () => {
                   </li>
                ))}
          </ol>
-      </>
+      </div>
    );
 };
 
