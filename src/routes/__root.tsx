@@ -7,7 +7,7 @@ import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { QueryClient } from '@tanstack/react-query';
 
-import { FilmErrorComponent } from '@/components/layout/error-component/error-component';
+import { FilmErrorComponent } from '@/components/layout/error-component/error-component.component';
 import { NotFoundComponent } from '@/components/layout/not-found-component/not-found.component';
 
 import Navbar from '@/components/layout/navbar/navbar.component';
