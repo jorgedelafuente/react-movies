@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom/vitest';
+import '../styles/global.css';
 
 import { expect, afterEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
