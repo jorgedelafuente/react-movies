@@ -24,7 +24,6 @@
 }
 
 .text-content {
-   color: whitesmoke;
    display: flex;
    flex-direction: column;
    width: 80%;
@@ -43,7 +42,6 @@
 }
 
 .text-title {
-   background-color: black;
    position: sticky;
    top: 90px;
    animation: adjust-header linear both;
