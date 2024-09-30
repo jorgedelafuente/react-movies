@@ -1,21 +1,21 @@
 .navbar {
-    .custom-shape-divider-top {
-        position: absolute;
-        top: 0px;
-        left: 0;
-        width: 100%;
-        overflow: hidden;
-        line-height: 0;
-    }
+   .custom-shape-divider-top {
+      position: absolute;
+      top: 0px;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+   }
 
-    .custom-shape-divider-top svg {
-        position: relative;
-        display: block;
-        width: calc(168% + 1.3px);
-        height: 24px;
-    }
+   .custom-shape-divider-top svg {
+      position: relative;
+      display: block;
+      width: calc(168% + 1.3px);
+      height: 24px;
+   }
 
-    .custom-shape-divider-top .shape-fill {
-        fill: var(--secondary-background-color);
-    }
+   .custom-shape-divider-top .shape-fill {
+      fill: var(--secondary-background-color);
+   }
 }
