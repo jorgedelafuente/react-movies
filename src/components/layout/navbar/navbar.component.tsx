@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import './navbar.styles.css';
+import './navbar.styles.scss';
 
 const Navbar = ({
    children,
