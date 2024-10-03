@@ -1,15 +1,15 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { render, cleanup, fireEvent, screen } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { TestingQueryWrapper } from '@/tests/test-utils';
 
 import SearchInput from './search-input';
 
 describe('Search Input', () => {
    beforeEach(() => {
       render(
-         <QueryClientProvider client={new QueryClient()}>
+         <TestingQueryWrapper>
             <SearchInput />
-         </QueryClientProvider>
+         </TestingQueryWrapper>
       );
    });
    afterEach(() => {
