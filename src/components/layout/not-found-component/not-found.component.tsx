@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 
 export function NotFoundComponent() {
    return (
-      <div className="p-4">
+      <div className="p-8 text-center">
          <p className="mb-8">404 Page Not Found...</p>
          <button>
             <Link to="/">
