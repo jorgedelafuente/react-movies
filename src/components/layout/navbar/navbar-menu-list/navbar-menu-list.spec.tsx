@@ -1,15 +1,14 @@
 import { render } from '@testing-library/react';
-import NavbarMenuList from './navbar-menu-list';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
-import { QueryClient } from '@tanstack/react-query';
 
+import { createTestQueryClient } from '@/tests/test-utils';
 import { routeTree } from '@/routeTree.gen';
+import NavbarMenuList from './navbar-menu-list';
 
-const queryClient = new QueryClient();
 const router = createRouter({
    routeTree,
    context: {
-      queryClient,
+      queryClient: createTestQueryClient(),
    },
    defaultPreload: 'intent',
    defaultStaleTime: 60000,
