@@ -26,4 +26,10 @@ describe('Search Input', () => {
       fireEvent.change(input, { target: { value: 'Search' } });
       expect(input.value).toBe('Search');
    });
+
+   it('search input does not accept backticks', () => {
+      const input = screen.getByTestId('custom-input') as HTMLInputElement;
+      fireEvent.change(input, { target: { value: '`te`st`' } });
+      expect(input.value).toBe('test');
+   });
 });
