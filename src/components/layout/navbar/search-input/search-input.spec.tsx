@@ -1,7 +1,14 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { render, cleanup, fireEvent, screen } from '@testing-library/react';
-import { TestingQueryWrapper } from '@/tests/test-utils';
+import {
+   render,
+   cleanup,
+   fireEvent,
+   screen,
+   waitFor,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
+import { TestingQueryWrapper } from '@/tests/test-utils';
 import SearchInput from './search-input';
 
 describe('Search Input', () => {
@@ -27,9 +34,11 @@ describe('Search Input', () => {
       expect(input.value).toBe('Search');
    });
 
-   it('search input does not accept backticks', () => {
-      const input = screen.getByTestId('custom-input') as HTMLInputElement;
-      fireEvent.change(input, { target: { value: '`te`st`' } });
-      expect(input.value).toBe('test');
+   it('search input does not accept backticks', async () => {
+      const input = screen.getByRole('searchbox') as HTMLInputElement;
+      userEvent.type(input, '`te`st`');
+      await waitFor(() => {
+         expect(input.value).toBe('test');
+      });
    });
 });
