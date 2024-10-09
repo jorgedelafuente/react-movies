@@ -15,6 +15,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as UpcomingIndexImport } from './routes/upcoming/index'
 import { Route as TopRatedIndexImport } from './routes/top-rated/index'
 import { Route as PopularIndexImport } from './routes/popular/index'
+import { Route as AboutIndexImport } from './routes/about/index'
 import { Route as FilmFilmIdImport } from './routes/film/$filmId'
 
 // Create/Update Routes
@@ -39,6 +40,11 @@ const PopularIndexRoute = PopularIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AboutIndexRoute = AboutIndexImport.update({
+  path: '/about/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const FilmFilmIdRoute = FilmFilmIdImport.update({
   path: '/film/$filmId',
   getParentRoute: () => rootRoute,
@@ -60,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/film/$filmId'
       fullPath: '/film/$filmId'
       preLoaderRoute: typeof FilmFilmIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/about/': {
+      id: '/about/'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutIndexImport
       parentRoute: typeof rootRoute
     }
     '/popular/': {
@@ -91,6 +104,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/film/$filmId': typeof FilmFilmIdRoute
+  '/about': typeof AboutIndexRoute
   '/popular': typeof PopularIndexRoute
   '/top-rated': typeof TopRatedIndexRoute
   '/upcoming': typeof UpcomingIndexRoute
@@ -99,6 +113,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/film/$filmId': typeof FilmFilmIdRoute
+  '/about': typeof AboutIndexRoute
   '/popular': typeof PopularIndexRoute
   '/top-rated': typeof TopRatedIndexRoute
   '/upcoming': typeof UpcomingIndexRoute
@@ -108,6 +123,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/film/$filmId': typeof FilmFilmIdRoute
+  '/about/': typeof AboutIndexRoute
   '/popular/': typeof PopularIndexRoute
   '/top-rated/': typeof TopRatedIndexRoute
   '/upcoming/': typeof UpcomingIndexRoute
@@ -115,13 +131,20 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/film/$filmId' | '/popular' | '/top-rated' | '/upcoming'
+  fullPaths:
+    | '/'
+    | '/film/$filmId'
+    | '/about'
+    | '/popular'
+    | '/top-rated'
+    | '/upcoming'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/film/$filmId' | '/popular' | '/top-rated' | '/upcoming'
+  to: '/' | '/film/$filmId' | '/about' | '/popular' | '/top-rated' | '/upcoming'
   id:
     | '__root__'
     | '/'
     | '/film/$filmId'
+    | '/about/'
     | '/popular/'
     | '/top-rated/'
     | '/upcoming/'
@@ -131,6 +154,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FilmFilmIdRoute: typeof FilmFilmIdRoute
+  AboutIndexRoute: typeof AboutIndexRoute
   PopularIndexRoute: typeof PopularIndexRoute
   TopRatedIndexRoute: typeof TopRatedIndexRoute
   UpcomingIndexRoute: typeof UpcomingIndexRoute
@@ -139,6 +163,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FilmFilmIdRoute: FilmFilmIdRoute,
+  AboutIndexRoute: AboutIndexRoute,
   PopularIndexRoute: PopularIndexRoute,
   TopRatedIndexRoute: TopRatedIndexRoute,
   UpcomingIndexRoute: UpcomingIndexRoute,
@@ -158,6 +183,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/film/$filmId",
+        "/about/",
         "/popular/",
         "/top-rated/",
         "/upcoming/"
@@ -168,6 +194,9 @@ export const routeTree = rootRoute
     },
     "/film/$filmId": {
       "filePath": "film/$filmId.tsx"
+    },
+    "/about/": {
+      "filePath": "about/index.tsx"
     },
     "/popular/": {
       "filePath": "popular/index.tsx"
