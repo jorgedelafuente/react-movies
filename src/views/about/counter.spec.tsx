@@ -1,4 +1,4 @@
-import { prettyDOM, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import Counter from './counter.component';
 
 describe('Counter Component', () => {
@@ -20,7 +20,19 @@ describe('Counter Component', () => {
       expect(screen.getByText('👎 Decrement')).toBeInTheDocument();
    });
 
-   //    it('Increments counter when counter is clicked', () => {});
-   //    it('Decrements counter when counter is clicked', () => {});
-   //    it('', () => {});
+   it('Increments counter when counter is clicked', () => {
+      const { container } = render(<Counter />);
+      const incrementButton = screen.getByText('👍 Increment');
+      fireEvent.click(incrementButton);
+      const countVal = container.querySelector('span');
+      expect(countVal?.textContent).toBe('1');
+   });
+
+   it('Decrements counter when counter is clicked', () => {
+      const { container } = render(<Counter />);
+      const decrementButton = screen.getByText('👎 Decrement');
+      fireEvent.click(decrementButton);
+      const countVal = container.querySelector('span');
+      expect(countVal).toHaveTextContent('-1');
+   });
 });
