@@ -2,25 +2,31 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import Counter from './counter.component';
 
 describe('Counter Component', () => {
-   it('Renders Counter Component Title', () => {
-      render(<Counter />);
+   it('should renders Counter Component Title', () => {
+      const screen = render(<Counter />);
       const title = screen.queryByText(
          'If you enjoyed this app please give us a thumbs up : Current count:'
       );
       expect(title).toBeInTheDocument();
    });
 
-   it('Renders Counter Component Increment', () => {
-      render(<Counter />);
-      expect(screen.getByText('👍 Increment')).toBeInTheDocument();
+   it('should render Increment button', () => {
+      const screen = render(<Counter />);
+      const incrementButton = screen.getByRole('button', {
+         name: '👍 Increment',
+      });
+      expect(incrementButton).toBeInTheDocument();
    });
 
-   it('Renders Counter Component Decrement', () => {
-      render(<Counter />);
-      expect(screen.getByText('👎 Decrement')).toBeInTheDocument();
+   it('should render Decrement button', () => {
+      const screen = render(<Counter />);
+      const decrementButton = screen.getByRole('button', {
+         name: '👎 Decrement',
+      });
+      expect(decrementButton).toBeInTheDocument();
    });
 
-   it('Increments counter when counter is clicked', () => {
+   it('should increments counter when increment is clicked', () => {
       const { container } = render(<Counter />);
       const incrementButton = screen.getByText('👍 Increment');
       fireEvent.click(incrementButton);
@@ -28,11 +34,19 @@ describe('Counter Component', () => {
       expect(countVal?.textContent).toBe('1');
    });
 
-   it('Decrements counter when counter is clicked', () => {
-      const { container } = render(<Counter />);
-      const decrementButton = screen.getByText('👎 Decrement');
+   it('should decrement counter when decrement is clicked', () => {
+      const screen = render(<Counter countValue={0} />);
+      const incrementButton = screen.getByRole('button', {
+         name: '👍 Increment',
+      });
+      const decrementButton = screen.getByRole('button', {
+         name: '👎 Decrement',
+      });
+      const counterValue = screen.container.querySelector('span');
+      fireEvent.click(incrementButton);
+      fireEvent.click(incrementButton);
+      fireEvent.click(incrementButton);
       fireEvent.click(decrementButton);
-      const countVal = container.querySelector('span');
-      expect(countVal).toHaveTextContent('-1');
+      expect(counterValue).toHaveTextContent('2');
    });
 });
