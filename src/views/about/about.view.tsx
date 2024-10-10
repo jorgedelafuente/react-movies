@@ -6,8 +6,8 @@ const About = () => {
          <div className="flex flex-col gap-4 p-4 text-center">
             <h1>About</h1>
 
+            <h3>Tech Stack</h3>
             <p>
-               <h3>Tech Stack</h3>
                Built with React, Typescript, React Query, Tanstack Router,
                Tailwind, CSS
             </p>
