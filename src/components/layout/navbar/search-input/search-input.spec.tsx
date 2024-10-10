@@ -36,7 +36,7 @@ describe('Search Input', () => {
 
    it('search input does not accept backticks', async () => {
       const input = screen.getByRole('searchbox') as HTMLInputElement;
-      userEvent.type(input, '`te`st`');
+      await userEvent.type(input, '`te`st`');
       await waitFor(() => {
          expect(input.value).toBe('test');
       });

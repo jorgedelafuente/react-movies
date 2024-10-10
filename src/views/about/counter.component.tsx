@@ -11,11 +11,22 @@ const Counter = ({ countValue = 0 }) => {
             <span>{count}</span>
          </div>
 
-         <div>
-            <button onClick={decrement}>👎 Decrement</button>
+         <div className="p-4">
+            <button
+               className="rounded border-2 bg-orange-700 p-2"
+               role="button"
+               onClick={decrement}
+            >
+               👎 Decrement
+            </button>
          </div>
-         <div>
-            <button onClick={increment}>👍 Increment</button>
+         <div className="p-4">
+            <button
+               className="rounded border-2 bg-blue-700 p-2"
+               onClick={increment}
+            >
+               👍 Increment
+            </button>
          </div>
       </div>
    );

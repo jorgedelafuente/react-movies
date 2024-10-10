@@ -1,13 +1,18 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+
 import Counter from './counter.component';
 
 describe('Counter Component', () => {
    it('should renders Counter Component Title', () => {
       const screen = render(<Counter />);
-      const title = screen.queryByText(
+      const titleQueryByText = screen.queryByText(
          'If you enjoyed this app please give us a thumbs up : Current count:'
       );
-      expect(title).toBeInTheDocument();
+      const titleGetByText = screen.getByText(
+         /if you enjoyed this app please give us a thumbs up : Current count:/i
+      );
+      expect(titleQueryByText).toBeInTheDocument();
+      expect(titleGetByText).toBeInTheDocument();
    });
 
    it('should render Increment button', () => {
