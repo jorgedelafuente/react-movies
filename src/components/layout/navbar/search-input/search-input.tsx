@@ -50,7 +50,6 @@ const SearchInput = () => {
             name="search-input"
             placeholder="Search"
             onChange={handleOnChange}
-            data-testid="custom-input"
          />
 
          <ol className="absolute w-48 rounded-b-sm border-slate-200 bg-black pb-1 pl-2 pt-1">
