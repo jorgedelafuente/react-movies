@@ -9,7 +9,7 @@ const ThemeToggle = () => {
    useEffect(() => {
       const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
       toggleTheme(THEME_OPTIONS.DARK);
-      prefersDarkMode.addEventListener('change', (e) => {
+      prefersDarkMode.addEventListener('change', () => {
          toggleTheme(THEME_OPTIONS.DARK);
       });
    }, []);
