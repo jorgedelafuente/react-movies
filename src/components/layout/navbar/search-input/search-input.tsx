@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { searchFilm } from '@/services/films/films';
-import { useDebounce } from '@/utils/useDebounce';
+import { useDebounce } from '@/utils/hooks/useDebounce';
 import { sanitizeInput } from '@/utils/sanitizeInput';
 import type { FilmInfoType } from '@/types/films.types';
 import Spinner from '@/components/atoms/spinner/Spinner/spinner.component';
