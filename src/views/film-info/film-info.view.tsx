@@ -1,3 +1,4 @@
+import Container from '@/components/layout/container/container.component';
 import type { FilmInfoType, FilmVideoType } from '@/types/films.types';
 import { baseImagePathPoster, baseImagePath } from '@/services/config';
 import './film-info.styles.scss';
@@ -10,8 +11,8 @@ const FilmInfo = ({
    filmTrailer?: FilmVideoType;
 }) => {
    return (
-      <>
-         <div className="text-title">
+      <Container>
+         <div className="text-title text-copy">
             <span data-testid="film-info-title">{filmInfo.title}</span>
          </div>
          <div
@@ -29,11 +30,11 @@ const FilmInfo = ({
             </div>
 
             <div className="text-content rounded-lg p-4">
-               <h2>
+               <h2 className="mb-3 text-3xl">
                   <strong>{filmInfo.title}</strong>
                </h2>
 
-               <h3>
+               <h3 className="text-2xl">
                   <strong>{filmInfo.tagline}</strong>
                </h3>
 
@@ -79,7 +80,7 @@ const FilmInfo = ({
                </div>
             )}
          </div>
-      </>
+      </Container>
    );
 };
 

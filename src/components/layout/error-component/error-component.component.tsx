@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
-import { ErrorComponent, useRouter } from '@tanstack/react-router';
+import {
+   ErrorComponent as RouterErrorComponent,
+   useRouter,
+} from '@tanstack/react-router';
 import { useQueryErrorResetBoundary } from '@tanstack/react-query';
 import type { ErrorComponentProps } from '@tanstack/react-router';
 
 import { FilmNotFoundError } from '@/services/films/films';
+import Container from '../container/container.component';
 
-export function FilmErrorComponent({ error }: ErrorComponentProps) {
+export function ErrorComponent({ error }: ErrorComponentProps) {
    const router = useRouter();
    if (error instanceof FilmNotFoundError) {
       return <div>{error.message}</div>;
@@ -17,15 +21,18 @@ export function FilmErrorComponent({ error }: ErrorComponentProps) {
    }, [queryErrorResetBoundary]);
 
    return (
-      <div>
+      <Container>
+         <p className="text-copy mb-8 p-4">Error...</p>
          <button
             onClick={() => {
                router.invalidate();
             }}
          >
-            retry
+            <span className="text-copy rounded-lg border-2 border-solid border-blue-700 p-4 hover:bg-blue-900 hover:text-slate-300">
+               Retry
+            </span>
          </button>
-         <ErrorComponent error={error} />
-      </div>
+         <RouterErrorComponent error={error} />
+      </Container>
    );
 }

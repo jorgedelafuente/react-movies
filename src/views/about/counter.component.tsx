@@ -8,7 +8,7 @@ const Counter = ({ countValue = 0 }) => {
       <div className="flex-col border p-4 text-center">
          <div>
             If you enjoyed this app please give us a thumbs up : Current count:
-            <span>{count}</span>
+            <span className="p-2 font-bold text-gray-100">{count}</span>
          </div>
 
          <div className="p-4">

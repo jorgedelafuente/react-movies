@@ -1,4 +1,8 @@
 import { ReactNode } from 'react';
+import ThemeToggle from './theme-toggle/theme-toggle.component';
+import { THEME_OPTIONS } from '@/types/theme.types';
+import { useTheme } from '@/utils/hooks/useTheme';
+
 import './navbar.styles.scss';
 
 const Navbar = ({
@@ -8,8 +12,11 @@ const Navbar = ({
    children?: ReactNode;
    title?: string | ReactNode;
 }) => {
+   const theme = useTheme((state) => state.theme);
    return (
-      <div className="navbar border-b-1 sticky top-0 z-10 m-auto flex border-spacing-x-60 flex-col items-center gap-2 bg-black p-4 text-lg">
+      <div
+         className={`${theme === THEME_OPTIONS.DARK ? 'dark' : null} navbar sticky top-0 z-10 m-auto flex flex-col items-center gap-2 border-b-2 border-solid border-secondary-background-color bg-primary-background-color p-4 text-lg`}
+      >
          <div className="custom-shape-divider-top">
             <svg
                data-name="Layer 1"
@@ -32,6 +39,9 @@ const Navbar = ({
                   className="shape-fill"
                />
             </svg>
+         </div>
+         <div className="absolute right-2 pt-9 md:pt-0">
+            <ThemeToggle />
          </div>
          {title}
          {children}

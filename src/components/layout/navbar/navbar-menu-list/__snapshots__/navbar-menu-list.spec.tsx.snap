@@ -2,9 +2,20 @@
 
 exports[`NavbarMenuList > NavbarMenuList should match snapshot 1`] = `
 <div>
-  <div>
+  <div
+    class="dark bg-neutral flex min-h-screen flex-col text-center"
+  >
+    <p
+      class="text-copy mb-8 p-4"
+    >
+      Error...
+    </p>
     <button>
-      retry
+      <span
+        class="text-copy rounded-lg border-2 border-solid border-blue-700 p-4 hover:bg-blue-900 hover:text-slate-300"
+      >
+        Retry
+      </span>
     </button>
     <div
       style="padding: .5rem; max-width: 100%;"

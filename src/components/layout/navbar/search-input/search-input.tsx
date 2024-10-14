@@ -43,7 +43,7 @@ const SearchInput = () => {
    return (
       <div>
          <input
-            className="w-48 border-2 border-solid border-slate-200 bg-black px-2 placeholder-slate-500 focus:ring-blue-500"
+            className="bg-neutral text-copy placeholder-text-copy w-48 border-2 border-solid border-secondary-background-color px-2"
             type="search"
             id="search-input"
             value={inputValue}
@@ -52,20 +52,22 @@ const SearchInput = () => {
             onChange={handleOnChange}
          />
 
-         <ol className="absolute w-48 rounded-b-sm border-slate-200 bg-black pb-1 pl-2 pt-1">
-            {isPending && debouncedValue && <Spinner />}
+         {inputValue && debouncedValue ? (
+            <ol className="bg-neutral text-copy border-bold absolute w-48 rounded-b-sm pb-1 pl-2 pt-1">
+               {isPending && debouncedValue && <Spinner />}
 
-            {debouncedValue &&
-               searchInputList?.map((item: FilmInfoType) => (
-                  <li className="" key={item.id} onClick={resetSearchQuery}>
-                     <Link to={`/film/${item.id}`}>
-                        <span className="text-sm text-slate-100 hover:underline">
-                           * {item.title}
-                        </span>
-                     </Link>
-                  </li>
-               ))}
-         </ol>
+               {debouncedValue &&
+                  searchInputList?.map((item: FilmInfoType) => (
+                     <li className="" key={item.id} onClick={resetSearchQuery}>
+                        <Link to={`/film/${item.id}`}>
+                           <span className="text-copy text-sm hover:underline">
+                              * {item.title}
+                           </span>
+                        </Link>
+                     </li>
+                  ))}
+            </ol>
+         ) : null}
       </div>
    );
 };
