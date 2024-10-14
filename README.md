@@ -22,6 +22,7 @@ Tech Stack
 
     React
     Typescript
+    Zustand
     Axios
     Tailwind CSS
     TanStack Router
