@@ -1,13 +1,13 @@
 import { Link } from '@tanstack/react-router';
 
-import Container from '@/components/layout/container/container.component';
+import FlexContainer from '@/components/layout/container/flex-container.component';
 import Card from '@/components/atoms/card/card.component';
 import type { FilmInfoType } from '@/types/films.types';
 import { baseImagePath } from '@/services/config';
 
 const FilmList = ({ list }: { list: FilmInfoType[] }) => {
    return (
-      <Container>
+      <FlexContainer>
          {list.map((item) => {
             return (
                <Link
@@ -33,7 +33,7 @@ const FilmList = ({ list }: { list: FilmInfoType[] }) => {
                </Link>
             );
          })}
-      </Container>
+      </FlexContainer>
    );
 };
 
