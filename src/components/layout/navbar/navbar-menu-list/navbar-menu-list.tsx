@@ -4,9 +4,9 @@ const NavbarMenuList = () => {
    return (
       <div>
          <NavLink path="/popular" text="Popular" />
-         <span className="text-copy p-1">|</span>
+         <span className="p-1 text-copy">|</span>
          <NavLink path="/top-rated" text="Top Rated" />
-         <span className="text-copy p-1">|</span>
+         <span className="p-1 text-copy">|</span>
          <NavLink path="/upcoming" text="Upcoming" />
       </div>
    );
