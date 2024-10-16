@@ -19,16 +19,16 @@ describe('Search Input', () => {
    });
 
    it('search input value changes correctly', () => {
-      const input = screen.getByPlaceholderText(/search/i) as HTMLInputElement;
+      const input = screen.getByPlaceholderText(/search/i);
       fireEvent.change(input, { target: { value: 'user input' } });
-      expect(input.value).toBe('user input');
+      expect(input).toHaveValue('user input');
    });
 
    it('search input does not accept backticks', async () => {
-      const input = screen.getByRole('searchbox') as HTMLInputElement;
+      const input = screen.getByRole('searchbox');
       await userEvent.type(input, '`te`st`');
       await waitFor(() => {
-         expect(input.value).toBe('test');
+         expect(input).toHaveValue('test');
       });
    });
 });

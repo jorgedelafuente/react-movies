@@ -9,9 +9,9 @@ export type FilmInfoType = {
    overview: string;
    backdrop_path: string;
    poster_path: string;
-   tagline: string;
-   homepage: string;
-   runtime: number;
+   tagline?: string;
+   homepage?: string;
+   runtime?: number;
    release_date: string;
    vote_average?: number;
    vote_count?: number;
