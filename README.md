@@ -29,5 +29,8 @@ Tech Stack
     Tanstack React Query
     Prettier
     Eslint
+    React Testing Library
+    Playwright
+    Vitetest
     Vite
     Vercel
