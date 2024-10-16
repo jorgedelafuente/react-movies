@@ -31,6 +31,7 @@ Tech Stack
     Eslint
     React Testing Library
     Playwright
+    Msw
     Vitetest
     Vite
     Vercel
