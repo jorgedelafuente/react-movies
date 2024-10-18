@@ -17,9 +17,7 @@ export default defineConfig({
       setupFiles: './src/tests/setupTests.ts',
       css: true,
       coverage: {
-         reporter: ['html'],
          provider: 'istanbul',
-         reportsDirectory: '.src/tests/coverage',
       },
    },
    resolve: {
