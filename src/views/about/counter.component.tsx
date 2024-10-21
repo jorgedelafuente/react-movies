@@ -1,9 +1,19 @@
 import { useState } from 'react';
 
-const Counter = ({ countValue = 0 }) => {
-   const [count, setCount] = useState<number>(countValue);
+export const useCounterHook = (initialCountValue = 0) => {
+   const [count, setCount] = useState<number>(initialCountValue);
    const increment = () => setCount((prevCount) => prevCount + 1);
    const decrement = () => setCount((prevCount) => prevCount - 1);
+
+   return {
+      count,
+      decrement,
+      increment,
+   };
+};
+
+const Counter = ({ countValue = 0 }) => {
+   const { count, increment, decrement } = useCounterHook(countValue);
    return (
       <div className="flex-col border p-4 text-center">
          <div>
