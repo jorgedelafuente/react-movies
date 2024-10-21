@@ -1,6 +1,12 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import {
+   fireEvent,
+   render,
+   screen,
+   act,
+   renderHook,
+} from '@testing-library/react';
 
-import Counter from './counter.component';
+import Counter, { useCounterHook } from './counter.component';
 
 describe('Counter Component', () => {
    it('should renders Counter Component Title', () => {
@@ -53,5 +59,30 @@ describe('Counter Component', () => {
       fireEvent.click(incrementButton);
       fireEvent.click(decrementButton);
       expect(counterValue).toHaveTextContent('2');
+   });
+});
+
+describe('Test Custom Hook', async () => {
+   it('should render initial count', () => {
+      const { result } = renderHook(() => useCounterHook(1));
+      expect(result.current.count).toBe(1);
+   });
+   it('should increment', async () => {
+      const { result } = renderHook(() => useCounterHook(1));
+      await act(async () => {
+         result.current.increment();
+         result.current.increment();
+         result.current.increment();
+         result.current.increment();
+      });
+      expect(result.current.count).toBe(5);
+   });
+   it('should decrement', async () => {
+      const { result } = renderHook(() => useCounterHook(1));
+      await act(async () => {
+         result.current.decrement();
+         result.current.decrement();
+      });
+      expect(result.current.count).toBe(-1);
    });
 });
