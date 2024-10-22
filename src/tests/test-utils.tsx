@@ -1,4 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { createRouter } from '@tanstack/react-router';
+import { routeTree } from '@/routeTree.gen';
+
 import { render } from '@testing-library/react';
 
 export const createTestQueryClient = () => {
@@ -25,3 +28,14 @@ export const renderWithQueryContext = (
    );
    return render(ui, { wrapper: Wrapper, ...options });
 };
+
+const queryClient = new QueryClient();
+
+export const router = createRouter({
+   routeTree,
+   context: {
+      queryClient,
+   },
+   defaultPreload: 'intent',
+   defaultStaleTime: 60000,
+});

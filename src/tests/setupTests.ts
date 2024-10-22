@@ -27,15 +27,6 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 export const handlers = [
-   // http.get('*/react-query', (req, res, ctx) => {
-   //    return res(
-   //       ctx.status(200),
-   //       ctx.json({
-   //          name: 'mocked-react-query',
-   //       })
-   //    );
-   // }),
-
    http.get('/user', async () => {
       return HttpResponse.json({
          id: '15d42a4d-1948-4de4-ba78-b8a893feaf45',
