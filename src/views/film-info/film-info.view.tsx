@@ -29,7 +29,7 @@ const FilmInfo = ({
                />
             </div>
 
-            <div className="text-content rounded-lg p-4">
+            <div className="text-content rounded-lg p-4 text-copy">
                <h2 className="mb-3 text-3xl">
                   <strong>{filmInfo.title}</strong>
                </h2>
