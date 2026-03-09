@@ -31,3 +31,6 @@ project.md
 /blob-report/
 /playwright/.cache/
 coverage
+
+# Playwright
+/playwright/.auth/
