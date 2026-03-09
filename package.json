@@ -12,10 +12,7 @@
       "test": "vitest ",
       "test:silent": "vitest --silent",
       "test:ui": "vitest --ui",
-      "coverage": "vitest run --coverage",
-      "playwright": "npx playwright test",
-      "playwright:ui": "npx playwright test --ui",
-      "playwright:debug": "npx playwright test --debug"
+      "coverage": "vitest run --coverage"
    },
    "dependencies": {
       "@tanstack/react-query": "5.55.4",
@@ -29,7 +26,6 @@
    },
    "devDependencies": {
       "@eslint/js": "10.0.1",
-      "@playwright/test": "1.52.0",
       "@tanstack/eslint-plugin-query": "5.53.0",
       "@tanstack/router-devtools": "1.57.8",
       "@tanstack/router-plugin": "1.57.8",
