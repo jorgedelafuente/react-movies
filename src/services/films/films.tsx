@@ -8,7 +8,7 @@ import type {
 export class FilmNotFoundError extends Error {}
 
 const apiKey = import.meta.env.VITE_APIKEY;
-axios.defaults.baseURL = ' https://api.themoviedb.org/3';
+axios.defaults.baseURL = 'https://api.themoviedb.org/3';
 
 const paramOptions = {
    popular: () => `/movie/popular${apiKey}&language=en-US&page=1`,
