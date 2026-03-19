@@ -18,7 +18,7 @@ const paramOptions = {
    movieVideo: (filmId: number) =>
       `movie/${filmId}/videos${apiKey}&language=en-US`,
    search: (searchQuery: string) =>
-      `/search/movie${apiKey}&query=${searchQuery}`,
+      `/search/movie${apiKey}&query=${encodeURIComponent(searchQuery)}`,
 };
 
 export const fetchPopularFilms = async () => {
