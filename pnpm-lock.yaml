@@ -31,8 +31,8 @@ importers:
         specifier: 0.5.1
         version: 0.5.1
       varlock:
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: ^0.6.0
+        version: 0.6.0
       vite-tsconfig-paths:
         specifier: 5.0.1
         version: 5.0.1(typescript@5.5.3)(vite@7.3.1(@types/node@22.7.5)(jiti@1.21.7)(sass-embedded@1.79.4)(tsx@4.21.0)(yaml@2.8.2))
@@ -85,6 +85,9 @@ importers:
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.57.1
         version: 8.57.1(@typescript-eslint/parser@8.57.1(eslint@10.0.3(jiti@1.21.7))(typescript@5.5.3))(eslint@10.0.3(jiti@1.21.7))(typescript@5.5.3)
+      '@varlock/vite-integration':
+        specifier: ^0.2.6
+        version: 0.2.6(varlock@0.6.0)(vite@7.3.1(@types/node@22.7.5)(jiti@1.21.7)(sass-embedded@1.79.4)(tsx@4.21.0)(yaml@2.8.2))
       '@vitejs/plugin-react-swc':
         specifier: 3.5.0
         version: 3.5.0(vite@7.3.1(@types/node@22.7.5)(jiti@1.21.7)(sass-embedded@1.79.4)(tsx@4.21.0)(yaml@2.8.2))
@@ -1097,6 +1100,13 @@ packages:
   '@typescript-eslint/visitor-keys@8.57.1':
     resolution: {integrity: sha512-YWnmJkXbofiz9KbnbbwuA2rpGkFPLbAIetcCNO6mJ8gdhdZ/v7WDXsoGFAJuM6ikUFKTlSQnjWnVO4ux+UzS6A==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@varlock/vite-integration@0.2.6':
+    resolution: {integrity: sha512-IvAjojtCh/h3RjPdom313wmwAtDVFvpL511RWj/HXIhyTELp1s0wnocktjBHQUJtb/fmA+UYP/qBGmZQwlwRYg==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      varlock: ^0.6.0
+      vite: '>=5'
 
   '@vitejs/plugin-react-swc@3.5.0':
     resolution: {integrity: sha512-1PrOvAaDpqlCV+Up8RkAh9qaiUjoDUcjtttyhXDKw53XA6Ve16SOp6cCOpRs8Dj8DqUQs6eTW5YkLcLJjrXAig==}
@@ -2906,8 +2916,8 @@ packages:
   varint@6.0.0:
     resolution: {integrity: sha512-cXEIW6cfr15lFv563k4GuVuW/fiwjknytD37jIOLSdSWuOI6WnO/oKwmP2FQTU2l01LP8/M5TSAJpzUaGe3uWg==}
 
-  varlock@0.5.0:
-    resolution: {integrity: sha512-jfFNdzK+pznQWyp6eHv7X3iImEmNG7KaGZL2sQJxTlifxRtIwgNknLKmds8zPUhUMdcCybhJy52lewgscu8pkg==}
+  varlock@0.6.0:
+    resolution: {integrity: sha512-vMRrr73IPvVIpSwavbPMRdFhhgAtTBLYQxBwFT22REGM7+eBblogP6tsBXOLDlhomvvqL2229l3vrC7IbNTs8g==}
     engines: {bun: '>=1.3.3', node: '>=22'}
     hasBin: true
 
@@ -3997,6 +4007,11 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.57.1
       eslint-visitor-keys: 5.0.1
+
+  '@varlock/vite-integration@0.2.6(varlock@0.6.0)(vite@7.3.1(@types/node@22.7.5)(jiti@1.21.7)(sass-embedded@1.79.4)(tsx@4.21.0)(yaml@2.8.2))':
+    dependencies:
+      varlock: 0.6.0
+      vite: 7.3.1(@types/node@22.7.5)(jiti@1.21.7)(sass-embedded@1.79.4)(tsx@4.21.0)(yaml@2.8.2)
 
   '@vitejs/plugin-react-swc@3.5.0(vite@7.3.1(@types/node@22.7.5)(jiti@1.21.7)(sass-embedded@1.79.4)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
@@ -5990,7 +6005,7 @@ snapshots:
 
   varint@6.0.0: {}
 
-  varlock@0.5.0: {}
+  varlock@0.6.0: {}
 
   vite-tsconfig-paths@5.0.1(typescript@5.5.3)(vite@7.3.1(@types/node@22.7.5)(jiti@1.21.7)(sass-embedded@1.79.4)(tsx@4.21.0)(yaml@2.8.2)):
     dependencies:
