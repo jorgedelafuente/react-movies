@@ -9,10 +9,11 @@ import { configDefaults } from 'vitest/config';
 import { resolve } from 'path';
 import tailwindcss from 'tailwindcss';
 import autoprefixer from 'autoprefixer';
+import { varlockVitePlugin } from '@varlock/vite-integration';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-   plugins: [react(), TanStackRouterVite(), tsconfigPaths()],
+   plugins: [varlockVitePlugin(), react(), TanStackRouterVite(), tsconfigPaths()],
    test: {
       globals: true,
       environment: 'jsdom',
