@@ -14,6 +14,8 @@ import Navbar from '@/components/layout/navbar/navbar.component';
 
 import SearchInput from '@/components/layout/navbar/search-input/search-input';
 import NavbarMenuList from '@/components/layout/navbar/navbar-menu-list/navbar-menu-list';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/services/supabase/supabaseClient';
 
 export const Route = createRootRouteWithContext<{
    queryClient: QueryClient;
@@ -24,6 +26,19 @@ export const Route = createRootRouteWithContext<{
 });
 
 function RootComponent() {
+   const [data, setData] = useState(null);
+   console.log('🚀 ~ RootComponent ~ data:', data);
+
+   useEffect(() => {
+      const fetchData = async () => {
+         const { data, error } = await supabase.from('your_table').select('*');
+         if (error) console.error(error);
+         else setData(data as any);
+      };
+
+      fetchData();
+   }, []);
+
    return (
       <>
          <Navbar>
