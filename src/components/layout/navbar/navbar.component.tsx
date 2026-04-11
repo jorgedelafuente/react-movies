@@ -5,13 +5,12 @@ import { useTheme } from '@/utils/hooks/useTheme';
 
 import './navbar.styles.scss';
 
-const Navbar = ({
-   children,
-   title,
-}: {
+type NavbarProps = {
    children?: ReactNode;
    title?: string | ReactNode;
-}) => {
+};
+
+const Navbar = ({ children, title }: NavbarProps) => {
    const theme = useTheme((state) => state.theme);
    return (
       <div
