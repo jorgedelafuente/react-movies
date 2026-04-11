@@ -31,7 +31,7 @@ function RootComponent() {
 
    useEffect(() => {
       const fetchData = async () => {
-         const { data, error } = await supabase.from('your_table').select('*');
+         const { data, error } = await supabase.from('hello').select('*');
          if (error) console.error(error);
          else setData(data as any);
       };
