@@ -1,16 +1,12 @@
-import { ReactNode } from 'react';
-import ThemeToggle from './navbar-icons/theme-toggle-icon/theme-toggle-icon.component';
+import ThemeToggleIcon from './navbar-icons/theme-toggle-icon/theme-toggle-icon.component';
 import { THEME_OPTIONS } from '@/types/theme.types';
 import { useTheme } from '@/utils/hooks/useTheme';
 
 import './navbar.styles.scss';
+import NavbarMenuList from './navbar-menu-list/navbar-menu-list';
+import SearchInput from './search-input/search-input.component';
 
-type NavbarProps = {
-   children?: ReactNode;
-   title?: string | ReactNode;
-};
-
-const Navbar = ({ children, title }: NavbarProps) => {
+const Navbar = () => {
    const theme = useTheme((state) => state.theme);
    return (
       <div
@@ -40,10 +36,10 @@ const Navbar = ({ children, title }: NavbarProps) => {
             </svg>
          </div>
          <div className="absolute right-2 flex items-center gap-1 pt-9 md:pt-0">
-            <ThemeToggle />
+            <ThemeToggleIcon />
          </div>
-         {title}
-         {children}
+         <NavbarMenuList />
+         <SearchInput />
       </div>
    );
 };

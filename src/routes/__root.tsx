@@ -1,5 +1,3 @@
-// import { TanStackRouterDevtools } from '@tanstack/router-devtools';
-// import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
    Outlet,
    createRootRouteWithContext,
@@ -13,9 +11,6 @@ import { NotFoundComponent } from '@/components/layout/not-found-component/not-f
 import Navbar from '@/components/layout/navbar/navbar.component';
 import AuthProvider from '@/components/providers/auth-provider.component';
 
-import SearchInput from '@/components/layout/navbar/search-input/search-input.component';
-import NavbarMenuList from '@/components/layout/navbar/navbar-menu-list/navbar-menu-list';
-
 export const Route = createRootRouteWithContext<{
    queryClient: QueryClient;
 }>()({
@@ -27,15 +22,8 @@ export const Route = createRootRouteWithContext<{
 function RootComponent() {
    return (
       <AuthProvider>
-         <Navbar>
-            <NavbarMenuList />
-            <SearchInput />
-         </Navbar>
-
+         <Navbar />
          <Outlet />
-
-         {/* <ReactQueryDevtools buttonPosition="bottom-left" /> */}
-         {/* <TanStackRouterDevtools position="bottom-right" /> */}
       </AuthProvider>
    );
 }
