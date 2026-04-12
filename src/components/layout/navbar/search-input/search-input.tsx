@@ -6,7 +6,8 @@ import { searchFilm } from '@/services/films/films';
 import { useDebounce } from '@/utils/hooks/useDebounce';
 import { sanitizeInput } from '@/utils/sanitizeInput';
 import type { FilmInfoType } from '@/types/films.types';
-import Spinner from '@/components/atoms/spinner/Spinner/spinner.component';
+import Spinner from '@/components/atoms/spinner/spinner.component';
+import { Input } from '@/components/atoms/input/input.component';
 
 const SearchInput = () => {
    const [inputValue, setInputValue] = useState<string>('');
@@ -42,15 +43,7 @@ const SearchInput = () => {
 
    return (
       <div>
-         <input
-            className="placeholder-text-copy w-48 border-2 border-solid border-secondary-background-color bg-neutral px-2 text-copy"
-            type="search"
-            id="search-input"
-            value={inputValue}
-            name="search-input"
-            placeholder="Search"
-            onChange={handleOnChange}
-         />
+         <Input inputValue={inputValue} handleOnChange={handleOnChange} />
 
          {inputValue && debouncedValue ? (
             <ol className="absolute w-48 rounded-b-sm border-bold bg-neutral pb-1 pl-2 pt-1 text-copy">
