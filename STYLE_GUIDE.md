@@ -6,6 +6,7 @@
 3. [Tailwind Guidelines](#tailwind-guidelines)
 4. [Component Styling](#component-styling)
 5. [File Structure](#file-structure)
+6. [Linting & Code Quality](#linting--code-quality)
 
 ---
 
@@ -443,6 +444,296 @@ When touching existing code:
 2. **Extract to CSS if needed** - Only when complexity warrants it
 3. **Use semantic tokens** - Never hard-code colors
 4. **Test dark mode** - Verify component in both themes
+
+---
+
+## Linting & Code Quality
+
+### Overview
+The project uses a **comprehensive toolchain** for code quality:
+- **ESLint v9** - Linting (TypeScript, React, Accessibility)
+- **Prettier v3** - Code formatting
+- **PostCSS v8** - CSS processing (required for Tailwind)
+- **TypeScript v6** - Type checking
+
+### Running Tools
+
+```bash
+# ESLint - Find code issues
+pnpm lint
+
+# Prettier - Format all files
+pnpm format
+
+# TypeScript - Type check
+tsc --noEmit
+
+# Build (includes type check)
+pnpm build
+```
+
+---
+
+### ESLint Configuration
+
+**Location:** `eslint.config.js` (Flat Config format)
+**Version:** ESLint v9.39.4
+
+#### Plugins Enabled
+
+1. **TypeScript ESLint** - Type-aware linting
+2. **React Hooks** - Hooks rules
+3. **React Refresh** - Fast refresh validation
+4. **jsx-a11y** - Accessibility (axe-core style)
+5. **TanStack Query** - Query hooks best practices
+
+#### Key Rules
+
+**TypeScript:**
+- `@typescript-eslint/no-unused-vars`: Warn (allow `_` prefix)
+- `@typescript-eslint/no-explicit-any`: Warn (prefer specific types)
+- `@typescript-eslint/no-unused-expressions`: Error (except short-circuit/ternary)
+
+**React Hooks:**
+- `react-hooks/rules-of-hooks`: Error (hooks must be called consistently)
+- `react-hooks/exhaustive-deps`: Warn (useEffect dependencies)
+
+**Accessibility (30+ rules):**
+- ✅ `alt-text`: Error - Images must have alt text
+- ✅ `aria-props`: Error - Valid ARIA attributes
+- ✅ `label-has-associated-control`: Error - Form labels required
+- ✅ `click-events-have-key-events`: Warn - Keyboard accessibility
+- ✅ `interactive-supports-focus`: Warn - Focusable interactive elements
+- ⚠️ `no-autofocus`: Warn (allowed but discouraged)
+- ⚠️ `tabindex-no-positive`: Warn (use 0 or -1)
+
+**See `eslint.config.js` for complete rule list**
+
+---
+
+### Common Linting Issues & Fixes
+
+#### 1. Missing Dependencies in useEffect
+```tsx
+// ❌ BAD - Missing dependency warning
+useEffect(() => {
+  fetchData();
+}, []); // 'fetchData' is missing
+
+// ✅ GOOD - Include all dependencies
+useEffect(() => {
+  fetchData();
+}, [fetchData]);
+
+// ✅ GOOD - Or wrap in useCallback
+const fetchData = useCallback(() => { ... }, []);
+useEffect(() => {
+  fetchData();
+}, [fetchData]);
+```
+
+#### 2. Accessibility - Click Without Keyboard
+```tsx
+// ❌ BAD - Click without keyboard event
+<div onClick={handleClick}>Click me</div>
+
+// ✅ GOOD - Use button
+<button onClick={handleClick}>Click me</button>
+
+// ✅ GOOD - Add keyboard handler + ARIA
+<div
+  onClick={handleClick}
+  onKeyDown={(e) => e.key === 'Enter' && handleClick()}
+  role="button"
+  tabIndex={0}
+>
+  Click me
+</div>
+```
+
+#### 3. Positive tabIndex Values
+```tsx
+// ❌ BAD - Positive tabindex disrupts natural tab order
+<button tabIndex={1}>First</button>
+<button tabIndex={2}>Second</button>
+
+// ✅ GOOD - Let natural tab order work
+<button>First</button>
+<button>Second</button>
+
+// ✅ GOOD - Use 0 to include in natural order
+<div role="button" tabIndex={0}>Interactive</div>
+
+// ✅ GOOD - Use -1 to exclude from tab order
+<div tabIndex={-1}>Not tabbable</div>
+```
+
+#### 4. Redundant ARIA Roles
+```tsx
+// ❌ BAD - Button already has implicit role="button"
+<button role="button">Click</button>
+
+// ✅ GOOD - Remove redundant role
+<button>Click</button>
+
+// ✅ GOOD - Only add role when changing semantics
+<div role="button" tabIndex={0}>Click</div>
+```
+
+#### 5. React Hooks Called Conditionally
+```tsx
+// ❌ BAD - Hook called after early return
+function Component({ data }) {
+  if (!data) return null; // Early return
+  
+  const [state, setState] = useState(); // ❌ Called conditionally
+  useEffect(() => { ... });             // ❌ Called conditionally
+}
+
+// ✅ GOOD - Hooks before any returns
+function Component({ data }) {
+  const [state, setState] = useState();
+  
+  useEffect(() => {
+    if (data) { ... }
+  }, [data]);
+  
+  if (!data) return null;
+  
+  return <div>{state}</div>;
+}
+```
+
+---
+
+### Prettier Configuration
+
+**Location:** `.prettierrc`
+**Version:** prettier@3.3.3
+
+```json
+{
+  "semi": true,
+  "singleQuote": true,
+  "tabWidth": 3,
+  "trailingComma": "es5",
+  "plugins": ["prettier-plugin-tailwindcss"]
+}
+```
+
+#### Rules Explained
+
+- **`semi: true`** - Always add semicolons
+- **`singleQuote: true`** - Use single quotes for strings
+- **`tabWidth: 3`** - 3 spaces per indentation level
+- **`trailingComma: "es5"`** - Trailing commas where valid in ES5
+- **`prettier-plugin-tailwindcss`** - Auto-sorts Tailwind classes
+
+#### How Tailwind Sorting Works
+
+**Before formatting:**
+```tsx
+<div className="text-white p-4 bg-sky-500 flex rounded-md hover:bg-sky-600">
+```
+
+**After `pnpm format`:**
+```tsx
+<div className="flex rounded-md bg-sky-500 p-4 text-white hover:bg-sky-600">
+```
+
+Classes are sorted according to Tailwind's recommended order.
+
+---
+
+### PostCSS Configuration
+
+**Location:** `vite.config.ts`
+**Version:** postcss@^8.5.8
+
+```ts
+css: {
+   postcss: {
+      plugins: [tailwindcss(), autoprefixer()],
+   },
+},
+```
+
+#### Why PostCSS is Required
+
+1. **Tailwind CSS dependency** - Tailwind requires PostCSS to work
+2. **Processes directives** - Converts `@tailwind base` to actual CSS
+3. **Autoprefixer** - Adds vendor prefixes for browser compatibility
+
+**Cannot be removed** unless you remove Tailwind CSS.
+
+---
+
+### TypeScript Configuration
+
+**Location:** `tsconfig.json`
+**Version:** typescript@6.0.2
+
+```bash
+# Type check without building
+tsc --noEmit
+
+# Type check + build
+pnpm build
+```
+
+#### Integration with ESLint
+
+TypeScript and ESLint work together via `@typescript-eslint`:
+- ESLint catches **logical errors** (unused vars, bad patterns)
+- TypeScript catches **type errors** (wrong types, missing properties)
+
+Both should pass before committing.
+
+---
+
+### Workflow Recommendations
+
+#### Before Committing
+
+```bash
+# 1. Format code
+pnpm format
+
+# 2. Check linting
+pnpm lint
+
+# 3. Check types (happens during build)
+pnpm build
+```
+
+#### Git Pre-commit Hook (Optional)
+
+Consider adding to `.git/hooks/pre-commit`:
+```bash
+#!/bin/sh
+pnpm format
+pnpm lint
+```
+
+Or use **husky** + **lint-staged** for automatic enforcement.
+
+---
+
+### Ignored Files
+
+**ESLint ignores** (`.eslintignore`):
+```
+dist/
+node_modules/
+coverage/
+*.config.js
+*.config.ts
+src/routeTree.gen.ts
+```
+
+**Prettier ignores** (automatic):
+- Same as ESLint
+- Plus: `pnpm-lock.yaml`, `package-lock.json`
 
 ---
 
