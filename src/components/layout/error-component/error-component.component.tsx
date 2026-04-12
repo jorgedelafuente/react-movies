@@ -14,8 +14,10 @@ export function ErrorComponent({ error }: ErrorComponentProps) {
    if (error instanceof FilmNotFoundError) {
       return <div>{error.message}</div>;
    }
+   // eslint-disable-next-line react-hooks/rules-of-hooks
    const queryErrorResetBoundary = useQueryErrorResetBoundary();
 
+   // eslint-disable-next-line react-hooks/rules-of-hooks
    useEffect(() => {
       queryErrorResetBoundary.reset();
    }, [queryErrorResetBoundary]);

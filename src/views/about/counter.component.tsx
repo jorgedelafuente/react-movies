@@ -24,7 +24,6 @@ const Counter = ({ countValue = 0 }) => {
          <div className="p-4">
             <button
                className="rounded border-2 bg-orange-700 p-2"
-               role="button"
                onClick={decrement}
             >
                👎 Decrement

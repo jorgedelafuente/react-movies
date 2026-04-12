@@ -14,7 +14,6 @@
 
 > pnpm dev
 
-
 4.) Visit the deployed app at : https://react-movies-flax.vercel.app/
 
 ###

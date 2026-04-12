@@ -5,7 +5,7 @@ import type {
    FilmVideoList,
 } from '@/types/films.types';
 
-export class FilmNotFoundError extends Error { }
+export class FilmNotFoundError extends Error {}
 
 const apiKey = import.meta.env.VITE_APIKEY;
 axios.defaults.baseURL = 'https://api.themoviedb.org/3';

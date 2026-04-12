@@ -6,7 +6,7 @@ const Container = ({ children }: { children: ReactNode }) => {
    const theme = useTheme((state) => state.theme);
    return (
       <div
-         className={`${theme === THEME_OPTIONS.DARK ? THEME_OPTIONS.DARK : null} bg-neutral flex min-h-screen flex-col text-center`}
+         className={`${theme === THEME_OPTIONS.DARK ? THEME_OPTIONS.DARK : null} flex min-h-screen flex-col bg-neutral text-center`}
       >
          {children}
       </div>
