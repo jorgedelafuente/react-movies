@@ -14,7 +14,7 @@ const ThemeToggleIcon = ({ tabIndex }: { tabIndex?: number }) => {
       prefersDarkMode.addEventListener('change', () => {
          toggleTheme(THEME_OPTIONS.DARK);
       });
-   }, []);
+   }, [toggleTheme]);
 
    const toggleDarkMode = () => {
       if (theme === THEME_OPTIONS.DARK) {
