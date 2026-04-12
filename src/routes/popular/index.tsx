@@ -4,7 +4,7 @@ import { filmsPopularQueryOptions } from '@/services/films/filmsQueryOptions';
 import { ErrorComponent } from '@/components/layout/error-component/error-component.component';
 
 import FilmList from '@/views/film-list/film-list.view';
-import Spinner from '@/components/atoms/spinner/Spinner/spinner.component';
+import Spinner from '@/components/atoms/spinner/spinner.component';
 
 export const Route = createFileRoute('/popular/')({
    loader: ({ context: { queryClient } }) =>

@@ -7,7 +7,7 @@ import {
 } from '@/services/films/filmQueryOptions';
 import { ErrorComponent } from '@/components/layout/error-component/error-component.component';
 
-import Spinner from '@/components/atoms/spinner/Spinner/spinner.component';
+import Spinner from '@/components/atoms/spinner/spinner.component';
 import FilmInfo from '@/views/film-info/film-info.view';
 import { VIDEO_TYPES } from '@/views/film-info/film-info.constants';
 

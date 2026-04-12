@@ -3,7 +3,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { filmsPopularQueryOptions } from '@/services/films/filmsQueryOptions';
 
 import FilmList from '@/views/film-list/film-list.view';
-import Spinner from '@/components/atoms/spinner/Spinner/spinner.component';
+import Spinner from '@/components/atoms/spinner/spinner.component';
 
 export const Route = createFileRoute('/')({
    loader: ({ context: { queryClient } }) =>
