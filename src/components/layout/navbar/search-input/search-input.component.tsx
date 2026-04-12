@@ -43,7 +43,11 @@ const SearchInput = () => {
 
    return (
       <div>
-         <Input inputValue={inputValue} handleOnChange={handleOnChange} />
+         <Input
+            inputValue={inputValue}
+            handleOnChange={handleOnChange}
+            tabIndex={5}
+         />
 
          {inputValue && debouncedValue ? (
             <ol className="absolute w-48 rounded-b-sm border-bold bg-neutral pb-1 pl-2 pt-1 text-copy">
