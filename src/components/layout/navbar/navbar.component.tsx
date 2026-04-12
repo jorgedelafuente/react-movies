@@ -2,10 +2,9 @@ import ThemeToggleIcon from './navbar-icons/theme-toggle-icon/theme-toggle-icon.
 import { THEME_OPTIONS } from '@/types/theme.types';
 import { useTheme } from '@/utils/hooks/useTheme';
 
-import './navbar.styles.scss';
-import NavbarMenuList from './navbar-menu-list/navbar-menu-list';
 import SearchInput from './search-input/search-input.component';
 import NavLink from '@/components/atoms/link/navlink.component';
+import './navbar.styles.scss';
 
 const Navbar = () => {
    const theme = useTheme((state) => state.theme);
