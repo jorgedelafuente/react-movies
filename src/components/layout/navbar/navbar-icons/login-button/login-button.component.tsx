@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/utils/hooks/useAuth';
 import { AUTH_MODAL_MODE } from '@/types/auth.types';
-import UserMenu from '../user-menu/user-menu.component';
+import UserMenu from '../../user-menu/user-menu.component';
 
 const LoginButton = () => {
    const { user, setModalOpen } = useAuth();

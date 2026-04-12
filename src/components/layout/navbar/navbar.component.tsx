@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
-import ThemeToggle from './theme-toggle/theme-toggle.component';
-import LoginButton from './login-button/login-button.component';
+import ThemeToggle from './navbar-icons/theme-toggle/theme-toggle.component';
+import LoginButton from './navbar-icons/login-button/login-button.component';
 import { THEME_OPTIONS } from '@/types/theme.types';
 import { useTheme } from '@/utils/hooks/useTheme';
 
