@@ -8,6 +8,10 @@ jobs:
    test:
       timeout-minutes: 60
       runs-on: ubuntu-latest
+      env:
+         VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+         VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+         VITE_APIKEY: ${{ secrets.VITE_APIKEY }}
       steps:
          - uses: actions/checkout@v4
          - uses: actions/setup-node@v4
