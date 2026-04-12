@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { THEME_OPTIONS } from '@/types/theme.types';
 import { useTheme } from '@/utils/hooks/useTheme';
 
-const ThemeToggleIcon = () => {
+const ThemeToggleIcon = ({ tabIndex }: { tabIndex?: number }) => {
    const theme = useTheme((state) => state.theme);
    const toggleTheme = useTheme((state) => state.toggleTheme);
 
@@ -27,13 +27,17 @@ const ThemeToggleIcon = () => {
    const isDarkMode = theme === THEME_OPTIONS.DARK ? true : false;
 
    return (
-      <div className="< cursor-pointer" role="theme-option">
+      <button
+         className="cursor-pointer"
+         tabIndex={tabIndex}
+         onClick={toggleDarkMode}
+      >
          {isDarkMode ? (
             <LightIcon handleToggle={toggleDarkMode} />
          ) : (
             <DarkIcon handleToggle={toggleDarkMode} />
          )}
-      </div>
+      </button>
    );
 };
 

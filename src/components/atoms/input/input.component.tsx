@@ -1,9 +1,11 @@
 export const Input = ({
    inputValue,
    handleOnChange,
+   tabIndex,
 }: {
    inputValue: string;
    handleOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+   tabIndex?: number;
 }) => {
    return (
       <input
@@ -14,6 +16,7 @@ export const Input = ({
          name="search-input"
          placeholder="Search"
          onChange={handleOnChange}
+         tabIndex={tabIndex}
       />
    );
 };
