@@ -5,6 +5,7 @@ import { useTheme } from '@/utils/hooks/useTheme';
 import './navbar.styles.scss';
 import NavbarMenuList from './navbar-menu-list/navbar-menu-list';
 import SearchInput from './search-input/search-input.component';
+import NavLink from '@/components/atoms/link/navlink.component';
 
 const Navbar = () => {
    const theme = useTheme((state) => state.theme);
@@ -36,9 +37,15 @@ const Navbar = () => {
             </svg>
          </div>
          <div className="absolute right-2 flex items-center gap-1 pt-9 md:pt-0">
-            <ThemeToggleIcon />
+            <ThemeToggleIcon tabIndex={0} />
          </div>
-         <NavbarMenuList />
+         <div>
+            <NavLink path="/popular" text="Popular" tabIndex={1} />
+            <span className="p-1 text-copy">|</span>
+            <NavLink path="/top-rated" text="Top Rated" tabIndex={2} />
+            <span className="p-1 text-copy">|</span>
+            <NavLink path="/upcoming" text="Upcoming" tabIndex={3} />
+         </div>
          <SearchInput />
       </div>
    );
