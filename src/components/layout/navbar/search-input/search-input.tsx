@@ -43,7 +43,7 @@ const SearchInput = () => {
    return (
       <div>
          <input
-            className="bg-neutral text-copy placeholder-text-copy w-48 border-2 border-solid border-secondary-background-color px-2"
+            className="placeholder-text-copy w-48 border-2 border-solid border-secondary-background-color bg-neutral px-2 text-copy"
             type="search"
             id="search-input"
             value={inputValue}
@@ -53,14 +53,14 @@ const SearchInput = () => {
          />
 
          {inputValue && debouncedValue ? (
-            <ol className="bg-neutral text-copy border-bold absolute w-48 rounded-b-sm pb-1 pl-2 pt-1">
+            <ol className="absolute w-48 rounded-b-sm border-bold bg-neutral pb-1 pl-2 pt-1 text-copy">
                {isPending && debouncedValue && <Spinner />}
 
                {debouncedValue &&
                   searchInputList?.map((item: FilmInfoType) => (
                      <li className="" key={item.id} onClick={resetSearchQuery}>
                         <Link to={`/film/${item.id}`}>
-                           <span className="text-copy text-sm hover:underline">
+                           <span className="text-sm text-copy hover:underline">
                               * {item.title}
                            </span>
                         </Link>
