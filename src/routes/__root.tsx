@@ -12,9 +12,8 @@ import { NotFoundComponent } from '@/components/layout/not-found-component/not-f
 
 import Navbar from '@/components/layout/navbar/navbar.component';
 import AuthProvider from '@/components/providers/auth-provider.component';
-import AuthModal from '@/components/layout/auth/auth-modal/auth-modal.component';
 
-import SearchInput from '@/components/layout/navbar/search-input/search-input';
+import SearchInput from '@/components/layout/navbar/search-input/search-input.component';
 import NavbarMenuList from '@/components/layout/navbar/navbar-menu-list/navbar-menu-list';
 
 export const Route = createRootRouteWithContext<{
@@ -34,7 +33,7 @@ function RootComponent() {
          </Navbar>
 
          <Outlet />
-         <AuthModal />
+
          {/* <ReactQueryDevtools buttonPosition="bottom-left" /> */}
          {/* <TanStackRouterDevtools position="bottom-right" /> */}
       </AuthProvider>

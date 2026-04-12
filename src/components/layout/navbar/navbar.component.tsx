@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
-import ThemeToggle from './navbar-icons/theme-toggle/theme-toggle.component';
-import LoginButton from './navbar-icons/login-button/login-button.component';
+import ThemeToggle from './navbar-icons/theme-toggle-icon/theme-toggle-icon.component';
+import AuthToggle from './navbar-icons/auth-toggle-icon/auth-toggle-icon.component';
 import { THEME_OPTIONS } from '@/types/theme.types';
 import { useTheme } from '@/utils/hooks/useTheme';
 
@@ -41,7 +41,7 @@ const Navbar = ({ children, title }: NavbarProps) => {
             </svg>
          </div>
          <div className="absolute right-2 flex items-center gap-1 pt-9 md:pt-0">
-            <LoginButton />
+            <AuthToggle />
             <ThemeToggle />
          </div>
          {title}

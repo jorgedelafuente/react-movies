@@ -3,7 +3,7 @@ import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithQueryContext } from '@/tests/test-utils';
-import SearchInput from './search-input';
+import SearchInput from './search-input.component';
 
 describe('Search Input', () => {
    beforeEach(() => {
