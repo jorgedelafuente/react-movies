@@ -23,9 +23,9 @@ describe('Card Component', () => {
          </Card>
       );
       const card = component.container.querySelector('custom-card');
-      expect(card).toBeVisible;
-      expect(component.getByText('children')).toBeVisible;
-      expect(component.getByText('click me!')).toBeVisible;
+      expect(card).toBeVisible();
+      expect(component.getByText('children')).toBeVisible();
+      expect(component.getByText('click me!')).toBeVisible();
 
       const button = component.getByText('click me!');
       expect(component.getByText('click me!')).toHaveStyle(
