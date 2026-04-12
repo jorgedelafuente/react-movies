@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { THEME_OPTIONS } from '@/types/theme.types';
 import { useTheme } from '@/utils/hooks/useTheme';
 
-const ThemeToggle = () => {
+const ThemeToggleIcon = () => {
    const theme = useTheme((state) => state.theme);
    const toggleTheme = useTheme((state) => state.toggleTheme);
 
@@ -27,14 +27,7 @@ const ThemeToggle = () => {
    const isDarkMode = theme === THEME_OPTIONS.DARK ? true : false;
 
    return (
-      <div
-         className="< cursor-pointer"
-         id="headlessui-listbox-option-:r4:"
-         role="theme-option"
-         aria-selected="true"
-         data-headlessui-state="selected"
-         data-selected=""
-      >
+      <div className="< cursor-pointer" role="theme-option">
          {isDarkMode ? (
             <LightIcon handleToggle={toggleDarkMode} />
          ) : (
@@ -44,7 +37,7 @@ const ThemeToggle = () => {
    );
 };
 
-export default ThemeToggle;
+export default ThemeToggleIcon;
 
 const DarkIcon = ({ handleToggle }: { handleToggle: () => void }) => {
    return (
