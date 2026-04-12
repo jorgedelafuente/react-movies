@@ -7,7 +7,9 @@ const ThemeToggle = () => {
    const toggleTheme = useTheme((state) => state.toggleTheme);
 
    useEffect(() => {
-      const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+      const prefersDarkMode = globalThis.matchMedia(
+         '(prefers-color-scheme: dark)'
+      );
       toggleTheme(THEME_OPTIONS.DARK);
       prefersDarkMode.addEventListener('change', () => {
          toggleTheme(THEME_OPTIONS.DARK);
