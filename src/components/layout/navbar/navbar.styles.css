@@ -1,0 +1,23 @@
+.navbar {
+   box-shadow: 0px 3px 3px var(--secondary-background-color);
+}
+
+.navbar .custom-shape-divider-top {
+   position: absolute;
+   top: 0px;
+   left: 0;
+   width: 100%;
+   overflow: hidden;
+   line-height: 0;
+}
+
+.navbar .custom-shape-divider-top svg {
+   position: relative;
+   display: block;
+   width: calc(168% + 1.3px);
+   height: 24px;
+}
+
+.navbar .custom-shape-divider-top .shape-fill {
+   fill: var(--tertiary-background-color);
+}

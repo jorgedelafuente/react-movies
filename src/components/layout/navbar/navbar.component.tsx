@@ -4,7 +4,7 @@ import { useTheme } from '@/utils/hooks/useTheme';
 
 import SearchInput from './search-input/search-input.component';
 import NavLink from '@/components/atoms/link/navlink.component';
-import './navbar.styles.scss';
+import './navbar.styles.css';
 
 const Navbar = () => {
    const theme = useTheme((state) => state.theme);

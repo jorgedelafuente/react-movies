@@ -32,8 +32,5 @@ export default defineConfig({
       postcss: {
          plugins: [tailwindcss(), autoprefixer()],
       },
-      preprocessorOptions: {
-         scss: {},
-      },
    },
 });
