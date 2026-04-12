@@ -1,4 +1,5 @@
-name: CI
+name: GitHub Actions - CI 🚀
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 
 on:
    push:
