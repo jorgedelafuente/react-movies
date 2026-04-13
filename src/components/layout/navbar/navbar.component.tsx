@@ -9,6 +9,7 @@ import './navbar.styles.css';
 
 const Navbar = () => {
    const theme = useTheme((state) => state.theme);
+
    return (
       <div
          className={`${theme === THEME_OPTIONS.DARK ? 'dark' : null} navbar sticky top-0 z-10 m-auto flex flex-col items-center gap-2 border-b-2 border-solid border-secondary-background-color bg-primary-background-color p-4 text-lg`}

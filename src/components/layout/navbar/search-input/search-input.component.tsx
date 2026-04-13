@@ -47,6 +47,9 @@ const SearchInput = () => {
             inputValue={inputValue}
             handleOnChange={handleOnChange}
             tabIndex={0}
+            type="search"
+            id="search-input"
+            placeholder="Search"
          />
 
          {inputValue && debouncedValue ? (
