@@ -46,7 +46,7 @@ const SearchInput = () => {
          <Input
             inputValue={inputValue}
             handleOnChange={handleOnChange}
-            tabIndex={5}
+            tabIndex={0}
          />
 
          {inputValue && debouncedValue ? (
