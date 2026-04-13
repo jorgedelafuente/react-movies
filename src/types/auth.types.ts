@@ -7,6 +7,7 @@ export const AUTH_MODAL_MODE = {
    LOGIN: 'login',
    SIGNUP: 'signup',
    RESET_PASSWORD: 'reset_password',
+   LOGOUT: 'logout',
 } as const;
 
 export type AUTH_MODAL_MODE =
@@ -40,6 +41,7 @@ export type AuthState = {
    setModalOpen: (isOpen: boolean, mode?: AUTH_MODAL_MODE) => void;
    clearError: () => void;
    initialize: () => Promise<void>;
+   destroy: () => void;
    setUser: (user: User | null) => void;
    setSession: (session: AuthSession | null) => void;
 };

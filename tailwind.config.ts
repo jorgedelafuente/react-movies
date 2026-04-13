@@ -1,5 +1,4 @@
-/** @type {import('tailwindcss').Config} */
-import { type Config } from 'tailwindcss';
+import type { Config } from 'tailwindcss';
 
 const backgroundColors = {
    neutral: {
@@ -10,6 +9,7 @@ const backgroundColors = {
 
 const borderColors = {
    bold: 'hsl(var(--color-border-bold) / <alpha-value>)',
+   copy: 'hsl(var(--color-text-copy) / <alpha-value>)',
 };
 
 const textColors = {
@@ -42,4 +42,4 @@ export default {
       },
    },
    plugins: [],
-};
+} satisfies Config;
