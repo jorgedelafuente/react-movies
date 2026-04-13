@@ -1,4 +1,5 @@
 import ThemeToggleIcon from './navbar-icons/theme-toggle-icon/theme-toggle-icon.component';
+import LoginIcon from './navbar-icons/login-icon/login-icon.component';
 import { THEME_OPTIONS } from '@/types/theme.types';
 import { useTheme } from '@/utils/hooks/useTheme';
 
@@ -37,6 +38,7 @@ const Navbar = () => {
          </div>
          <div className="absolute right-2 flex items-center gap-1 pt-9 md:pt-0">
             <ThemeToggleIcon tabIndex={0} />
+            <LoginIcon tabIndex={0} />
          </div>
          <div>
             <NavLink path="/popular" text="Popular" tabIndex={1} />
