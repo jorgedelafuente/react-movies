@@ -1,5 +1,7 @@
 # React Movies
 
+[![CI](https://github.com/jorgedelafuente/react-movies/actions/workflows/ci.yml/badge.svg)](https://github.com/jorgedelafuente/react-movies/actions/workflows/ci.yml)
+
 # Instructions
 
 1.) Create a `.env` file at the repo root (copy from `.env.example`) and set your TMDB key:
