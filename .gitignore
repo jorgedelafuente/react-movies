@@ -26,6 +26,7 @@ dist-ssr
 backup
 .env
 project.md
+ROADMAP.md
 /test-results/
 /playwright-report/
 /blob-report/
