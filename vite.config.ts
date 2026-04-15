@@ -18,6 +18,11 @@ export default defineConfig({
       environment: 'jsdom',
       setupFiles: './src/tests/setupTests.ts',
       css: true,
+      env: {
+         VITE_APIKEY: 'test-api-key',
+         VITE_SUPABASE_URL: 'http://localhost',
+         VITE_SUPABASE_PUBLISHABLE_KEY: 'test-key',
+      },
       coverage: {
          provider: 'istanbul',
       },
