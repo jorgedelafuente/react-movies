@@ -1,7 +1,7 @@
 {
    "name": "react-movies",
    "private": true,
-   "version": "1.0.8",
+   "version": "1.0.9",
    "type": "module",
    "scripts": {
       "dev": "vite",
@@ -18,7 +18,8 @@
       "playwright:ui": "npx playwright test --ui",
       "playwright:debug": "npx playwright test --debug",
       "prepare": "husky",
-      "metrics": "node scripts/collect-metrics.mjs"
+      "metrics": "node scripts/collect-metrics.mjs",
+      "metrics:dashboard": "node scripts/generate-dashboard.mjs"
    },
    "dependencies": {
       "@supabase/supabase-js": "^2.103.0",
