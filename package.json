@@ -13,10 +13,12 @@
     "test:silent": "vitest --silent",
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage",
+    "coverage:open": "vitest run --coverage && open coverage/index.html",
     "playwright": "npx playwright test",
     "playwright:ui": "npx playwright test --ui",
     "playwright:debug": "npx playwright test --debug",
-    "prepare": "husky"
+    "prepare": "husky",
+    "metrics": "node scripts/collect-metrics.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.103.0",

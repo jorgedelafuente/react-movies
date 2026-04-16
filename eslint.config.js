@@ -110,6 +110,14 @@ export default tseslint.config(
       },
    },
 
+   // Node.js scripts
+   {
+      files: ['scripts/**/*.mjs'],
+      languageOptions: {
+         globals: globals.node,
+      },
+   },
+
    // Prettier config (must be last to override conflicting rules)
    eslintConfigPrettier
 );
