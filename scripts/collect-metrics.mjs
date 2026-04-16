@@ -240,6 +240,10 @@ async function main() {
    const date = now.toISOString().slice(0, 10);
    const date_full = now.toISOString();
 
+   const { version } = JSON.parse(
+      await readFile(join(projectRoot, 'package.json'), 'utf8'),
+   );
+
    console.log(`[metrics] collecting bundle metrics...`);
    const bundle = await collectBundleMetrics();
 
@@ -249,7 +253,7 @@ async function main() {
    console.log(`[metrics] collecting github metrics...`);
    const github = await collectGitHubMetrics();
 
-   const entry = { date, date_full, bundle, components, github };
+   const entry = { date, date_full, version, bundle, components, github };
 
    const metricsPath = join(projectRoot, 'metrics', 'metrics.json');
    let existing;
