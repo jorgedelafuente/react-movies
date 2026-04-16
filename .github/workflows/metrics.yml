@@ -1,0 +1,55 @@
+name: Daily Metrics
+
+on:
+   # 7:00 UTC = 9:00 CEST (UTC+2, summer Spain) / 8:00 CET (UTC+1, winter Spain)
+   schedule:
+      - cron: '0 7 * * *'
+   workflow_dispatch: # allow manual trigger from the Actions UI
+
+permissions:
+   contents: write # required to push the metrics commit back to the repo
+
+jobs:
+   collect-metrics:
+      name: Collect and commit metrics
+      runs-on: ubuntu-latest
+      env:
+         VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+         VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+         VITE_APIKEY: ${{ secrets.VITE_APIKEY }}
+
+      steps:
+         - uses: actions/checkout@v4
+
+         - name: Install pnpm
+           uses: pnpm/action-setup@v4
+           with:
+              version: 10
+
+         - uses: actions/setup-node@v4
+           with:
+              node-version: lts/*
+              cache: 'pnpm'
+
+         - name: Install dependencies
+           run: pnpm install
+
+         - name: Build project
+           run: pnpm build
+
+         - name: Collect metrics
+           run: node scripts/collect-metrics.mjs
+           env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+         - name: Commit metrics
+           run: |
+              git config user.name "github-actions[bot]"
+              git config user.email "github-actions[bot]@users.noreply.github.com"
+              git add metrics/metrics.json
+              if git diff --staged --quiet; then
+                echo "No changes to commit"
+              else
+                git commit -m "chore: update metrics [skip ci]"
+                git push
+              fi
