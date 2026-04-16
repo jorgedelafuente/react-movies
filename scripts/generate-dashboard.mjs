@@ -237,7 +237,7 @@ function buildKpiRow(latest) {
       </section>`;
 }
 
-function buildBundleSection(metrics, latest) {
+function buildBundleSection(metrics) {
    const trendChart = metrics.length >= 2
       ? buildChartCard('chart-bundle-trend', 'Bundle size over time')
       : `<div class="chart-card"><h3>Bundle size over time</h3>${buildPlaceholder('Not enough data — need at least 2 data points')}</div>`;
@@ -724,7 +724,7 @@ ${buildHeaderSection(metrics, latest)}
 
 ${buildKpiRow(latest)}
 
-${buildBundleSection(metrics, latest)}
+${buildBundleSection(metrics)}
 
 ${buildComponentsSection(latest)}
 
