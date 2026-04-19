@@ -2164,5 +2164,317 @@
       },
       "contributorCount": 0
     }
+  },
+  {
+    "date": "2026-04-19",
+    "date_full": "2026-04-19T07:59:51.945Z",
+    "version": "1.0.9",
+    "bundle": {
+      "totalJsSizeBytes": 448519,
+      "totalCssSizeBytes": 15298,
+      "chunks": [
+        {
+          "name": "_filmId-FPzgRqzV.css",
+          "sizeBytes": 985,
+          "type": "css"
+        },
+        {
+          "name": "_filmId.lazy-C5IBIqNq.js",
+          "sizeBytes": 1853,
+          "type": "js"
+        },
+        {
+          "name": "index-CqBEghsW.css",
+          "sizeBytes": 14313,
+          "type": "css"
+        },
+        {
+          "name": "index-D5ftbXdO.js",
+          "sizeBytes": 446666,
+          "type": "js"
+        }
+      ]
+    },
+    "components": [
+      {
+        "component": "@/components/atoms/button/button.component",
+        "importedAs": "Button",
+        "totalUsages": 9,
+        "usages": [
+          {
+            "file": "src/components/auth/auth.spec.tsx",
+            "props": [
+              "variant"
+            ]
+          },
+          {
+            "file": "src/components/auth/reset-password-form/reset-password-form.component.tsx",
+            "props": [
+              "disabled",
+              "onClick",
+              "type",
+              "variant"
+            ]
+          },
+          {
+            "file": "src/components/auth/register-form/register-form.component.tsx",
+            "props": [
+              "disabled",
+              "type",
+              "variant"
+            ]
+          },
+          {
+            "file": "src/components/auth/logout-form/logout-form.component.tsx",
+            "props": [
+              "className",
+              "disabled",
+              "onClick",
+              "variant"
+            ]
+          },
+          {
+            "file": "src/components/auth/login-form/login-form.component.tsx",
+            "props": [
+              "disabled",
+              "type",
+              "variant"
+            ]
+          }
+        ]
+      },
+      {
+        "component": "@/components/atoms/card/card.component",
+        "importedAs": "Card",
+        "totalUsages": 1,
+        "usages": [
+          {
+            "file": "src/views/film-list/film-list.view.tsx",
+            "props": []
+          }
+        ]
+      },
+      {
+        "component": "@/components/atoms/input/input.component",
+        "importedAs": "Input",
+        "totalUsages": 7,
+        "usages": [
+          {
+            "file": "src/components/layout/navbar/search-input/search-input.component.tsx",
+            "props": [
+              "handleOnChange",
+              "id",
+              "inputValue",
+              "placeholder",
+              "tabIndex",
+              "type"
+            ]
+          },
+          {
+            "file": "src/components/auth/reset-password-form/reset-password-form.component.tsx",
+            "props": [
+              "handleOnChange",
+              "id",
+              "inputValue",
+              "label",
+              "placeholder",
+              "type"
+            ]
+          },
+          {
+            "file": "src/components/auth/register-form/register-form.component.tsx",
+            "props": [
+              "error",
+              "handleOnChange",
+              "id",
+              "inputValue",
+              "label",
+              "placeholder",
+              "type"
+            ]
+          },
+          {
+            "file": "src/components/auth/login-form/login-form.component.tsx",
+            "props": [
+              "handleOnChange",
+              "id",
+              "inputValue",
+              "label",
+              "placeholder",
+              "type"
+            ]
+          }
+        ]
+      },
+      {
+        "component": "@/components/atoms/link/navlink.component",
+        "importedAs": "NavLink",
+        "totalUsages": 3,
+        "usages": [
+          {
+            "file": "src/components/layout/navbar/navbar.component.tsx",
+            "props": [
+              "path",
+              "tabIndex",
+              "text"
+            ]
+          }
+        ]
+      },
+      {
+        "component": "@/components/atoms/modal/modal.component",
+        "importedAs": "Modal",
+        "totalUsages": 1,
+        "usages": [
+          {
+            "file": "src/components/auth/auth-modal/auth-modal.component.tsx",
+            "props": [
+              "isOpen",
+              "onClose",
+              "title"
+            ]
+          }
+        ]
+      },
+      {
+        "component": "@/components/atoms/spinner/spinner.component",
+        "importedAs": "Spinner",
+        "totalUsages": 6,
+        "usages": [
+          {
+            "file": "src/routes/index.tsx",
+            "props": []
+          },
+          {
+            "file": "src/routes/upcoming/index.tsx",
+            "props": []
+          },
+          {
+            "file": "src/routes/top-rated/index.tsx",
+            "props": []
+          },
+          {
+            "file": "src/routes/popular/index.tsx",
+            "props": []
+          },
+          {
+            "file": "src/routes/film/$filmId.lazy.tsx",
+            "props": []
+          },
+          {
+            "file": "src/components/layout/navbar/search-input/search-input.component.tsx",
+            "props": []
+          }
+        ]
+      },
+      {
+        "component": "@/components/auth/auth-modal/auth-modal.component",
+        "importedAs": "AuthModal",
+        "totalUsages": 1,
+        "usages": [
+          {
+            "file": "src/components/layout/navbar/navbar-icons/login-icon/login-icon.component.tsx",
+            "props": []
+          }
+        ]
+      },
+      {
+        "component": "@/components/auth/login-form/login-form.component",
+        "importedAs": "LoginForm",
+        "totalUsages": 1,
+        "usages": [
+          {
+            "file": "src/components/auth/auth-modal/auth-modal-content.component.tsx",
+            "props": []
+          }
+        ]
+      },
+      {
+        "component": "@/components/auth/logout-form/logout-form.component",
+        "importedAs": "LogoutForm",
+        "totalUsages": 1,
+        "usages": [
+          {
+            "file": "src/components/auth/auth-modal/auth-modal-content.component.tsx",
+            "props": []
+          }
+        ]
+      },
+      {
+        "component": "@/components/auth/register-form/register-form.component",
+        "importedAs": "RegisterForm",
+        "totalUsages": 1,
+        "usages": [
+          {
+            "file": "src/components/auth/auth-modal/auth-modal-content.component.tsx",
+            "props": []
+          }
+        ]
+      },
+      {
+        "component": "@/components/auth/reset-password-form/reset-password-form.component",
+        "importedAs": "ResetPasswordForm",
+        "totalUsages": 1,
+        "usages": [
+          {
+            "file": "src/components/auth/auth-modal/auth-modal-content.component.tsx",
+            "props": []
+          }
+        ]
+      },
+      {
+        "component": "@/components/layout/container/container.component",
+        "importedAs": "Container",
+        "totalUsages": 2,
+        "usages": [
+          {
+            "file": "src/views/film-info/film-info.view.tsx",
+            "props": []
+          },
+          {
+            "file": "src/views/about/about.view.tsx",
+            "props": []
+          }
+        ]
+      },
+      {
+        "component": "@/components/layout/container/flex-container.component",
+        "importedAs": "FlexContainer",
+        "totalUsages": 1,
+        "usages": [
+          {
+            "file": "src/views/film-list/film-list.view.tsx",
+            "props": []
+          }
+        ]
+      },
+      {
+        "component": "@/components/layout/navbar/navbar.component",
+        "importedAs": "Navbar",
+        "totalUsages": 1,
+        "usages": [
+          {
+            "file": "src/routes/__root.tsx",
+            "props": []
+          }
+        ]
+      }
+    ],
+    "github": {
+      "stars": 0,
+      "forks": 0,
+      "openIssues": 1,
+      "watchers": 0,
+      "sizeKb": 82574,
+      "clones14d": {
+        "total": 0,
+        "unique": 0
+      },
+      "views14d": {
+        "total": 0,
+        "unique": 0
+      },
+      "contributorCount": 0
+    }
   }
 ]
