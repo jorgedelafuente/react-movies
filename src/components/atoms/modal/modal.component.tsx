@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+
 import { ModalProps } from './modal.types';
 
 const Modal = ({

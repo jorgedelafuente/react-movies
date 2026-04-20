@@ -1,15 +1,14 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createLazyFileRoute } from '@tanstack/react-router';
 
+import Spinner from '@/components/atoms/spinner/spinner.component';
+import { ErrorComponent } from '@/components/layout/error-component/error-component.component';
 import {
    filmQueryOptions,
    filmVideoQueryOptions,
 } from '@/services/films/filmQueryOptions';
-import { ErrorComponent } from '@/components/layout/error-component/error-component.component';
-
-import Spinner from '@/components/atoms/spinner/spinner.component';
-import FilmInfo from '@/views/film-info/film-info.view';
 import { VIDEO_TYPES } from '@/views/film-info/film-info.constants';
+import FilmInfo from '@/views/film-info/film-info.view';
 
 export const Route = createLazyFileRoute('/film/$filmId')({
    errorComponent: ErrorComponent,

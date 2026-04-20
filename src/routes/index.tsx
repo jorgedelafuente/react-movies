@@ -1,9 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { filmsPopularQueryOptions } from '@/services/films/filmsQueryOptions';
+import { createFileRoute } from '@tanstack/react-router';
 
-import FilmList from '@/views/film-list/film-list.view';
 import Spinner from '@/components/atoms/spinner/spinner.component';
+import { filmsPopularQueryOptions } from '@/services/films/filmsQueryOptions';
+import FilmList from '@/views/film-list/film-list.view';
 
 export const Route = createFileRoute('/')({
    loader: ({ context: { queryClient } }) =>

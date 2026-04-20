@@ -1,4 +1,5 @@
 import Container from '@/components/layout/container/container.component';
+
 import Counter from './counter.component';
 
 const About = () => {

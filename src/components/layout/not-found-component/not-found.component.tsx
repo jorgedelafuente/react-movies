@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+
 import Container from '../container/container.component';
 
 export function NotFoundComponent() {

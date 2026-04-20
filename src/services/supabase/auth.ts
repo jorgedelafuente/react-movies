@@ -1,6 +1,8 @@
-import { supabase } from './supabaseClient';
-import type { User, AuthError } from '@/types/auth.types';
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
+
+import type { AuthError,User } from '@/types/auth.types';
+
+import { supabase } from './supabaseClient';
 
 /**
  * Sign in with email and password

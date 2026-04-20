@@ -6,6 +6,7 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 import tseslint from 'typescript-eslint';
 import pluginQuery from '@tanstack/eslint-plugin-query';
 import eslintConfigPrettier from 'eslint-config-prettier';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 export default tseslint.config(
    // Ignore patterns
@@ -43,8 +44,13 @@ export default tseslint.config(
          'react-refresh': reactRefresh,
          'jsx-a11y': jsxA11y,
          '@tanstack/query': pluginQuery,
+         'simple-import-sort': simpleImportSort,
       },
       rules: {
+         // Import order
+         'simple-import-sort/imports': 'error',
+         'simple-import-sort/exports': 'error',
+
          // React Hooks rules
          'react-hooks/rules-of-hooks': 'error',
          'react-hooks/exhaustive-deps': 'warn',

@@ -1,10 +1,11 @@
-import { screen, act } from '@testing-library/react';
-import {
-   RouterProvider,
-   createRouter,
-   createRootRoute,
-} from '@tanstack/react-router';
 import { QueryClient } from '@tanstack/react-query';
+import {
+   createRootRoute,
+   createRouter,
+   RouterProvider,
+} from '@tanstack/react-router';
+import { act,screen } from '@testing-library/react';
+
 import { MOCK_FILM_LIST } from '@/tests/__mocks__/mocks';
 import { renderWithQueryContext } from '@/tests/test-utils';
 

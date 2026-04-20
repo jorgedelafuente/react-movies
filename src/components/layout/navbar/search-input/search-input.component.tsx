@@ -1,13 +1,13 @@
-import { ChangeEvent, useState, useEffect } from 'react';
-import { Link } from '@tanstack/react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Link } from '@tanstack/react-router';
+import { ChangeEvent, useEffect,useState } from 'react';
 
+import { Input } from '@/components/atoms/input/input.component';
+import Spinner from '@/components/atoms/spinner/spinner.component';
 import { searchFilm } from '@/services/films/films';
+import type { FilmInfoType } from '@/types/films.types';
 import { useDebounce } from '@/utils/hooks/useDebounce';
 import { sanitizeInput } from '@/utils/sanitizeInput';
-import type { FilmInfoType } from '@/types/films.types';
-import Spinner from '@/components/atoms/spinner/spinner.component';
-import { Input } from '@/components/atoms/input/input.component';
 
 const SearchInput = () => {
    const [inputValue, setInputValue] = useState<string>('');

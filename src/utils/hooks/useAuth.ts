@@ -1,7 +1,8 @@
 import { create } from 'zustand';
-import type { AuthState, User, AuthSession } from '@/types/auth.types';
-import { AUTH_MODAL_MODE } from '@/types/auth.types';
+
 import * as authService from '@/services/supabase/auth';
+import type { AuthSession,AuthState, User } from '@/types/auth.types';
+import { AUTH_MODAL_MODE } from '@/types/auth.types';
 
 let _cleanup: (() => void) | null = null;
 

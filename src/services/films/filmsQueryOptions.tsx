@@ -1,4 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
+
 import { fetchPopularFilms, fetchTopRatedFilms, fetchUpcoming } from './films';
 
 export const filmsPopularQueryOptions = queryOptions({

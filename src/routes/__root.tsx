@@ -1,14 +1,14 @@
+import type { QueryClient } from '@tanstack/react-query';
 import {
-   Outlet,
    createRootRouteWithContext,
    NotFoundRouteComponent,
+   Outlet,
 } from '@tanstack/react-router';
-import type { QueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
 import { ErrorComponent } from '@/components/layout/error-component/error-component.component';
-import { NotFoundComponent } from '@/components/layout/not-found-component/not-found.component';
 import Navbar from '@/components/layout/navbar/navbar.component';
+import { NotFoundComponent } from '@/components/layout/not-found-component/not-found.component';
 import { useAuth } from '@/utils/hooks/useAuth';
 
 export const Route = createRootRouteWithContext<{

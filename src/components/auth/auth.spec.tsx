@@ -1,12 +1,13 @@
-import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
+import { describe, expect,it } from 'vitest';
 import { configureAxe } from 'vitest-axe';
 
+import Button from '@/components/atoms/button/button.component';
+
 import LoginForm from './login-form/login-form.component';
+import LogoutForm from './logout-form/logout-form.component';
 import RegisterForm from './register-form/register-form.component';
 import ResetPasswordForm from './reset-password-form/reset-password-form.component';
-import LogoutForm from './logout-form/logout-form.component';
-import Button from '@/components/atoms/button/button.component';
 
 const axe = configureAxe({
    rules: {

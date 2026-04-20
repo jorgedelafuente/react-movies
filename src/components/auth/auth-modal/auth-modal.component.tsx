@@ -1,6 +1,7 @@
 import Modal from '@/components/atoms/modal/modal.component';
-import { useAuth } from '@/utils/hooks/useAuth';
 import { AUTH_MODAL_MODE } from '@/types/auth.types';
+import { useAuth } from '@/utils/hooks/useAuth';
+
 import AuthModalContent from './auth-modal-content.component';
 
 const TITLES: Record<AUTH_MODAL_MODE, string> = {
