@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+   a:hover {
+      color: theme('colors.sky.500');
+   }
+
    :root {
       /* Global Variables */
       --primary-background-color: #dedede;
