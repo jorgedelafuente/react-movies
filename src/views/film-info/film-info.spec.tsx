@@ -1,7 +1,8 @@
 import { render } from '@testing-library/react';
 
-import FilmInfo from './film-info.view';
 import { MOCK_FILM_INFO, MOCK_FILM_TRAILER } from '@/tests/__mocks__/mocks';
+
+import FilmInfo from './film-info.view';
 
 const MOCK_TITLE = 'Deadpool &amp; Wolverine';
 

@@ -1,12 +1,13 @@
-import { useEffect } from 'react';
+import { useQueryErrorResetBoundary } from '@tanstack/react-query';
+import type { ErrorComponentProps } from '@tanstack/react-router';
 import {
    ErrorComponent as RouterErrorComponent,
    useRouter,
 } from '@tanstack/react-router';
-import { useQueryErrorResetBoundary } from '@tanstack/react-query';
-import type { ErrorComponentProps } from '@tanstack/react-router';
+import { useEffect } from 'react';
 
 import { FilmNotFoundError } from '@/services/films/films';
+
 import Container from '../container/container.component';
 
 export function ErrorComponent({ error }: ErrorComponentProps) {

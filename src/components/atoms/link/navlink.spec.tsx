@@ -1,12 +1,13 @@
-import { screen, act } from '@testing-library/react';
-import {
-   RouterProvider,
-   createRouter,
-   createRootRoute,
-} from '@tanstack/react-router';
 import { QueryClient } from '@tanstack/react-query';
+import {
+   createRootRoute,
+   createRouter,
+   RouterProvider,
+} from '@tanstack/react-router';
+import { act,screen } from '@testing-library/react';
 
 import { renderWithQueryContext } from '@/tests/test-utils';
+
 import NavLink from './navlink.component';
 
 const rootRoute = createRootRoute();

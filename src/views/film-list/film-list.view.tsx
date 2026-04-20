@@ -1,9 +1,9 @@
 import { Link } from '@tanstack/react-router';
 
-import FlexContainer from '@/components/layout/container/flex-container.component';
 import Card from '@/components/atoms/card/card.component';
-import type { FilmInfoType } from '@/types/films.types';
+import FlexContainer from '@/components/layout/container/flex-container.component';
 import { baseImagePath } from '@/services/config';
+import type { FilmInfoType } from '@/types/films.types';
 
 const FilmList = ({ list }: { list: FilmInfoType[] }) => {
    return (

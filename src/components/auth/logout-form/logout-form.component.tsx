@@ -1,5 +1,5 @@
-import { useAuth } from '@/utils/hooks/useAuth';
 import Button from '@/components/atoms/button/button.component';
+import { useAuth } from '@/utils/hooks/useAuth';
 
 const LogoutForm = () => {
    const signOut = useAuth((s) => s.signOut);

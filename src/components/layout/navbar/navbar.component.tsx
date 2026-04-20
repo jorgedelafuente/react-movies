@@ -1,11 +1,12 @@
-import ThemeToggleIcon from './navbar-icons/theme-toggle-icon/theme-toggle-icon.component';
-import LoginIcon from './navbar-icons/login-icon/login-icon.component';
+import './navbar.styles.css';
+
+import NavLink from '@/components/atoms/link/navlink.component';
 import { THEME_OPTIONS } from '@/types/theme.types';
 import { useTheme } from '@/utils/hooks/useTheme';
 
+import LoginIcon from './navbar-icons/login-icon/login-icon.component';
+import ThemeToggleIcon from './navbar-icons/theme-toggle-icon/theme-toggle-icon.component';
 import SearchInput from './search-input/search-input.component';
-import NavLink from '@/components/atoms/link/navlink.component';
-import './navbar.styles.css';
 
 const Navbar = () => {
    const theme = useTheme((state) => state.theme);

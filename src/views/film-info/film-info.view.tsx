@@ -1,7 +1,8 @@
-import Container from '@/components/layout/container/container.component';
-import type { FilmInfoType, FilmVideoType } from '@/types/films.types';
-import { baseImagePathPoster, baseImagePath } from '@/services/config';
 import './film-info.styles.css';
+
+import Container from '@/components/layout/container/container.component';
+import { baseImagePath,baseImagePathPoster } from '@/services/config';
+import type { FilmInfoType, FilmVideoType } from '@/types/films.types';
 
 const FilmInfo = ({
    filmInfo,

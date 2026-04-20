@@ -1,8 +1,9 @@
 import { useState } from 'react';
+
+import Button from '@/components/atoms/button/button.component';
+import { Input } from '@/components/atoms/input/input.component';
 import { AUTH_MODAL_MODE } from '@/types/auth.types';
 import { useAuth } from '@/utils/hooks/useAuth';
-import { Input } from '@/components/atoms/input/input.component';
-import Button from '@/components/atoms/button/button.component';
 
 const RegisterForm = () => {
    const [email, setEmail] = useState('');

@@ -1,8 +1,8 @@
-import { AUTH_MODAL_MODE } from '@/types/auth.types';
 import LoginForm from '@/components/auth/login-form/login-form.component';
+import LogoutForm from '@/components/auth/logout-form/logout-form.component';
 import RegisterForm from '@/components/auth/register-form/register-form.component';
 import ResetPasswordForm from '@/components/auth/reset-password-form/reset-password-form.component';
-import LogoutForm from '@/components/auth/logout-form/logout-form.component';
+import { AUTH_MODAL_MODE } from '@/types/auth.types';
 
 const AuthModalContent = ({ mode }: { mode: AUTH_MODAL_MODE }) => {
    if (mode === AUTH_MODAL_MODE.SIGNUP) return <RegisterForm />;

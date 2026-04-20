@@ -1,6 +1,6 @@
 import AuthModal from '@/components/auth/auth-modal/auth-modal.component';
-import { useAuth } from '@/utils/hooks/useAuth';
 import { AUTH_MODAL_MODE } from '@/types/auth.types';
+import { useAuth } from '@/utils/hooks/useAuth';
 
 const LoginIcon = ({ tabIndex }: { tabIndex?: number }) => {
    const user = useAuth((s) => s.user);
