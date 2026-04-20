@@ -1,9 +1,9 @@
 import axios from 'redaxios';
-import type {
-   FilmInfoType,
-   FilmList,
-   FilmVideoList,
-} from '@/types/films.types';
+import {
+   FilmInfoSchema,
+   FilmListSchema,
+   FilmVideoListSchema,
+} from '@/types/films.schemas';
 
 export class FilmNotFoundError extends Error {}
 
@@ -24,29 +24,29 @@ const paramOptions = {
 export const fetchPopularFilms = async () => {
    await new Promise((res) => setTimeout(res, 500));
    return axios
-      .get<FilmList>(paramOptions.popular())
-      .then((res) => res.data.results);
+      .get(paramOptions.popular())
+      .then((res) => FilmListSchema.parse(res.data).results);
 };
 
 export const fetchTopRatedFilms = async () => {
    await new Promise((res) => setTimeout(res, 500));
    return axios
-      .get<FilmList>(paramOptions.top_rated())
-      .then((res) => res.data.results);
+      .get(paramOptions.top_rated())
+      .then((res) => FilmListSchema.parse(res.data).results);
 };
 
 export const fetchUpcoming = async () => {
    await new Promise((res) => setTimeout(res, 500));
    return axios
-      .get<FilmList>(paramOptions.upcoming())
-      .then((res) => res.data.results);
+      .get(paramOptions.upcoming())
+      .then((res) => FilmListSchema.parse(res.data).results);
 };
 
 export const fetchFilm = async (filmId: number) => {
    await new Promise((res) => setTimeout(res, 500));
    const post = await axios
-      .get<FilmInfoType>(paramOptions.movieInfo(filmId))
-      .then((res) => res.data)
+      .get(paramOptions.movieInfo(filmId))
+      .then((res) => FilmInfoSchema.parse(res.data))
       .catch((err) => {
          if (err.status === 404) {
             throw new FilmNotFoundError(`Film with id "${filmId}" not found!`);
@@ -60,8 +60,8 @@ export const fetchFilm = async (filmId: number) => {
 export const fetchFilmVideo = async (filmId: number) => {
    await new Promise((res) => setTimeout(res, 500));
    const post = await axios
-      .get<FilmVideoList>(paramOptions.movieVideo(filmId))
-      .then((res) => res.data)
+      .get(paramOptions.movieVideo(filmId))
+      .then((res) => FilmVideoListSchema.parse(res.data))
       .catch((err) => {
          if (err.status === 404) {
             throw new FilmNotFoundError(`Film with id "${filmId}" not found!`);
@@ -75,6 +75,6 @@ export const fetchFilmVideo = async (filmId: number) => {
 export const searchFilm = async (searchQuery: string) => {
    await new Promise((res) => setTimeout(res, 500));
    return axios
-      .get<FilmList>(paramOptions.search(searchQuery))
-      .then((res) => res.data.results);
+      .get(paramOptions.search(searchQuery))
+      .then((res) => FilmListSchema.parse(res.data).results);
 };
