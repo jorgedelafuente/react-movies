@@ -1,5 +1,6 @@
 import './film-info.styles.css';
 
+import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
 import Container from '@/components/layout/container/container.component';
 import { baseImagePath, baseImagePathPoster } from '@/services/config';
 import type { FilmInfoType, FilmVideoType } from '@/types/films.types';
@@ -48,6 +49,10 @@ const FilmInfo = ({
                      <strong>{filmInfo.tagline}</strong>
                   </h3>
                )}
+
+               <div className="flex justify-center my-3">
+                  <FavoriteButton filmId={filmInfo.id} />
+               </div>
 
                <hr className="my-3 border-bold" />
 

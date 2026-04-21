@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 
 import Card from '@/components/atoms/card/card.component';
+import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
 import FlexContainer from '@/components/layout/container/flex-container.component';
 import { baseImagePath } from '@/services/config';
 import type { FilmInfoType } from '@/types/films.types';
@@ -28,6 +29,7 @@ const FilmList = ({ list }: { list: FilmInfoType[] }) => {
                      <div className="content">
                         <h2>{item.title}</h2>
                         {item.overview}
+                        <FavoriteButton filmId={item.id} className='mt-3' />
                      </div>
                   </Card>
                </Link>
