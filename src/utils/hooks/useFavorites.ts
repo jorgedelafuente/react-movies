@@ -26,21 +26,18 @@ export const useFavorites = () => {
       onMutate: async (filmId) => {
          await queryClient.cancelQueries({ queryKey: queryOpts.queryKey });
          const previous = queryClient.getQueryData(queryOpts.queryKey);
-         queryClient.setQueryData(
-            queryOpts.queryKey,
-            (old: { data: FavoriteRow[]; error: null } | undefined) => ({
-               data: [
-                  ...(old?.data ?? []),
-                  {
-                     id: 'optimistic',
-                     user_id: userId,
-                     film_id: filmId,
-                     created_at: new Date().toISOString(),
-                  } satisfies FavoriteRow,
-               ],
-               error: null,
-            })
-         );
+         queryClient.setQueryData(queryOpts.queryKey, (old) => ({
+            data: [
+               ...(old?.data ?? []),
+               {
+                  id: 'optimistic',
+                  user_id: userId,
+                  film_id: filmId,
+                  created_at: new Date().toISOString(),
+               } satisfies FavoriteRow,
+            ],
+            error: null,
+         }));
          return { previous };
       },
       onError: (_err, _filmId, context) => {
@@ -56,13 +53,10 @@ export const useFavorites = () => {
       onMutate: async (filmId) => {
          await queryClient.cancelQueries({ queryKey: queryOpts.queryKey });
          const previous = queryClient.getQueryData(queryOpts.queryKey);
-         queryClient.setQueryData(
-            queryOpts.queryKey,
-            (old: { data: FavoriteRow[]; error: null } | undefined) => ({
-               data: (old?.data ?? []).filter((f) => f.film_id !== filmId),
-               error: null,
-            })
-         );
+         queryClient.setQueryData(queryOpts.queryKey, (old) => ({
+            data: (old?.data ?? []).filter((f) => f.film_id !== filmId),
+            error: null,
+         }));
          return { previous };
       },
       onError: (_err, _filmId, context) => {
