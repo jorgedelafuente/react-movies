@@ -1,10 +1,14 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(node -e ' *)",
+      "Bash(git add:*)"
+    ]
+  },
   "enabledMcpjsonServers": [
     "playwright"
   ],
-  "permissions": {
-    "allow": [
-      "Bash(node -e ' *)"
-    ]
-  }
+  "disabledMcpjsonServers": [
+    "supabase"
+  ]
 }
