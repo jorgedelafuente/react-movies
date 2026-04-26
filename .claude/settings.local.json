@@ -1,6 +1,15 @@
 {
-   "permissions": {
-      "allow": ["Bash(node -e ' *)", "Bash(git add:*)"]
-   },
-   "enabledMcpjsonServers": ["playwright", "supabase"]
+  "permissions": {
+    "allow": [
+      "Bash(node -e ' *)",
+      "Bash(git add:*)",
+      "mcp__supabase__list_projects",
+      "mcp__supabase__list_tables",
+      "mcp__supabase__execute_sql"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "playwright",
+    "supabase"
+  ]
 }
