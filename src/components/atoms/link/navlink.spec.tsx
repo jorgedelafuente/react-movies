@@ -4,9 +4,9 @@ import {
    createRouter,
    RouterProvider,
 } from '@tanstack/react-router';
-import { act,screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 
-import { renderWithQueryContext } from '@/tests/test-utils';
+import { renderWithAxe, renderWithQueryContext } from '@/tests/test-utils';
 
 import NavLink from './navlink.component';
 
@@ -35,7 +35,7 @@ describe('Navlink Component', async () => {
       expect(screen.getByText(/custom/i)).toBeInTheDocument();
    });
 
-   it('should render a Navlink Componen with correct Hreft', async () => {
+   it('should render a Navlink Component with correct href', async () => {
       const element = () => (
          <NavLink path="/test-route" text="custom" key={1} />
       );
@@ -46,5 +46,18 @@ describe('Navlink Component', async () => {
       });
       const linkElement = screen.getByRole('link', { name: /custom/i });
       expect(linkElement).toHaveAttribute('href', '/test-route');
+   });
+
+   it('has no a11y violations', async () => {
+      const element = () => (
+         <NavLink path="/test-route" text="custom" key={1} />
+      );
+      let violations;
+      await act(async () => {
+         ({ violations } = await renderWithAxe(
+            <RouterProvider router={router as any} defaultComponent={element} />
+         ));
+      });
+      expect(violations).toHaveNoViolations();
    });
 });
