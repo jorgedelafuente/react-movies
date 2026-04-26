@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createRouter } from '@tanstack/react-router';
 import { render } from '@testing-library/react';
+import { axe } from 'vitest-axe';
 
 import { routeTree } from '@/routeTree.gen';
 
@@ -27,6 +28,15 @@ export const renderWithQueryContext = (
       </QueryClientProvider>
    );
    return render(ui, { wrapper: Wrapper, ...options });
+};
+
+export const renderWithAxe = async (
+   ui: React.ReactNode,
+   options = {}
+) => {
+   const result = renderWithQueryContext(ui, options);
+   const violations = await axe(result.container);
+   return { ...result, violations };
 };
 
 const queryClient = new QueryClient();
