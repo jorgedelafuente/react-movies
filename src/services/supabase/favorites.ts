@@ -5,6 +5,9 @@ export type FavoriteRow = {
    user_id: string;
    film_id: number;
    created_at: string;
+   film_title: string;
+   film_poster_path: string | null;
+   film_release_date: string;
 };
 
 type FavoritesError = {
@@ -30,12 +33,21 @@ export const getUserFavorites = async (
 
 export const addFavorite = async (
    userId: string,
-   filmId: number
+   filmId: number,
+   filmTitle: string,
+   filmPosterPath: string | null,
+   filmReleaseDate: string
 ): Promise<{ data: FavoriteRow | null; error: FavoritesError | null }> => {
    try {
       const { data, error } = await supabase
          .from('favorites')
-         .insert({ user_id: userId, film_id: filmId })
+         .insert({
+            user_id: userId,
+            film_id: filmId,
+            film_title: filmTitle,
+            film_poster_path: filmPosterPath,
+            film_release_date: filmReleaseDate,
+         })
          .select()
          .single();
 

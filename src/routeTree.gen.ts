@@ -15,6 +15,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as UpcomingIndexImport } from './routes/upcoming/index'
 import { Route as TopRatedIndexImport } from './routes/top-rated/index'
 import { Route as PopularIndexImport } from './routes/popular/index'
+import { Route as FavoritesIndexImport } from './routes/favorites/index'
 import { Route as AboutIndexImport } from './routes/about/index'
 import { Route as FilmFilmIdImport } from './routes/film/$filmId'
 
@@ -37,6 +38,11 @@ const TopRatedIndexRoute = TopRatedIndexImport.update({
 
 const PopularIndexRoute = PopularIndexImport.update({
   path: '/popular/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FavoritesIndexRoute = FavoritesIndexImport.update({
+  path: '/favorites/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -75,6 +81,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutIndexImport
       parentRoute: typeof rootRoute
     }
+    '/favorites/': {
+      id: '/favorites/'
+      path: '/favorites'
+      fullPath: '/favorites'
+      preLoaderRoute: typeof FavoritesIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/popular/': {
       id: '/popular/'
       path: '/popular'
@@ -105,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/film/$filmId': typeof FilmFilmIdRoute
   '/about': typeof AboutIndexRoute
+  '/favorites': typeof FavoritesIndexRoute
   '/popular': typeof PopularIndexRoute
   '/top-rated': typeof TopRatedIndexRoute
   '/upcoming': typeof UpcomingIndexRoute
@@ -114,6 +128,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/film/$filmId': typeof FilmFilmIdRoute
   '/about': typeof AboutIndexRoute
+  '/favorites': typeof FavoritesIndexRoute
   '/popular': typeof PopularIndexRoute
   '/top-rated': typeof TopRatedIndexRoute
   '/upcoming': typeof UpcomingIndexRoute
@@ -124,6 +139,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/film/$filmId': typeof FilmFilmIdRoute
   '/about/': typeof AboutIndexRoute
+  '/favorites/': typeof FavoritesIndexRoute
   '/popular/': typeof PopularIndexRoute
   '/top-rated/': typeof TopRatedIndexRoute
   '/upcoming/': typeof UpcomingIndexRoute
@@ -135,16 +151,25 @@ export interface FileRouteTypes {
     | '/'
     | '/film/$filmId'
     | '/about'
+    | '/favorites'
     | '/popular'
     | '/top-rated'
     | '/upcoming'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/film/$filmId' | '/about' | '/popular' | '/top-rated' | '/upcoming'
+  to:
+    | '/'
+    | '/film/$filmId'
+    | '/about'
+    | '/favorites'
+    | '/popular'
+    | '/top-rated'
+    | '/upcoming'
   id:
     | '__root__'
     | '/'
     | '/film/$filmId'
     | '/about/'
+    | '/favorites/'
     | '/popular/'
     | '/top-rated/'
     | '/upcoming/'
@@ -155,6 +180,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FilmFilmIdRoute: typeof FilmFilmIdRoute
   AboutIndexRoute: typeof AboutIndexRoute
+  FavoritesIndexRoute: typeof FavoritesIndexRoute
   PopularIndexRoute: typeof PopularIndexRoute
   TopRatedIndexRoute: typeof TopRatedIndexRoute
   UpcomingIndexRoute: typeof UpcomingIndexRoute
@@ -164,6 +190,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FilmFilmIdRoute: FilmFilmIdRoute,
   AboutIndexRoute: AboutIndexRoute,
+  FavoritesIndexRoute: FavoritesIndexRoute,
   PopularIndexRoute: PopularIndexRoute,
   TopRatedIndexRoute: TopRatedIndexRoute,
   UpcomingIndexRoute: UpcomingIndexRoute,
@@ -184,6 +211,7 @@ export const routeTree = rootRoute
         "/",
         "/film/$filmId",
         "/about/",
+        "/favorites/",
         "/popular/",
         "/top-rated/",
         "/upcoming/"
@@ -197,6 +225,9 @@ export const routeTree = rootRoute
     },
     "/about/": {
       "filePath": "about/index.tsx"
+    },
+    "/favorites/": {
+      "filePath": "favorites/index.tsx"
     },
     "/popular/": {
       "filePath": "popular/index.tsx"

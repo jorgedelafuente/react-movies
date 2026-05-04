@@ -1,3 +1,5 @@
+import { useNavigate } from '@tanstack/react-router';
+
 import Button from '@/components/atoms/button/button.component';
 import { useAuth } from '@/utils/hooks/useAuth';
 
@@ -5,10 +7,17 @@ const LogoutForm = () => {
    const signOut = useAuth((s) => s.signOut);
    const setModalOpen = useAuth((s) => s.setModalOpen);
    const isLoading = useAuth((s) => s.isLoading);
+   const navigate = useNavigate();
 
    return (
       <div className="flex flex-col gap-4">
          <p className="text-sm text-copy">Are you sure you want to sign out?</p>
+         <Button
+            variant="secondary"
+            onClick={() => { setModalOpen(false); navigate({ to: '/favorites' }); }}
+         >
+            My Favorites
+         </Button>
          <div className="flex gap-3">
             <Button
                variant="primary"

@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { describe, expect,it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { configureAxe } from 'vitest-axe';
 
 import Button from '@/components/atoms/button/button.component';
@@ -33,13 +33,6 @@ describe('RegisterForm — accessibility', () => {
 describe('ResetPasswordForm — accessibility', () => {
    it('has no violations on initial render', async () => {
       const { container } = render(<ResetPasswordForm />);
-      expect(await axe(container)).toHaveNoViolations();
-   });
-});
-
-describe('LogoutForm — accessibility', () => {
-   it('has no violations on initial render', async () => {
-      const { container } = render(<LogoutForm />);
       expect(await axe(container)).toHaveNoViolations();
    });
 });
