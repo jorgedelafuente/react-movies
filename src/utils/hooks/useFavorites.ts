@@ -21,9 +21,33 @@ export const useFavorites = () => {
    const isFavorited = (filmId: number): boolean =>
       favorites.some((f) => f.film_id === filmId);
 
+   type AddFavoritePayload = {
+      filmId: number;
+      filmTitle: string;
+      filmPosterPath: string | null;
+      filmReleaseDate: string;
+   };
+
    const addMutation = useMutation({
-      mutationFn: (filmId: number) => addFavorite(userId, filmId),
-      onMutate: async (filmId) => {
+      mutationFn: ({
+         filmId,
+         filmTitle,
+         filmPosterPath,
+         filmReleaseDate,
+      }: AddFavoritePayload) =>
+         addFavorite(
+            userId,
+            filmId,
+            filmTitle,
+            filmPosterPath,
+            filmReleaseDate
+         ),
+      onMutate: async ({
+         filmId,
+         filmTitle,
+         filmPosterPath,
+         filmReleaseDate,
+      }) => {
          await queryClient.cancelQueries({ queryKey: queryOpts.queryKey });
          const previous = queryClient.getQueryData(queryOpts.queryKey);
          queryClient.setQueryData(queryOpts.queryKey, (old) => ({
@@ -34,6 +58,9 @@ export const useFavorites = () => {
                   user_id: userId,
                   film_id: filmId,
                   created_at: new Date().toISOString(),
+                  film_title: filmTitle,
+                  film_poster_path: filmPosterPath,
+                  film_release_date: filmReleaseDate,
                } satisfies FavoriteRow,
             ],
             error: null,
@@ -67,12 +94,22 @@ export const useFavorites = () => {
       },
    });
 
-   const toggle = (filmId: number) => {
+   const toggle = (
+      filmId: number,
+      filmTitle: string,
+      filmPosterPath: string | null,
+      filmReleaseDate: string
+   ) => {
       if (!userId) return;
       if (isFavorited(filmId)) {
          removeMutation.mutate(filmId);
       } else {
-         addMutation.mutate(filmId);
+         addMutation.mutate({
+            filmId,
+            filmTitle,
+            filmPosterPath,
+            filmReleaseDate,
+         });
       }
    };
 

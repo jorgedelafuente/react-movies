@@ -3,10 +3,19 @@ import { useFavorites } from '@/utils/hooks/useFavorites';
 
 type FavoriteButtonProps = {
    filmId: number;
+   filmTitle?: string;
+   filmPosterPath?: string | null;
+   filmReleaseDate?: string;
    className?: string;
 };
 
-const FavoriteButton = ({ filmId, className = '' }: FavoriteButtonProps) => {
+const FavoriteButton = ({
+   filmId,
+   filmTitle = '',
+   filmPosterPath = null,
+   filmReleaseDate = '',
+   className = '',
+}: FavoriteButtonProps) => {
    const user = useAuth((s) => s.user);
    const { isFavorited, toggle, isPending } = useFavorites();
 
@@ -17,7 +26,7 @@ const FavoriteButton = ({ filmId, className = '' }: FavoriteButtonProps) => {
    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      toggle(filmId);
+      toggle(filmId, filmTitle, filmPosterPath, filmReleaseDate);
    };
 
    return (

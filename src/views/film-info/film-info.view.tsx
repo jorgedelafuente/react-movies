@@ -51,7 +51,12 @@ const FilmInfo = ({
                )}
 
                <div className="flex justify-center my-3">
-                  <FavoriteButton filmId={filmInfo.id} />
+                  <FavoriteButton
+                     filmId={filmInfo.id}
+                     filmTitle={filmInfo.title}
+                     filmPosterPath={filmInfo.poster_path}
+                     filmReleaseDate={filmInfo.release_date}
+                  />
                </div>
 
                <hr className="my-3 border-bold" />

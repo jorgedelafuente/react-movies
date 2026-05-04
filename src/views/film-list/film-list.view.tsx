@@ -29,7 +29,13 @@ const FilmList = ({ list }: { list: FilmInfoType[] }) => {
                      <div className="content">
                         <h2>{item.title}</h2>
                         {item.overview}
-                        <FavoriteButton filmId={item.id} className='mt-3' />
+                        <FavoriteButton
+                           filmId={item.id}
+                           filmTitle={item.title}
+                           filmPosterPath={item.poster_path}
+                           filmReleaseDate={item.release_date}
+                           className="mt-3"
+                        />
                      </div>
                   </Card>
                </Link>
