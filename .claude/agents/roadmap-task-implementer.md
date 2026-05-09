@@ -108,7 +108,7 @@ Execute the approved plan step by step. Follow ALL project conventions without e
 - E2E file naming: `*.e2e.*`
 
 ### Package Manager
-- Always use `pnpm`. Never `npm` or `yarn`.
+- Always use `bun`. Never `npm`, `yarn`, or `pnpm`.
 
 ### Accessibility
 - Follow `jsx-a11y` recommended rules — all interactive elements must be keyboard accessible and have appropriate ARIA attributes
