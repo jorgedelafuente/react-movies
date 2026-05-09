@@ -22,21 +22,53 @@ jobs:
            with:
               bun-version: 1.3.11
 
+         - name: Cache node_modules
+           id: cache-node-modules-quality
+           uses: actions/cache@v4
+           with:
+              path: node_modules
+              key: ${{ runner.os }}-node-modules-${{ hashFiles('bun.lock') }}
+
          - name: Install dependencies
-           run: bun install
+           if: steps.cache-node-modules-quality.outputs.cache-hit != 'true'
+           run: bun install --frozen-lockfile
 
          - name: Run ESLint
+           id: lint
            run: bun run lint
 
          - name: Check formatting
+           id: format
            run: bun run format --check
 
+         - name: Cache TypeScript build info
+           uses: actions/cache@v4
+           with:
+              path: .tsbuildinfo
+              key: ${{ runner.os }}-tsbuildinfo-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}
+              restore-keys: ${{ runner.os }}-tsbuildinfo-
+
          - name: Type check and build
+           id: build
            run: bun run build
+
+         - name: Job summary
+           if: always()
+           run: |
+              {
+                echo "## Quality"
+                echo "| Check | Status |"
+                echo "|-------|--------|"
+                echo "| ESLint | ${{ steps.lint.outcome == 'success' && '✅ passed' || '❌ failed' }} |"
+                echo "| Formatting | ${{ steps.format.outcome == 'success' && '✅ passed' || '❌ failed' }} |"
+                echo "| Type check & build | ${{ steps.build.outcome == 'success' && '✅ passed' || '❌ failed' }} |"
+                echo "| node_modules cache | ${{ steps.cache-node-modules-quality.outputs.cache-hit == 'true' && '⚡ hit' || '🔄 miss' }} |"
+              } >> $GITHUB_STEP_SUMMARY
 
    unit-tests:
       name: Unit Tests
       runs-on: ubuntu-latest
+      needs: quality
       env:
          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
@@ -48,14 +80,43 @@ jobs:
            with:
               bun-version: 1.3.11
 
+         - name: Cache node_modules
+           id: cache-node-modules-unit
+           uses: actions/cache@v4
+           with:
+              path: node_modules
+              key: ${{ runner.os }}-node-modules-${{ hashFiles('bun.lock') }}
+
          - name: Install dependencies
-           run: bun install
+           if: steps.cache-node-modules-unit.outputs.cache-hit != 'true'
+           run: bun install --frozen-lockfile
 
-         - name: Run Vitest
-           run: bun run test:silent
-
-         - name: Generate coverage
+         - name: Run tests with coverage
+           id: tests
            run: bun run coverage
+
+         - name: Job summary
+           if: always()
+           run: |
+              {
+                echo "## Unit Tests"
+                echo "| | Status |"
+                echo "|---|--------|"
+                echo "| Tests | ${{ steps.tests.outcome == 'success' && '✅ passed' || '❌ failed' }} |"
+                echo "| node_modules cache | ${{ steps.cache-node-modules-unit.outputs.cache-hit == 'true' && '⚡ hit' || '🔄 miss' }} |"
+                if [ -f coverage/coverage-summary.json ]; then
+                  echo ""
+                  echo "### Coverage"
+                  echo "| Metric | % | Covered / Total |"
+                  echo "|--------|---|-----------------|"
+                  node -e "
+                    const s = require('./coverage/coverage-summary.json').total;
+                    ['lines','statements','functions','branches'].forEach(k => {
+                      console.log(\`| \${k} | \${s[k].pct}% | \${s[k].covered} / \${s[k].total} |\`);
+                    });
+                  "
+                fi
+              } >> $GITHUB_STEP_SUMMARY
 
          - name: Upload coverage reports
            uses: actions/upload-artifact@v4
@@ -68,6 +129,7 @@ jobs:
    e2e-tests:
       name: E2E Tests
       runs-on: ubuntu-latest
+      needs: quality
       env:
          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
@@ -79,14 +141,47 @@ jobs:
            with:
               bun-version: 1.3.11
 
-         - name: Install dependencies
-           run: bun install
+         - name: Cache node_modules
+           id: cache-node-modules-e2e
+           uses: actions/cache@v4
+           with:
+              path: node_modules
+              key: ${{ runner.os }}-node-modules-${{ hashFiles('bun.lock') }}
 
-         - name: Install Playwright Browsers
-           run: bunx playwright install --with-deps
+         - name: Install dependencies
+           if: steps.cache-node-modules-e2e.outputs.cache-hit != 'true'
+           run: bun install --frozen-lockfile
+
+         - name: Cache Playwright browsers
+           uses: actions/cache@v4
+           id: playwright-cache
+           with:
+              path: ~/.cache/ms-playwright
+              key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('node_modules/@playwright/test/package.json') }}
+
+         - name: Install Playwright Chromium
+           run: bunx playwright install chromium --with-deps
+           if: steps.playwright-cache.outputs.cache-hit != 'true'
+
+         - name: Install Playwright system deps only
+           run: bunx playwright install-deps chromium
+           if: steps.playwright-cache.outputs.cache-hit == 'true'
 
          - name: Run Playwright tests
+           id: e2e
            run: bun run playwright
+
+         - name: Job summary
+           if: always()
+           run: |
+              {
+                echo "## E2E Tests"
+                echo "| | Status |"
+                echo "|---|--------|"
+                echo "| Playwright (Chromium) | ${{ steps.e2e.outcome == 'success' && '✅ passed' || '❌ failed' }} |"
+                echo "| node_modules cache | ${{ steps.cache-node-modules-e2e.outputs.cache-hit == 'true' && '⚡ hit' || '🔄 miss' }} |"
+                echo "| Playwright browser cache | ${{ steps.playwright-cache.outputs.cache-hit == 'true' && '⚡ hit' || '🔄 miss' }} |"
+              } >> $GITHUB_STEP_SUMMARY
 
          - uses: actions/upload-artifact@v4
            if: ${{ !cancelled() }}
