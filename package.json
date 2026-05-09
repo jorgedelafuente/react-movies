@@ -3,6 +3,7 @@
    "private": true,
    "version": "1.0.9",
    "type": "module",
+   "packageManager": "bun@1.3.11",
    "scripts": {
       "dev": "vite",
       "build": "tsc -b && vite build",
@@ -14,9 +15,9 @@
       "test:ui": "vitest --ui",
       "coverage": "vitest run --coverage",
       "coverage:open": "vitest run --coverage && open coverage/index.html",
-      "playwright": "npx playwright test",
-      "playwright:ui": "npx playwright test --ui",
-      "playwright:debug": "npx playwright test --debug",
+      "playwright": "bunx playwright test",
+      "playwright:ui": "bunx playwright test --ui",
+      "playwright:debug": "bunx playwright test --debug",
       "prepare": "husky",
       "metrics": "node scripts/collect-metrics.mjs",
       "metrics:dashboard": "node scripts/generate-dashboard.mjs"
