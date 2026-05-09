@@ -139,8 +139,7 @@ export const getCurrentSession = async (): Promise<Session | null> => {
    try {
       const { data } = await supabase.auth.getSession();
       return data.session;
-   } catch (err) {
-      console.error('Error getting session:', err);
+   } catch {
       return null;
    }
 };
@@ -161,8 +160,7 @@ export const getCurrentUser = async (): Promise<User | null> => {
          email: data.user.email || '',
          metadata: data.user.user_metadata,
       };
-   } catch (err) {
-      console.error('Error getting user:', err);
+   } catch {
       return null;
    }
 };
