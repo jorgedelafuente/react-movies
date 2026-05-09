@@ -54,9 +54,13 @@ function getLatest(metrics) {
 // ---------------------------------------------------------------------------
 
 function buildBundleChartData(metrics) {
-   const labels = metrics.map(e => e.date_full);
-   const jsData = metrics.map(e => +(e.bundle.totalJsSizeBytes / 1024).toFixed(2));
-   const cssData = metrics.map(e => +(e.bundle.totalCssSizeBytes / 1024).toFixed(2));
+   const labels = metrics.map((e) => e.date_full);
+   const jsData = metrics.map(
+      (e) => +(e.bundle.totalJsSizeBytes / 1024).toFixed(2)
+   );
+   const cssData = metrics.map(
+      (e) => +(e.bundle.totalCssSizeBytes / 1024).toFixed(2)
+   );
    const versionChanges = [];
    for (let i = 1; i < metrics.length; i++) {
       if (metrics[i].version !== metrics[i - 1].version) {
@@ -68,28 +72,32 @@ function buildBundleChartData(metrics) {
 
 function buildChunkBarData(latest) {
    if (!latest) return { labels: [], data: [], colors: [] };
-   const sorted = [...latest.bundle.chunks].sort((a, b) => b.sizeBytes - a.sizeBytes);
+   const sorted = [...latest.bundle.chunks].sort(
+      (a, b) => b.sizeBytes - a.sizeBytes
+   );
    return {
-      labels: sorted.map(c => stripHash(c.name)),
-      data: sorted.map(c => +(c.sizeBytes / 1024).toFixed(2)),
-      colors: sorted.map(c => (c.type === 'js' ? '#3b82f6' : '#22c55e')),
+      labels: sorted.map((c) => stripHash(c.name)),
+      data: sorted.map((c) => +(c.sizeBytes / 1024).toFixed(2)),
+      colors: sorted.map((c) => (c.type === 'js' ? '#3b82f6' : '#22c55e')),
    };
 }
 
 function buildComponentRankingData(latest) {
    if (!latest) return { labels: [], data: [] };
-   const sorted = [...latest.components].sort((a, b) => b.totalUsages - a.totalUsages);
+   const sorted = [...latest.components].sort(
+      (a, b) => b.totalUsages - a.totalUsages
+   );
    return {
-      labels: sorted.map(c => c.importedAs),
-      data: sorted.map(c => c.totalUsages),
+      labels: sorted.map((c) => c.importedAs),
+      data: sorted.map((c) => c.totalUsages),
    };
 }
 
 function buildComponentTableRows(latest) {
    if (!latest) return [];
-   return latest.components.map(c => {
+   return latest.components.map((c) => {
       const allProps = new Set();
-      c.usages.forEach(u => u.props.forEach(p => allProps.add(p)));
+      c.usages.forEach((u) => u.props.forEach((p) => allProps.add(p)));
       const shortName = c.component.split('/').pop();
       return {
          component: c.component,
@@ -97,7 +105,7 @@ function buildComponentTableRows(latest) {
          importedAs: c.importedAs,
          totalUsages: c.totalUsages,
          fileCount: c.usages.length,
-         files: c.usages.map(u => u.file),
+         files: c.usages.map((u) => u.file),
          propsUnion: [...allProps].sort().join(', ') || '—',
       };
    });
@@ -119,29 +127,31 @@ function buildPropFrequencyTable(latest) {
 }
 
 function buildGitHubChartData(metrics) {
-   const valid = metrics.filter(e => e.github !== null);
+   const valid = metrics.filter((e) => e.github !== null);
    if (valid.length < 2) return null;
    return {
-      labels: valid.map(e => e.date_full),
-      uniqueViews: valid.map(e => e.github.views14d.unique),
-      uniqueClones: valid.map(e => e.github.clones14d.unique),
+      labels: valid.map((e) => e.date_full),
+      uniqueViews: valid.map((e) => e.github.views14d.unique),
+      uniqueClones: valid.map((e) => e.github.clones14d.unique),
    };
 }
 
 function buildSpecVsProdStats(latest) {
    if (!latest) return [];
-   return latest.components.map(c => {
-      let prodUsages = 0;
-      let specUsages = 0;
-      for (const u of c.usages) {
-         if (/\.spec\.tsx?$/.test(u.file)) {
-            specUsages += u.props.length > 0 ? 1 : 1;
-         } else {
-            prodUsages += 1;
+   return latest.components
+      .map((c) => {
+         let prodUsages = 0;
+         let specUsages = 0;
+         for (const u of c.usages) {
+            if (/\.spec\.tsx?$/.test(u.file)) {
+               specUsages += u.props.length > 0 ? 1 : 1;
+            } else {
+               prodUsages += 1;
+            }
          }
-      }
-      return { importedAs: c.importedAs, prodUsages, specUsages };
-   }).filter(r => r.specUsages > 0 || r.prodUsages > 0);
+         return { importedAs: c.importedAs, prodUsages, specUsages };
+      })
+      .filter((r) => r.specUsages > 0 || r.prodUsages > 0);
 }
 
 function buildImportHeavyFiles(latest) {
@@ -226,7 +236,9 @@ function buildKpiRow(latest) {
    const jsBytes = latest.bundle.totalJsSizeBytes;
    const jsPct = jsBytes / JS_BUDGET_BYTES;
    const jsClass = jsPct >= 1 ? 'danger' : jsPct >= 0.9 ? 'warning' : '';
-   const jsBudgetNote = jsClass ? `${Math.round(jsPct * 100)}% of ${formatBytes(JS_BUDGET_BYTES)} budget` : '';
+   const jsBudgetNote = jsClass
+      ? `${Math.round(jsPct * 100)}% of ${formatBytes(JS_BUDGET_BYTES)} budget`
+      : '';
    const totalUsages = latest.components.reduce((s, c) => s + c.totalUsages, 0);
    return `
       <section class="kpi-row">
@@ -238,9 +250,10 @@ function buildKpiRow(latest) {
 }
 
 function buildBundleSection(metrics) {
-   const trendChart = metrics.length >= 2
-      ? buildChartCard('chart-bundle-trend', 'Bundle size over time')
-      : `<div class="chart-card"><h3>Bundle size over time</h3>${buildPlaceholder('Not enough data — need at least 2 data points')}</div>`;
+   const trendChart =
+      metrics.length >= 2
+         ? buildChartCard('chart-bundle-trend', 'Bundle size over time')
+         : `<div class="chart-card"><h3>Bundle size over time</h3>${buildPlaceholder('Not enough data — need at least 2 data points')}</div>`;
 
    return `
       ${buildSectionHeader('Bundle', 'bundle')}
@@ -250,14 +263,18 @@ function buildBundleSection(metrics) {
 
 function buildComponentDetailTable(rows) {
    if (rows.length === 0) return buildPlaceholder('No component data');
-   const trs = rows.map(r => `
+   const trs = rows
+      .map(
+         (r) => `
       <tr>
          <td><code>${htmlEscape(r.component)}</code></td>
          <td><strong>${htmlEscape(r.importedAs)}</strong></td>
          <td class="num">${r.totalUsages}</td>
          <td class="num">${r.fileCount}</td>
          <td class="props-cell">${htmlEscape(r.propsUnion)}</td>
-      </tr>`).join('');
+      </tr>`
+      )
+      .join('');
    return `
       <div class="table-wrap">
          <table>
@@ -271,14 +288,19 @@ function buildComponentDetailTable(rows) {
 }
 
 function buildSpecTable(stats) {
-   const relevant = stats.filter(r => r.specUsages > 0);
-   if (relevant.length === 0) return buildPlaceholder('No components found in spec files');
-   const trs = relevant.map(r => `
+   const relevant = stats.filter((r) => r.specUsages > 0);
+   if (relevant.length === 0)
+      return buildPlaceholder('No components found in spec files');
+   const trs = relevant
+      .map(
+         (r) => `
       <tr>
          <td><strong>${htmlEscape(r.importedAs)}</strong></td>
          <td class="num">${r.prodUsages}</td>
          <td class="num">${r.specUsages}</td>
-      </tr>`).join('');
+      </tr>`
+      )
+      .join('');
    return `
       <div class="table-wrap">
          <table>
@@ -290,11 +312,16 @@ function buildSpecTable(stats) {
 
 function buildPropFreqTableHtml(rows) {
    if (rows.length === 0) return buildPlaceholder('No prop data');
-   const trs = rows.slice(0, 20).map(r => `
+   const trs = rows
+      .slice(0, 20)
+      .map(
+         (r) => `
       <tr>
          <td><code>${htmlEscape(r.prop)}</code></td>
          <td class="num">${r.count}</td>
-      </tr>`).join('');
+      </tr>`
+      )
+      .join('');
    return `
       <div class="table-wrap">
          <table>
@@ -306,11 +333,16 @@ function buildPropFreqTableHtml(rows) {
 
 function buildImportHeavyTableHtml(rows) {
    if (rows.length === 0) return buildPlaceholder('No data');
-   const trs = rows.slice(0, 15).map(r => `
+   const trs = rows
+      .slice(0, 15)
+      .map(
+         (r) => `
       <tr>
          <td><code>${htmlEscape(r.file)}</code></td>
          <td class="num">${r.componentCount}</td>
-      </tr>`).join('');
+      </tr>`
+      )
+      .join('');
    return `
       <div class="table-wrap">
          <table>
@@ -330,7 +362,7 @@ function buildComponentsSection(latest) {
       ${buildSectionHeader('Components', 'components')}
       <div class="chart-card">
          <h3>Usage ranking</h3>
-         ${latest ? `<canvas id="chart-component-rank" height="${Math.max(200, (latest.components.length * 30))}"></canvas>` : buildPlaceholder('No data')}
+         ${latest ? `<canvas id="chart-component-rank" height="${Math.max(200, latest.components.length * 30)}"></canvas>` : buildPlaceholder('No data')}
       </div>
       <div class="chart-card">
          <h3>Component details</h3>
@@ -389,10 +421,12 @@ function buildHistorySection(metrics) {
          <div class="chart-card">${buildPlaceholder('No data collected yet')}</div>`;
    }
    const rows = [...metrics].reverse();
-   const trs = rows.map(e => {
-      const totalUsages = e.components?.reduce((s, c) => s + c.totalUsages, 0) ?? '—';
-      const stars = e.github?.stars ?? '—';
-      return `
+   const trs = rows
+      .map((e) => {
+         const totalUsages =
+            e.components?.reduce((s, c) => s + c.totalUsages, 0) ?? '—';
+         const stars = e.github?.stars ?? '—';
+         return `
          <tr>
             <td>${htmlEscape(formatDate(e.date_full))}</td>
             <td>${htmlEscape(e.version ?? '—')}</td>
@@ -402,7 +436,8 @@ function buildHistorySection(metrics) {
             <td class="num">${totalUsages}</td>
             <td class="num">${stars}</td>
          </tr>`;
-   }).join('');
+      })
+      .join('');
    return `
       ${buildSectionHeader('History', 'history')}
       <div class="chart-card">
@@ -491,7 +526,7 @@ tbody tr:hover td { background: rgba(99,102,241,0.04); }
 // ---------------------------------------------------------------------------
 
 function buildInitScript(bundleData, chunkData, componentData, ghChartData) {
-   const safeJSON = obj => JSON.stringify(obj);
+   const safeJSON = (obj) => JSON.stringify(obj);
 
    return `
 (function() {
@@ -751,7 +786,9 @@ async function main() {
    try {
       metrics = JSON.parse(await readFile(metricsPath, 'utf8'));
    } catch {
-      console.warn('[dashboard] metrics.json not found — generating empty dashboard');
+      console.warn(
+         '[dashboard] metrics.json not found — generating empty dashboard'
+      );
    }
 
    const html = buildDocument(metrics);
@@ -759,7 +796,7 @@ async function main() {
    console.log('[dashboard] written → metrics/dashboard.html');
 }
 
-main().catch(err => {
+main().catch((err) => {
    console.error('[dashboard] fatal:', err);
    process.exit(1);
 });

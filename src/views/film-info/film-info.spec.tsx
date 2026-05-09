@@ -12,7 +12,10 @@ describe('Film Info Component', () => {
       const queryClient = new QueryClient();
       const { getByTestId } = render(
          <QueryClientProvider client={queryClient}>
-            <FilmInfo filmInfo={MOCK_FILM_INFO} filmTrailer={MOCK_FILM_TRAILER} />
+            <FilmInfo
+               filmInfo={MOCK_FILM_INFO}
+               filmTrailer={MOCK_FILM_TRAILER}
+            />
          </QueryClientProvider>
       );
       const headingElement = getByTestId('film-info-title');

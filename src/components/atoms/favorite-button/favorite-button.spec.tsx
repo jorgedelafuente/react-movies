@@ -35,7 +35,9 @@ const renderButton = (props = {}) =>
 
 beforeEach(() => {
    vi.clearAllMocks();
-   useAuth.setState({ user: { id: 'user-123', email: 'test@example.com' } as never });
+   useAuth.setState({
+      user: { id: 'user-123', email: 'test@example.com' } as never,
+   });
    vi.mocked(useFavorites).mockReturnValue({
       favorites: [],
       isLoading: false,
@@ -57,7 +59,9 @@ describe('FavoriteButton', () => {
    describe('when user is logged in', () => {
       it('renders an "Add to favorites" button when film is not favorited', () => {
          renderButton();
-         expect(screen.getByRole('button', { name: 'Add to favorites' })).toBeInTheDocument();
+         expect(
+            screen.getByRole('button', { name: 'Add to favorites' })
+         ).toBeInTheDocument();
       });
 
       it('renders a "Remove from favorites" button when film is favorited', () => {
@@ -70,13 +74,22 @@ describe('FavoriteButton', () => {
          });
 
          renderButton();
-         expect(screen.getByRole('button', { name: 'Remove from favorites' })).toBeInTheDocument();
+         expect(
+            screen.getByRole('button', { name: 'Remove from favorites' })
+         ).toBeInTheDocument();
       });
 
       it('calls toggle with correct args when clicked', () => {
          renderButton();
-         fireEvent.click(screen.getByRole('button', { name: 'Add to favorites' }));
-         expect(mockToggle).toHaveBeenCalledWith(533535, 'Deadpool & Wolverine', '/poster.jpg', '2024-07-24');
+         fireEvent.click(
+            screen.getByRole('button', { name: 'Add to favorites' })
+         );
+         expect(mockToggle).toHaveBeenCalledWith(
+            533535,
+            'Deadpool & Wolverine',
+            '/poster.jpg',
+            '2024-07-24'
+         );
       });
 
       it('is disabled while a mutation is pending', () => {
@@ -89,12 +102,16 @@ describe('FavoriteButton', () => {
          });
 
          renderButton();
-         expect(screen.getByRole('button', { name: 'Add to favorites' })).toBeDisabled();
+         expect(
+            screen.getByRole('button', { name: 'Add to favorites' })
+         ).toBeDisabled();
       });
 
       it('applies custom className', () => {
          renderButton({ className: 'my-custom-class' });
-         expect(screen.getByRole('button', { name: 'Add to favorites' })).toHaveClass('my-custom-class');
+         expect(
+            screen.getByRole('button', { name: 'Add to favorites' })
+         ).toHaveClass('my-custom-class');
       });
    });
 });

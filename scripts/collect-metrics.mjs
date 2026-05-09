@@ -189,7 +189,7 @@ async function collectGitHubMetrics() {
 
    if (!token || !repository) {
       console.warn(
-         '[metrics] GITHUB_TOKEN or GITHUB_REPOSITORY not set — skipping GitHub metrics',
+         '[metrics] GITHUB_TOKEN or GITHUB_REPOSITORY not set — skipping GitHub metrics'
       );
       return null;
    }
@@ -241,7 +241,7 @@ async function main() {
    const date_full = now.toISOString();
 
    const { version } = JSON.parse(
-      await readFile(join(projectRoot, 'package.json'), 'utf8'),
+      await readFile(join(projectRoot, 'package.json'), 'utf8')
    );
 
    console.log(`[metrics] collecting bundle metrics...`);

@@ -41,17 +41,22 @@ Use `mcp__playwright__browser_evaluate` to inject axe-core from CDN and run it:
 ```js
 // Step 1 — inject
 const script = document.createElement('script');
-script.src = 'https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.10.0/axe.min.js';
+script.src =
+   'https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.10.0/axe.min.js';
 document.head.appendChild(script);
-await new Promise(r => script.onload = r);
+await new Promise((r) => (script.onload = r));
 
 // Step 2 — run
 const results = await axe.run();
-return results.violations.map(v => ({
-  id: v.id,
-  impact: v.impact,
-  description: v.description,
-  nodes: v.nodes.map(n => ({ target: n.target, html: n.html, failureSummary: n.failureSummary }))
+return results.violations.map((v) => ({
+   id: v.id,
+   impact: v.impact,
+   description: v.description,
+   nodes: v.nodes.map((n) => ({
+      target: n.target,
+      html: n.html,
+      failureSummary: n.failureSummary,
+   })),
 }));
 ```
 
@@ -65,19 +70,20 @@ For mobile: re-run at 375×667 viewport.
 Group violations by impact: **critical** → **serious** → **moderate** → **minor**.
 
 For each violation:
-- Map the `target` selector back to the source component in `src/`
-- Determine if it's fixable without changing visual design (most are: missing labels, wrong roles, contrast, focus management)
-- Skip violations caused by third-party content outside your control
+
+-  Map the `target` selector back to the source component in `src/`
+-  Determine if it's fixable without changing visual design (most are: missing labels, wrong roles, contrast, focus management)
+-  Skip violations caused by third-party content outside your control
 
 ### 4. Apply fixes
 
 Fix violations in order of severity. Common patterns in this codebase:
 
-- **Missing label on input**: add `aria-label` or associate a `<label>` — see [src/components/atoms/](src/components/atoms/) for the Input atom
-- **Button has no accessible name**: add `aria-label` to icon-only buttons (e.g. FavoriteButton, theme toggle)
-- **Missing landmark**: wrap page content in `<main>` if absent
-- **Focus not trapped in modal**: add `aria-modal="true"` and a focus-trap to the auth modal — see [src/components/auth/auth-modal/](src/components/auth/auth-modal/)
-- **Color contrast**: use the existing CSS variable system in [src/styles/index.css](src/styles/index.css) — do not hardcode hex values
+-  **Missing label on input**: add `aria-label` or associate a `<label>` — see [src/components/atoms/](src/components/atoms/) for the Input atom
+-  **Button has no accessible name**: add `aria-label` to icon-only buttons (e.g. FavoriteButton, theme toggle)
+-  **Missing landmark**: wrap page content in `<main>` if absent
+-  **Focus not trapped in modal**: add `aria-modal="true"` and a focus-trap to the auth modal — see [src/components/auth/auth-modal/](src/components/auth/auth-modal/)
+-  **Color contrast**: use the existing CSS variable system in [src/styles/index.css](src/styles/index.css) — do not hardcode hex values
 
 Follow all conventions in [CLAUDE.md](CLAUDE.md): 3-space indent, Tailwind `dark:` prefix, TypeScript strict mode, no inline comments unless non-obvious.
 
@@ -100,7 +106,7 @@ Fix any errors before finishing.
 Output a table:
 
 | Route / Component | Violations found | Violations fixed | Remaining (why) |
-|---|---|---|---|
+| ----------------- | ---------------- | ---------------- | --------------- |
 
 Then list each fix applied with the file path and a one-line description.
 If any violations remain unfixed, explain why (e.g. third-party, requires design change).

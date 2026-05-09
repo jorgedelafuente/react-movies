@@ -1,4 +1,4 @@
-import { expect,test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 import { MOCK_FILM_LIST } from '../__mocks__/mocks';
 

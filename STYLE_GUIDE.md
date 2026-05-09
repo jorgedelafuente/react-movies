@@ -846,12 +846,13 @@ className = 'text-copy text-sm';
 The project uses **Vitest v4.0.18** for unit and integration testing of React components and utilities.
 
 **Key Features:**
-- Vite-native test runner (fast, uses same config as dev server)
-- Jest-compatible API (easy migration from Jest)
-- React Testing Library integration
-- MSW (Mock Service Worker) for API mocking
-- Coverage reports with Istanbul
-- Interactive UI mode
+
+-  Vite-native test runner (fast, uses same config as dev server)
+-  Jest-compatible API (easy migration from Jest)
+-  React Testing Library integration
+-  MSW (Mock Service Worker) for API mocking
+-  Coverage reports with Istanbul
+-  Interactive UI mode
 
 ### Configuration
 
@@ -861,28 +862,28 @@ The project uses **Vitest v4.0.18** for unit and integration testing of React co
 /// <reference types="vitest/config" />
 
 export default defineConfig({
-  test: {
-    globals: true,                    // Use global test APIs (describe, it, expect)
-    environment: 'jsdom',             // Simulate browser environment
-    setupFiles: './src/tests/setupTests.ts',
-    css: true,                        // Process CSS imports
-    coverage: {
-      provider: 'istanbul',           // Code coverage tool
-    },
-    exclude: [
-      ...configDefaults.exclude,
-      'src/tests/e2e/*'               // Exclude Playwright tests
-    ],
-  },
+   test: {
+      globals: true, // Use global test APIs (describe, it, expect)
+      environment: 'jsdom', // Simulate browser environment
+      setupFiles: './src/tests/setupTests.ts',
+      css: true, // Process CSS imports
+      coverage: {
+         provider: 'istanbul', // Code coverage tool
+      },
+      exclude: [
+         ...configDefaults.exclude,
+         'src/tests/e2e/*', // Exclude Playwright tests
+      ],
+   },
 });
 ```
 
 #### Key Settings Explained
 
-- **`globals: true`**: No need to import `describe`, `it`, `expect` in every test file
-- **`environment: 'jsdom'`**: Provides DOM APIs (`document`, `window`) for React testing
-- **`setupFiles`**: Runs before all tests (extends matchers, configures MSW)
-- **`exclude`**: Prevents Playwright E2E tests from running with Vitest
+-  **`globals: true`**: No need to import `describe`, `it`, `expect` in every test file
+-  **`environment: 'jsdom'`**: Provides DOM APIs (`document`, `window`) for React testing
+-  **`setupFiles`**: Runs before all tests (extends matchers, configures MSW)
+-  **`exclude`**: Prevents Playwright E2E tests from running with Vitest
 
 ---
 
@@ -903,26 +904,28 @@ expect.extend(matchers);
 
 // Cleanup after each test
 afterEach(() => {
-  cleanup();
+   cleanup();
 });
 
 // Mock matchMedia (not available in jsdom)
 Object.defineProperty(globalThis, 'matchMedia', {
-  writable: true,
-  value: vi.fn().mockImplementation((query) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })),
+   writable: true,
+   value: vi.fn().mockImplementation((query) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+   })),
 });
 
 // MSW server setup
-export const handlers = [/* API handlers */];
+export const handlers = [
+   /* API handlers */
+];
 export const server = setupServer(...handlers);
 
 beforeAll(() => server.listen());
@@ -931,10 +934,11 @@ afterAll(() => server.close());
 ```
 
 **What it does:**
-- Adds Testing Library matchers (`.toBeInTheDocument()`, `.toBeVisible()`)
-- Auto-cleanup after each test (unmount components)
-- Mocks `matchMedia` for responsive design tests
-- Configures MSW for API mocking
+
+-  Adds Testing Library matchers (`.toBeInTheDocument()`, `.toBeVisible()`)
+-  Auto-cleanup after each test (unmount components)
+-  Mocks `matchMedia` for responsive design tests
+-  Configures MSW for API mocking
 
 ---
 
@@ -967,10 +971,10 @@ bun run test --grep "Counter"
 
 ```json
 {
-  "test": "vitest",
-  "test:silent": "vitest --silent",
-  "test:ui": "vitest --ui",
-  "coverage": "vitest run --coverage"
+   "test": "vitest",
+   "test:silent": "vitest --silent",
+   "test:ui": "vitest --ui",
+   "coverage": "vitest run --coverage"
 }
 ```
 
@@ -981,18 +985,21 @@ bun run test --grep "Counter"
 The project has **8 test files** covering components, views, and hooks:
 
 #### Component Tests
-- `/src/components/atoms/card/card.component.spec.tsx`
-- `/src/components/atoms/link/navlink.spec.tsx`
-- `/src/components/layout/navbar/search-input/search-input.spec.tsx`
+
+-  `/src/components/atoms/card/card.component.spec.tsx`
+-  `/src/components/atoms/link/navlink.spec.tsx`
+-  `/src/components/layout/navbar/search-input/search-input.spec.tsx`
 
 #### View Tests
-- `/src/views/about/about.spec.tsx`
-- `/src/views/about/counter.spec.tsx`
-- `/src/views/film-info/film-info.spec.tsx`
-- `/src/views/film-list/film-list.spec.tsx`
+
+-  `/src/views/about/about.spec.tsx`
+-  `/src/views/about/counter.spec.tsx`
+-  `/src/views/film-info/film-info.spec.tsx`
+-  `/src/views/film-list/film-list.spec.tsx`
 
 #### E2E Tests (Playwright)
-- `/src/tests/e2e/routes.e2e.spec.tsx`
+
+-  `/src/tests/e2e/routes.e2e.spec.tsx`
 
 ---
 
@@ -1005,24 +1012,25 @@ import { render, screen } from '@testing-library/react';
 import Counter from './counter.component';
 
 describe('Counter Component', () => {
-  it('renders counter title', () => {
-    render(<Counter />);
-    const title = screen.getByText(/current count:/i);
-    expect(title).toBeInTheDocument();
-  });
+   it('renders counter title', () => {
+      render(<Counter />);
+      const title = screen.getByText(/current count:/i);
+      expect(title).toBeInTheDocument();
+   });
 
-  it('renders increment button', () => {
-    render(<Counter />);
-    const button = screen.getByRole('button', { name: '👍 Increment' });
-    expect(button).toBeInTheDocument();
-  });
+   it('renders increment button', () => {
+      render(<Counter />);
+      const button = screen.getByRole('button', { name: '👍 Increment' });
+      expect(button).toBeInTheDocument();
+   });
 });
 ```
 
 **Pattern:**
-- Use `render()` to mount component
-- Use `screen.getByRole()` or `screen.getByText()` to find elements
-- Use Testing Library matchers (`.toBeInTheDocument()`, `.toBeVisible()`)
+
+-  Use `render()` to mount component
+-  Use `screen.getByRole()` or `screen.getByText()` to find elements
+-  Use Testing Library matchers (`.toBeInTheDocument()`, `.toBeVisible()`)
 
 ---
 
@@ -1033,20 +1041,21 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import Counter from './counter.component';
 
 it('increments counter when button is clicked', () => {
-  const { container } = render(<Counter />);
-  const button = screen.getByText('👍 Increment');
-  
-  fireEvent.click(button);
-  
-  const countValue = container.querySelector('span');
-  expect(countValue?.textContent).toBe('1');
+   const { container } = render(<Counter />);
+   const button = screen.getByText('👍 Increment');
+
+   fireEvent.click(button);
+
+   const countValue = container.querySelector('span');
+   expect(countValue?.textContent).toBe('1');
 });
 ```
 
 **Pattern:**
-- Use `fireEvent.click()`, `fireEvent.change()`, etc. for interactions
-- Query updated DOM to verify changes
-- Use `.toHaveTextContent()` for text assertions
+
+-  Use `fireEvent.click()`, `fireEvent.change()`, etc. for interactions
+-  Query updated DOM to verify changes
+-  Use `.toHaveTextContent()` for text assertions
 
 ---
 
@@ -1057,27 +1066,28 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { useCounterHook } from './counter.component';
 
 describe('useCounterHook', () => {
-  it('renders initial count', () => {
-    const { result } = renderHook(() => useCounterHook(1));
-    expect(result.current.count).toBe(1);
-  });
+   it('renders initial count', () => {
+      const { result } = renderHook(() => useCounterHook(1));
+      expect(result.current.count).toBe(1);
+   });
 
-  it('increments count', async () => {
-    const { result } = renderHook(() => useCounterHook(1));
-    
-    await waitFor(() => {
-      result.current.increment();
-    });
-    
-    expect(result.current.count).toBe(2);
-  });
+   it('increments count', async () => {
+      const { result } = renderHook(() => useCounterHook(1));
+
+      await waitFor(() => {
+         result.current.increment();
+      });
+
+      expect(result.current.count).toBe(2);
+   });
 });
 ```
 
 **Pattern:**
-- Use `renderHook()` to test hooks in isolation
-- Use `waitFor()` for async updates
-- Access hook values via `result.current`
+
+-  Use `renderHook()` to test hooks in isolation
+-  Use `waitFor()` for async updates
+-  Access hook values via `result.current`
 
 ---
 
@@ -1085,23 +1095,24 @@ describe('useCounterHook', () => {
 
 ```tsx
 it('decrements counter when decrement is clicked', () => {
-  render(<Counter countValue={0} />);
-  
-  const incrementButton = screen.getByRole('button', { name: '👍 Increment' });
-  const decrementButton = screen.getByRole('button', { name: '👎 Decrement' });
-  
-  fireEvent.click(incrementButton);
-  fireEvent.click(incrementButton);
-  fireEvent.click(decrementButton);
-  
-  const counterValue = screen.container.querySelector('span');
-  expect(counterValue).toHaveTextContent('1');
+   render(<Counter countValue={0} />);
+
+   const incrementButton = screen.getByRole('button', { name: '👍 Increment' });
+   const decrementButton = screen.getByRole('button', { name: '👎 Decrement' });
+
+   fireEvent.click(incrementButton);
+   fireEvent.click(incrementButton);
+   fireEvent.click(decrementButton);
+
+   const counterValue = screen.container.querySelector('span');
+   expect(counterValue).toHaveTextContent('1');
 });
 ```
 
 **Pattern:**
-- Pass props to `render()` like normal React usage
-- Test different prop combinations
+
+-  Pass props to `render()` like normal React usage
+-  Test different prop combinations
 
 ---
 
@@ -1115,25 +1126,26 @@ import Card from './card.component';
 const mockHandler = vi.fn();
 
 it('calls onClick when button is clicked', () => {
-  const { getByText } = render(
-    <Card>
-      <button onClick={mockHandler}>Click me!</button>
-    </Card>
-  );
-  
-  const button = getByText('click me!');
-  fireEvent.click(button);
-  fireEvent.click(button);
-  
-  expect(mockHandler).toHaveBeenCalledTimes(2);
-  expect(mockHandler.mock.calls).toHaveLength(2);
+   const { getByText } = render(
+      <Card>
+         <button onClick={mockHandler}>Click me!</button>
+      </Card>
+   );
+
+   const button = getByText('click me!');
+   fireEvent.click(button);
+   fireEvent.click(button);
+
+   expect(mockHandler).toHaveBeenCalledTimes(2);
+   expect(mockHandler.mock.calls).toHaveLength(2);
 });
 ```
 
 **Pattern:**
-- Use `vi.fn()` to create mock functions
-- Use `.toHaveBeenCalledTimes()`, `.toHaveBeenCalledWith()` to verify calls
-- Access call history via `.mock.calls`
+
+-  Use `vi.fn()` to create mock functions
+-  Use `.toHaveBeenCalledTimes()`, `.toHaveBeenCalledWith()` to verify calls
+-  Access call history via `.mock.calls`
 
 ---
 
@@ -1141,25 +1153,24 @@ it('calls onClick when button is clicked', () => {
 
 ```tsx
 it('applies correct styles to elements', () => {
-  const { getByText } = render(
-    <Card>
-      <div style={{ color: 'rgb(255,0,0)' }}>
-        <button style={{ color: 'rgb(22, 22, 22)' }}>
-          click me!
-        </button>
-      </div>
-    </Card>
-  );
-  
-  const button = getByText('click me!');
-  expect(button).toHaveStyle('color: rgb(22,22,22)');
-  expect(button.parentNode).toHaveStyle('color: rgb(255,0,0)');
+   const { getByText } = render(
+      <Card>
+         <div style={{ color: 'rgb(255,0,0)' }}>
+            <button style={{ color: 'rgb(22, 22, 22)' }}>click me!</button>
+         </div>
+      </Card>
+   );
+
+   const button = getByText('click me!');
+   expect(button).toHaveStyle('color: rgb(22,22,22)');
+   expect(button.parentNode).toHaveStyle('color: rgb(255,0,0)');
 });
 ```
 
 **Pattern:**
-- Use `.toHaveStyle()` to verify inline styles
-- Pass CSS property strings to matcher
+
+-  Use `.toHaveStyle()` to verify inline styles
+-  Pass CSS property strings to matcher
 
 ---
 
@@ -1174,12 +1185,12 @@ import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
 export const handlers = [
-  http.get('/user', async () => {
-    return HttpResponse.json({
-      id: '15d42a4d-1948-4de4-ba78-b8a893feaf45',
-      firstName: 'John',
-    });
-  }),
+   http.get('/user', async () => {
+      return HttpResponse.json({
+         id: '15d42a4d-1948-4de4-ba78-b8a893feaf45',
+         firstName: 'John',
+      });
+   }),
 ];
 
 export const server = setupServer(...handlers);
@@ -1196,28 +1207,26 @@ import { server } from '@/tests/setupTests';
 import { http, HttpResponse } from 'msw';
 
 it('handles API error', async () => {
-  // Override handler for this test
-  server.use(
-    http.get('/user', () => {
-      return HttpResponse.json(
-        { error: 'Not found' },
-        { status: 404 }
-      );
-    })
-  );
-  
-  render(<UserProfile />);
-  
-  await waitFor(() => {
-    expect(screen.getByText('Error loading user')).toBeVisible();
-  });
+   // Override handler for this test
+   server.use(
+      http.get('/user', () => {
+         return HttpResponse.json({ error: 'Not found' }, { status: 404 });
+      })
+   );
+
+   render(<UserProfile />);
+
+   await waitFor(() => {
+      expect(screen.getByText('Error loading user')).toBeVisible();
+   });
 });
 ```
 
 **Pattern:**
-- Define default handlers in `setupTests.ts`
-- Override handlers in individual tests with `server.use()`
-- Handlers reset automatically after each test
+
+-  Define default handlers in `setupTests.ts`
+-  Override handlers in individual tests with `server.use()`
+-  Handlers reset automatically after each test
 
 ---
 
@@ -1226,37 +1235,41 @@ it('handles API error', async () => {
 #### Query Priority (Best to Worst)
 
 1. **`getByRole()`** - Best for accessibility (queries by ARIA role)
+
    ```tsx
-   screen.getByRole('button', { name: 'Submit' })
-   screen.getByRole('heading', { level: 1 })
+   screen.getByRole('button', { name: 'Submit' });
+   screen.getByRole('heading', { level: 1 });
    ```
 
 2. **`getByLabelText()`** - Good for form inputs
+
    ```tsx
-   screen.getByLabelText('Email')
+   screen.getByLabelText('Email');
    ```
 
 3. **`getByPlaceholderText()`** - OK for inputs without labels
+
    ```tsx
-   screen.getByPlaceholderText('Search...')
+   screen.getByPlaceholderText('Search...');
    ```
 
 4. **`getByText()`** - Good for non-interactive content
+
    ```tsx
-   screen.getByText('Welcome back')
-   screen.getByText(/welcome/i)  // Case-insensitive regex
+   screen.getByText('Welcome back');
+   screen.getByText(/welcome/i); // Case-insensitive regex
    ```
 
 5. **`getByTestId()`** - Last resort (requires adding test IDs to code)
    ```tsx
-   screen.getByTestId('submit-button')
+   screen.getByTestId('submit-button');
    ```
 
 #### Query Variants
 
-- **`getBy`**: Throws error if not found (use for assertions)
-- **`queryBy`**: Returns `null` if not found (use to check absence)
-- **`findBy`**: Async, waits for element (use for delayed appearance)
+-  **`getBy`**: Throws error if not found (use for assertions)
+-  **`queryBy`**: Returns `null` if not found (use to check absence)
+-  **`findBy`**: Async, waits for element (use for delayed appearance)
 
 ```tsx
 // Element must exist
@@ -1275,36 +1288,41 @@ const data = await screen.findByText('Loaded data');
 ### Common Matchers
 
 #### Existence & Visibility
+
 ```tsx
-expect(element).toBeInTheDocument()
-expect(element).toBeVisible()
-expect(element).not.toBeInTheDocument()
+expect(element).toBeInTheDocument();
+expect(element).toBeVisible();
+expect(element).not.toBeInTheDocument();
 ```
 
 #### Text Content
+
 ```tsx
-expect(element).toHaveTextContent('Hello')
-expect(element).toContainHTML('<span>Hello</span>')
+expect(element).toHaveTextContent('Hello');
+expect(element).toContainHTML('<span>Hello</span>');
 ```
 
 #### Attributes
+
 ```tsx
-expect(input).toHaveValue('test@example.com')
-expect(input).toHaveAttribute('type', 'email')
-expect(checkbox).toBeChecked()
-expect(button).toBeDisabled()
+expect(input).toHaveValue('test@example.com');
+expect(input).toHaveAttribute('type', 'email');
+expect(checkbox).toBeChecked();
+expect(button).toBeDisabled();
 ```
 
 #### Styles
+
 ```tsx
-expect(element).toHaveStyle('color: red')
-expect(element).toHaveClass('active')
+expect(element).toHaveStyle('color: red');
+expect(element).toHaveClass('active');
 ```
 
 #### Form Interactions
+
 ```tsx
-expect(input).toHaveFocus()
-expect(form).toHaveFormValues({ email: 'test@test.com' })
+expect(input).toHaveFocus();
+expect(form).toHaveFormValues({ email: 'test@test.com' });
 ```
 
 ---
@@ -1314,6 +1332,7 @@ expect(form).toHaveFormValues({ email: 'test@test.com' })
 #### 1. Test User Behavior, Not Implementation
 
 **DON'T:**
+
 ```tsx
 // ❌ Testing internal state
 expect(component.state.count).toBe(1);
@@ -1323,6 +1342,7 @@ expect(button).toHaveClass('btn-primary');
 ```
 
 **DO:**
+
 ```tsx
 // ✅ Test what user sees
 expect(screen.getByText('Count: 1')).toBeVisible();
@@ -1334,6 +1354,7 @@ expect(button).toHaveStyle('background-color: blue');
 #### 2. Use Semantic Queries
 
 **DON'T:**
+
 ```tsx
 // ❌ Fragile CSS selectors
 container.querySelector('.btn-submit');
@@ -1343,6 +1364,7 @@ screen.getByTestId('submit-button');
 ```
 
 **DO:**
+
 ```tsx
 // ✅ Accessible queries
 screen.getByRole('button', { name: 'Submit' });
@@ -1352,6 +1374,7 @@ screen.getByLabelText('Email');
 #### 3. Avoid Implementation Details
 
 **DON'T:**
+
 ```tsx
 // ❌ Testing component internals
 expect(wrapper.find('InternalComponent')).toExist();
@@ -1361,6 +1384,7 @@ expect(handleClick).toHaveBeenCalled(); // Unless testing callbacks
 ```
 
 **DO:**
+
 ```tsx
 // ✅ Test observable behavior
 expect(screen.getByText('Success!')).toBeVisible();
@@ -1369,26 +1393,29 @@ expect(screen.getByText('Success!')).toBeVisible();
 #### 4. Keep Tests Simple
 
 **DON'T:**
+
 ```tsx
 // ❌ Too much setup, testing too many things
 it('does everything', () => {
-  // 50 lines of setup
-  // Tests 10 different behaviors
+   // 50 lines of setup
+   // Tests 10 different behaviors
 });
 ```
 
 **DO:**
+
 ```tsx
 // ✅ One behavior per test
 it('shows success message after submit', () => {
-  // Focused setup
-  // Single assertion
+   // Focused setup
+   // Single assertion
 });
 ```
 
 #### 5. Use `waitFor` for Async Updates
 
 **DON'T:**
+
 ```tsx
 // ❌ Race condition
 fireEvent.click(button);
@@ -1396,11 +1423,12 @@ expect(screen.getByText('Loaded')).toBeVisible(); // Might fail
 ```
 
 **DO:**
+
 ```tsx
 // ✅ Wait for async update
 fireEvent.click(button);
 await waitFor(() => {
-  expect(screen.getByText('Loaded')).toBeVisible();
+   expect(screen.getByText('Loaded')).toBeVisible();
 });
 ```
 
@@ -1417,6 +1445,7 @@ open coverage/index.html
 ```
 
 **Coverage thresholds** (configure in `vite.config.ts`):
+
 ```typescript
 test: {
   coverage: {
@@ -1478,7 +1507,7 @@ Vitest runs in CI environments automatically. The `process.env.CI` flag enables 
 - name: Upload coverage
   uses: codecov/codecov-action@v3
   with:
-    files: ./coverage/coverage-final.json
+     files: ./coverage/coverage-final.json
 ```
 
 **NOTE:** Currently, unit tests are **not** included in the existing GitHub Actions workflows. Only Playwright E2E tests run in CI. See [GitHub Actions Integration](#github-actions-integration) below.
@@ -1492,12 +1521,13 @@ bun run test:ui
 ```
 
 **Features:**
-- Visual test runner in browser
-- Filter and search tests
-- See pass/fail status in real-time
-- View console logs and errors
-- Re-run individual tests
-- Code coverage visualization
+
+-  Visual test runner in browser
+-  Filter and search tests
+-  See pass/fail status in real-time
+-  View console logs and errors
+-  Re-run individual tests
+-  Code coverage visualization
 
 ---
 
@@ -1507,30 +1537,36 @@ bun run test:ui
 
 ```tsx
 it('debugs component output', () => {
-  const { container } = render(<Counter />);
-  
-  // Print rendered HTML
-  screen.debug();
-  
-  // Print specific element
-  screen.debug(screen.getByRole('button'));
-  
-  // Print entire DOM
-  console.log(container.innerHTML);
+   const { container } = render(<Counter />);
+
+   // Print rendered HTML
+   screen.debug();
+
+   // Print specific element
+   screen.debug(screen.getByRole('button'));
+
+   // Print entire DOM
+   console.log(container.innerHTML);
 });
 ```
 
 #### 2. VS Code Debugging
 
 Add to `.vscode/launch.json`:
+
 ```json
 {
-  "type": "node",
-  "request": "launch",
-  "name": "Debug Vitest",
-  "runtimeExecutable": "bun",
-  "runtimeArgs": ["test", "--run", "--inspect-brk", "--no-file-parallelization"],
-  "console": "integratedTerminal"
+   "type": "node",
+   "request": "launch",
+   "name": "Debug Vitest",
+   "runtimeExecutable": "bun",
+   "runtimeArgs": [
+      "test",
+      "--run",
+      "--inspect-brk",
+      "--no-file-parallelization"
+   ],
+   "console": "integratedTerminal"
 }
 ```
 
@@ -1576,7 +1612,7 @@ expect(screen.getByText('Updated')).toBeVisible();
 // ✅ Waits for update
 fireEvent.click(button);
 await waitFor(() => {
-  expect(screen.getByText('Updated')).toBeVisible();
+   expect(screen.getByText('Updated')).toBeVisible();
 });
 ```
 
@@ -1585,6 +1621,7 @@ await waitFor(() => {
 ### Quick Reference
 
 **Essential Commands:**
+
 ```bash
 bun run test           # Watch mode
 bun run test:silent          # Run once
@@ -1593,27 +1630,30 @@ bun run coverage          # Coverage report
 ```
 
 **Common Queries:**
+
 ```tsx
-screen.getByRole('button', { name: 'Submit' })
-screen.getByLabelText('Email')
-screen.getByText(/welcome/i)
-screen.getByPlaceholderText('Search...')
+screen.getByRole('button', { name: 'Submit' });
+screen.getByLabelText('Email');
+screen.getByText(/welcome/i);
+screen.getByPlaceholderText('Search...');
 ```
 
 **Common Actions:**
+
 ```tsx
-fireEvent.click(button)
-fireEvent.change(input, { target: { value: 'text' } })
-fireEvent.submit(form)
+fireEvent.click(button);
+fireEvent.change(input, { target: { value: 'text' } });
+fireEvent.submit(form);
 ```
 
 **Common Matchers:**
+
 ```tsx
-expect(element).toBeInTheDocument()
-expect(element).toBeVisible()
-expect(element).toHaveTextContent('text')
-expect(element).toHaveValue('value')
-expect(mockFn).toHaveBeenCalledTimes(2)
+expect(element).toBeInTheDocument();
+expect(element).toBeVisible();
+expect(element).toHaveTextContent('text');
+expect(element).toHaveValue('value');
+expect(mockFn).toHaveBeenCalledTimes(2);
 ```
 
 ---
@@ -1625,11 +1665,12 @@ expect(mockFn).toHaveBeenCalledTimes(2)
 The project uses **Playwright v1.58.2** for end-to-end testing across multiple browsers.
 
 **Key Features:**
-- Multi-browser testing (Chromium, Firefox, WebKit)
-- Automatic dev server startup
-- API mocking capabilities
-- Screenshot and trace collection
-- Parallel test execution
+
+-  Multi-browser testing (Chromium, Firefox, WebKit)
+-  Automatic dev server startup
+-  API mocking capabilities
+-  Screenshot and trace collection
+-  Parallel test execution
 
 ### Configuration
 
@@ -1637,37 +1678,37 @@ The project uses **Playwright v1.58.2** for end-to-end testing across multiple b
 
 ```typescript
 export default defineConfig({
-  testDir: './src/tests',
-  baseURL: 'http://localhost:5173',
-  fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
-  use: {
-    baseURL: 'http://localhost:5173',
-    trace: 'on-first-retry',
-  },
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
-  ],
-  webServer: {
-    command: 'bun run dev',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
-  },
+   testDir: './src/tests',
+   baseURL: 'http://localhost:5173',
+   fullyParallel: true,
+   forbidOnly: !!process.env.CI,
+   retries: process.env.CI ? 2 : 0,
+   workers: process.env.CI ? 1 : undefined,
+   reporter: 'html',
+   use: {
+      baseURL: 'http://localhost:5173',
+      trace: 'on-first-retry',
+   },
+   projects: [
+      { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+      { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+      { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+   ],
+   webServer: {
+      command: 'bun run dev',
+      url: 'http://localhost:5173',
+      reuseExistingServer: !process.env.CI,
+   },
 });
 ```
 
 #### Key Settings Explained
 
-- **`testDir`**: `./src/tests` - All test files go here
-- **`baseURL`**: Tests use relative URLs (e.g., `page.goto('./')`)
-- **`fullyParallel`**: Tests run concurrently for speed
-- **`webServer`**: Automatically starts dev server before tests
-- **`reuseExistingServer`**: Reuses running server locally (CI starts fresh)
+-  **`testDir`**: `./src/tests` - All test files go here
+-  **`baseURL`**: Tests use relative URLs (e.g., `page.goto('./')`)
+-  **`fullyParallel`**: Tests run concurrently for speed
+-  **`webServer`**: Automatically starts dev server before tests
+-  **`reuseExistingServer`**: Reuses running server locally (CI starts fresh)
 
 ---
 
@@ -1699,9 +1740,9 @@ bunx playwright show-report
 
 ```json
 {
-  "playwright": "playwright test",
-  "playwright:ui": "playwright test --ui",
-  "playwright:debug": "playwright test --debug"
+   "playwright": "playwright test",
+   "playwright:ui": "playwright test --ui",
+   "playwright:debug": "playwright test --debug"
 }
 ```
 
@@ -1715,39 +1756,42 @@ bunx playwright show-report
 
 ```tsx
 test('Homepage has application title', async ({ page }) => {
-  await page.goto('./');
-  await page.screenshot({ path: 'screenshot0.png' });
-  await expect(page).toHaveTitle(/React Movies - Vite & Typescript/);
+   await page.goto('./');
+   await page.screenshot({ path: 'screenshot0.png' });
+   await expect(page).toHaveTitle(/React Movies - Vite & Typescript/);
 });
 ```
 
 **What it tests:**
-- Navigates to homepage
-- Takes screenshot (saved as `screenshot0.png`)
-- Verifies page title matches regex
+
+-  Navigates to homepage
+-  Takes screenshot (saved as `screenshot0.png`)
+-  Verifies page title matches regex
 
 #### Test 2: Content Rendering with API Mocking
 
 ```tsx
 test('Homepage Renders Content Correct', async ({ page }) => {
-  await page.route('*/**/movie/*', async (route) => {
-    await route.fulfill({ json: mockFilmsList });
-  });
-  await page.goto('./');
-  await expect(page.getByText('The Substance')).toBeVisible();
+   await page.route('*/**/movie/*', async (route) => {
+      await route.fulfill({ json: mockFilmsList });
+   });
+   await page.goto('./');
+   await expect(page.getByText('The Substance')).toBeVisible();
 });
 ```
 
 **What it tests:**
-- Intercepts API calls matching `*/**/movie/*` pattern
-- Returns mock data (`mockFilmsList`) instead of real API response
-- Verifies specific movie title is visible on page
+
+-  Intercepts API calls matching `*/**/movie/*` pattern
+-  Returns mock data (`mockFilmsList`) instead of real API response
+-  Verifies specific movie title is visible on page
 
 **Why mock APIs:**
-- Faster tests (no network requests)
-- Predictable data (no flakiness from API changes)
-- Works offline
-- Avoids rate limits
+
+-  Faster tests (no network requests)
+-  Predictable data (no flakiness from API changes)
+-  Works offline
+-  Avoids rate limits
 
 ---
 
@@ -1759,13 +1803,13 @@ test('Homepage Renders Content Correct', async ({ page }) => {
 import { test, expect } from '@playwright/test';
 
 test.describe('Feature Name', () => {
-  test('should do something', async ({ page }) => {
-    // Test logic
-  });
+   test('should do something', async ({ page }) => {
+      // Test logic
+   });
 
-  test('should handle error case', async ({ page }) => {
-    // Error test logic
-  });
+   test('should handle error case', async ({ page }) => {
+      // Error test logic
+   });
 });
 ```
 
@@ -1846,10 +1890,7 @@ await page.route('*/**/api/movies', (route) => route.continue());
 await page.waitForSelector('.movie-card');
 
 // Wait for navigation
-await Promise.all([
-  page.waitForNavigation(),
-  page.click('a[href="/login"]'),
-]);
+await Promise.all([page.waitForNavigation(), page.click('a[href="/login"]')]);
 
 // Wait for API response
 await page.waitForResponse('*/**/api/movies');
@@ -1875,6 +1916,7 @@ await page.pause();
 #### 1. Use Semantic Selectors
 
 **DO:**
+
 ```tsx
 // ✅ GOOD - Uses accessible roles
 await page.getByRole('button', { name: 'Login' });
@@ -1883,6 +1925,7 @@ await page.getByText('Welcome back');
 ```
 
 **DON'T:**
+
 ```tsx
 // ❌ BAD - Brittle CSS selectors
 await page.locator('.btn-primary');
@@ -1895,23 +1938,25 @@ await page.locator('div > span > p');
 ```tsx
 // ✅ GOOD - Tests are fast and predictable
 test('displays movie list', async ({ page }) => {
-  await page.route('*/**/api/movies', async (route) => {
-    await route.fulfill({ json: mockData });
-  });
-  await page.goto('./');
-  await expect(page.getByText('Movie Title')).toBeVisible();
+   await page.route('*/**/api/movies', async (route) => {
+      await route.fulfill({ json: mockData });
+   });
+   await page.goto('./');
+   await expect(page.getByText('Movie Title')).toBeVisible();
 });
 ```
 
 #### 3. Avoid Hard-Coded Waits
 
 **DON'T:**
+
 ```tsx
 // ❌ BAD - Arbitrary wait times
 await page.waitForTimeout(5000);
 ```
 
 **DO:**
+
 ```tsx
 // ✅ GOOD - Wait for specific condition
 await page.waitForSelector('.movie-card');
@@ -1922,11 +1967,11 @@ await expect(page.getByText('Loading...')).toBeHidden();
 
 ```tsx
 test.afterEach(async ({ page }) => {
-  // Clear localStorage
-  await page.evaluate(() => localStorage.clear());
-  
-  // Clear cookies
-  await page.context().clearCookies();
+   // Clear localStorage
+   await page.evaluate(() => localStorage.clear());
+
+   // Clear cookies
+   await page.context().clearCookies();
 });
 ```
 
@@ -1950,16 +1995,19 @@ When testing features that require authentication:
 
 ```tsx
 test('user can access profile', async ({ page }) => {
-  // Set auth state in localStorage before navigating
-  await page.addInitScript(() => {
-    localStorage.setItem('auth', JSON.stringify({
-      user: { id: '123', email: 'test@example.com' },
-      session: { access_token: 'mock-token' }
-    }));
-  });
-  
-  await page.goto('./profile');
-  await expect(page.getByText('test@example.com')).toBeVisible();
+   // Set auth state in localStorage before navigating
+   await page.addInitScript(() => {
+      localStorage.setItem(
+         'auth',
+         JSON.stringify({
+            user: { id: '123', email: 'test@example.com' },
+            session: { access_token: 'mock-token' },
+         })
+      );
+   });
+
+   await page.goto('./profile');
+   await expect(page.getByText('test@example.com')).toBeVisible();
 });
 ```
 
@@ -1969,13 +2017,13 @@ test('user can access profile', async ({ page }) => {
 import { test as setup } from '@playwright/test';
 
 setup('authenticate', async ({ page }) => {
-  await page.goto('./login');
-  await page.fill('[name="email"]', 'test@example.com');
-  await page.fill('[name="password"]', 'password123');
-  await page.click('button[type="submit"]');
-  
-  // Save storage state
-  await page.context().storageState({ path: 'auth.json' });
+   await page.goto('./login');
+   await page.fill('[name="email"]', 'test@example.com');
+   await page.fill('[name="password"]', 'password123');
+   await page.click('button[type="submit"]');
+
+   // Save storage state
+   await page.context().storageState({ path: 'auth.json' });
 });
 
 // Use in other tests
@@ -2010,8 +2058,8 @@ workers: process.env.CI ? 1 : undefined, // Sequential in CI
   if: always()
   uses: actions/upload-artifact@v3
   with:
-    name: playwright-report
-    path: playwright-report/
+     name: playwright-report
+     path: playwright-report/
 ```
 
 ---
@@ -2025,10 +2073,11 @@ bun run playwright:ui
 ```
 
 **Features:**
-- See tests run in real-time
-- Pause and step through actions
-- Inspect DOM at each step
-- Time-travel through test execution
+
+-  See tests run in real-time
+-  Pause and step through actions
+-  Inspect DOM at each step
+-  Time-travel through test execution
 
 #### Debug Mode
 
@@ -2037,10 +2086,11 @@ bun run playwright:debug
 ```
 
 **Features:**
-- Opens Playwright Inspector
-- Step through test line by line
-- Pick locators interactively
-- See console logs
+
+-  Opens Playwright Inspector
+-  Step through test line by line
+-  Pick locators interactively
+-  See console logs
 
 #### Headed Mode
 
@@ -2049,9 +2099,10 @@ bun run playwright --headed
 ```
 
 **Features:**
-- Watch browser window during test
-- See what the test sees
-- Useful for visual debugging
+
+-  Watch browser window during test
+-  See what the test sees
+-  Useful for visual debugging
 
 ---
 
@@ -2064,6 +2115,7 @@ bun run playwright --headed
 ```
 
 **Fix:** Ensure port 5173 is not in use
+
 ```bash
 # Kill process on port 5173
 lsof -ti:5173 | xargs kill -9
@@ -2085,14 +2137,16 @@ await page.click('.movie-card');
 #### 3. Flaky Tests
 
 **Causes:**
-- Race conditions (element not loaded yet)
-- Network delays
-- Animation timing
+
+-  Race conditions (element not loaded yet)
+-  Network delays
+-  Animation timing
 
 **Fixes:**
-- Use `waitForSelector()` or `expect().toBeVisible()`
-- Mock API responses instead of relying on network
-- Use `page.waitForLoadState('networkidle')` if needed
+
+-  Use `waitForSelector()` or `expect().toBeVisible()`
+-  Mock API responses instead of relying on network
+-  Use `page.waitForLoadState('networkidle')` if needed
 
 #### 4. Browser Not Installed
 
@@ -2101,6 +2155,7 @@ await page.click('.movie-card');
 ```
 
 **Fix:**
+
 ```bash
 bunx playwright install chromium
 # or install all browsers
@@ -2129,19 +2184,21 @@ src/
 ### Browser Capabilities
 
 **Playwright can:**
-- Run tests across Chromium, Firefox, WebKit
-- Execute in headless or headed mode
-- Take screenshots and videos
-- Intercept and mock network requests
-- Emulate mobile devices
-- Test responsive design
-- Handle file uploads/downloads
-- Test keyboard and mouse interactions
+
+-  Run tests across Chromium, Firefox, WebKit
+-  Execute in headless or headed mode
+-  Take screenshots and videos
+-  Intercept and mock network requests
+-  Emulate mobile devices
+-  Test responsive design
+-  Handle file uploads/downloads
+-  Test keyboard and mouse interactions
 
 **Playwright cannot:**
-- Access your local browser's history/bookmarks
-- Use your browser extensions
-- Access your personal accounts (unless you log in during tests)
+
+-  Access your local browser's history/bookmarks
+-  Use your browser extensions
+-  Access your personal accounts (unless you log in during tests)
 
 **Note:** Claude Code does not have direct visual access to the browser. It can run Playwright commands and analyze results/logs, but cannot "see" the browser window.
 
@@ -2150,6 +2207,7 @@ src/
 ### Quick Reference
 
 **Essential Commands:**
+
 ```bash
 bun run playwright                # Run all tests
 bun run playwright:ui         # Interactive mode
@@ -2159,21 +2217,23 @@ bunx playwright show-report       # View HTML report
 ```
 
 **Common Locators:**
+
 ```tsx
-page.getByRole('button', { name: 'Click' })  // By ARIA role
-page.getByLabel('Email')                     // By label text
-page.getByText('Welcome')                    // By text content
-page.getByPlaceholder('Search...')           // By placeholder
-page.locator('.custom-class')                // By CSS selector
+page.getByRole('button', { name: 'Click' }); // By ARIA role
+page.getByLabel('Email'); // By label text
+page.getByText('Welcome'); // By text content
+page.getByPlaceholder('Search...'); // By placeholder
+page.locator('.custom-class'); // By CSS selector
 ```
 
 **Common Assertions:**
+
 ```tsx
-expect(page).toHaveTitle(/Title/)            // Page title
-expect(page).toHaveURL(/url/)                // Current URL
-expect(element).toBeVisible()                // Element visibility
-expect(element).toHaveText('Text')           // Text content
-expect(element).toHaveCount(5)               // Element count
+expect(page).toHaveTitle(/Title/); // Page title
+expect(page).toHaveURL(/url/); // Current URL
+expect(element).toBeVisible(); // Element visibility
+expect(element).toHaveText('Text'); // Text content
+expect(element).toHaveCount(5); // Element count
 ```
 
 ---
@@ -2196,41 +2256,44 @@ The project has **4 GitHub Actions workflows** configured:
 **Location:** `.github/workflows/playwright.yml`
 
 **Triggers:**
-- Push to `main` or `master` branch
-- Pull requests to `main` or `master` branch
+
+-  Push to `main` or `master` branch
+-  Pull requests to `main` or `master` branch
 
 **What it does:**
+
 ```yaml
 name: Playwright Tests
 on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
+   push:
+      branches: [main, master]
+   pull_request:
+      branches: [main, master]
 jobs:
-  test:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-      - name: Install dependencies
-        run: bun install
-      - name: Install Playwright Browsers
-        run: bunx playwright install --with-deps
-      - name: Run Playwright tests
-        run: bun run playwright
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+   test:
+      timeout-minutes: 60
+      runs-on: ubuntu-latest
+      steps:
+         - uses: actions/checkout@v4
+         - uses: actions/setup-node@v4
+           with:
+              node-version: lts/*
+         - name: Install dependencies
+           run: bun install
+         - name: Install Playwright Browsers
+           run: bunx playwright install --with-deps
+         - name: Run Playwright tests
+           run: bun run playwright
+         - uses: actions/upload-artifact@v4
+           if: ${{ !cancelled() }}
+           with:
+              name: playwright-report
+              path: playwright-report/
+              retention-days: 30
 ```
 
 **Key steps:**
+
 1. Checkout code
 2. Setup Node.js LTS
 3. Install Bun and dependencies
@@ -2245,12 +2308,14 @@ jobs:
 **Location:** `.github/workflows/main.yml`
 
 **Triggers:**
-- Any push to any branch
+
+-  Any push to any branch
 
 **What it does:**
-- Prints demo messages about GitHub Actions
-- Lists repository files
-- Basic smoke test for CI functionality
+
+-  Prints demo messages about GitHub Actions
+-  Lists repository files
+-  Basic smoke test for CI functionality
 
 **Purpose:** Demo/learning workflow, not critical for project
 
@@ -2261,11 +2326,13 @@ jobs:
 **Location:** `.github/workflows/manual.yml`
 
 **Triggers:**
-- Manually triggered from GitHub UI
+
+-  Manually triggered from GitHub UI
 
 **What it does:**
-- Accepts a `name` input parameter
-- Prints a greeting message
+
+-  Accepts a `name` input parameter
+-  Prints a greeting message
 
 **Purpose:** Example of manual workflow dispatch, not critical for project
 
@@ -2276,24 +2343,28 @@ jobs:
 **Location:** `.github/workflows/ci.yml`
 
 **Triggers:**
-- Push to `main` or `master` branch
-- Pull requests to `main` or `master` branch
+
+-  Push to `main` or `master` branch
+-  Pull requests to `main` or `master` branch
 
 **What's Running:**
 
 #### ✅ Code Quality Job
-- **ESLint** - Lints all TypeScript/React code (`bun run lint`)
-- **Prettier** - Checks code formatting (`bun run format --check`)
-- **TypeScript** - Type checking and build (`bun run build`)
+
+-  **ESLint** - Lints all TypeScript/React code (`bun run lint`)
+-  **Prettier** - Checks code formatting (`bun run format --check`)
+-  **TypeScript** - Type checking and build (`bun run build`)
 
 #### ✅ Unit Tests Job
-- **Vitest** - Runs all unit tests (`bun run test:silent`)
-- **Coverage** - Generates coverage report (`bun run coverage`)
-- **Artifacts** - Uploads coverage report for analysis
+
+-  **Vitest** - Runs all unit tests (`bun run test:silent`)
+-  **Coverage** - Generates coverage report (`bun run coverage`)
+-  **Artifacts** - Uploads coverage report for analysis
 
 #### ✅ E2E Tests Job
-- **Playwright** - Runs E2E tests across 3 browsers (`bun run playwright`)
-- **Artifacts** - Uploads Playwright HTML report
+
+-  **Playwright** - Runs E2E tests across 3 browsers (`bun run playwright`)
+-  **Artifacts** - Uploads Playwright HTML report
 
 **Workflow structure** (`.github/workflows/ci.yml`):
 
@@ -2301,91 +2372,92 @@ jobs:
 name: CI
 
 on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
+   push:
+      branches: [main, master]
+   pull_request:
+      branches: [main, master]
 
 jobs:
-  quality:
-    name: Code Quality
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.3.11
-      
-      - name: Install dependencies
-        run: bun install
-      
-      - name: Run ESLint
-        run: bun run lint
-      
-      - name: Check formatting
-        run: bun run format --check
-      
-      - name: Type check
-        run: bun run build
-  
-  unit-tests:
-    name: Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.3.11
-      
-      - name: Install dependencies
-        run: bun install
-      
-      - name: Run Vitest
-        run: bun run test:silent
-      
-      - name: Generate coverage
-        run: bun run coverage
-      
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          files: ./coverage/coverage-final.json
-  
-  e2e-tests:
-    name: E2E Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.3.11
-      
-      - name: Install dependencies
-        run: bun install
-      
-      - name: Install Playwright Browsers
-        run: bunx playwright install --with-deps
-      
-      - name: Run Playwright tests
-        run: bun run playwright
-      
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+   quality:
+      name: Code Quality
+      runs-on: ubuntu-latest
+      steps:
+         - uses: actions/checkout@v4
+
+         - uses: oven-sh/setup-bun@v2
+           with:
+              bun-version: 1.3.11
+
+         - name: Install dependencies
+           run: bun install
+
+         - name: Run ESLint
+           run: bun run lint
+
+         - name: Check formatting
+           run: bun run format --check
+
+         - name: Type check
+           run: bun run build
+
+   unit-tests:
+      name: Unit Tests
+      runs-on: ubuntu-latest
+      steps:
+         - uses: actions/checkout@v4
+
+         - uses: oven-sh/setup-bun@v2
+           with:
+              bun-version: 1.3.11
+
+         - name: Install dependencies
+           run: bun install
+
+         - name: Run Vitest
+           run: bun run test:silent
+
+         - name: Generate coverage
+           run: bun run coverage
+
+         - name: Upload coverage to Codecov
+           uses: codecov/codecov-action@v3
+           with:
+              files: ./coverage/coverage-final.json
+
+   e2e-tests:
+      name: E2E Tests
+      runs-on: ubuntu-latest
+      steps:
+         - uses: actions/checkout@v4
+
+         - uses: oven-sh/setup-bun@v2
+           with:
+              bun-version: 1.3.11
+
+         - name: Install dependencies
+           run: bun install
+
+         - name: Install Playwright Browsers
+           run: bunx playwright install --with-deps
+
+         - name: Run Playwright tests
+           run: bun run playwright
+
+         - uses: actions/upload-artifact@v4
+           if: ${{ !cancelled() }}
+           with:
+              name: playwright-report
+              path: playwright-report/
+              retention-days: 30
 ```
 
 This workflow:
-- ✅ Runs ESLint, Prettier, TypeScript checks
-- ✅ Runs Vitest unit tests with coverage
-- ✅ Runs Playwright E2E tests
-- ✅ Runs all checks in parallel for speed
-- ✅ Uploads coverage and test reports
+
+-  ✅ Runs ESLint, Prettier, TypeScript checks
+-  ✅ Runs Vitest unit tests with coverage
+-  ✅ Runs Playwright E2E tests
+-  ✅ Runs all checks in parallel for speed
+-  ✅ Uploads coverage and test reports
 
 ---
 
@@ -2401,10 +2473,10 @@ This workflow:
 
 #### In Pull Requests
 
-- CI status shows at bottom of PR
-- Green checkmark = all checks passed
-- Red X = some checks failed
-- Click "Details" to see logs
+-  CI status shows at bottom of PR
+-  Green checkmark = all checks passed
+-  Red X = some checks failed
+-  Click "Details" to see logs
 
 ---
 
@@ -2430,29 +2502,31 @@ This workflow:
 ```yaml
 - uses: actions/setup-node@v4
   with:
-    node-version: lts/*
-    bun-version: 1.3.11  # Bun handles its own caching
+     node-version: lts/*
+     bun-version: 1.3.11 # Bun handles its own caching
 ```
 
 #### 4. Matrix Testing (Optional)
 
 Test across multiple Node versions:
+
 ```yaml
 strategy:
-  matrix:
-    node-version: [18, 20, 22]
+   matrix:
+      node-version: [18, 20, 22]
 steps:
-  - uses: actions/setup-node@v4
-    with:
-      node-version: ${{ matrix.node-version }}
+   - uses: actions/setup-node@v4
+     with:
+        node-version: ${{ matrix.node-version }}
 ```
 
 #### 5. Required Status Checks
 
 In GitHub repo settings:
-- **Settings** → **Branches** → **Branch protection rules**
-- Require status checks to pass before merging
-- Select: "Playwright Tests", "Unit Tests", "ESLint", etc.
+
+-  **Settings** → **Branches** → **Branch protection rules**
+-  Require status checks to pass before merging
+-  Select: "Playwright Tests", "Unit Tests", "ESLint", etc.
 
 ---
 
@@ -2466,6 +2540,7 @@ bun run lint && bun run format && bun run test:silent && bun run build
 ```
 
 **Or set up pre-commit hook** (`.git/hooks/pre-commit`):
+
 ```bash
 #!/bin/sh
 bun run lint
@@ -2474,23 +2549,26 @@ bun run test:silent
 ```
 
 **Or use Husky + lint-staged:**
+
 ```bash
 bun add -d husky lint-staged
 ```
 
 `.husky/pre-commit`:
+
 ```bash
 #!/bin/sh
 bun run lint-staged
 ```
 
 `package.json`:
+
 ```json
 {
-  "lint-staged": {
-    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
-    "*.{css,md,json}": ["prettier --write"]
-  }
+   "lint-staged": {
+      "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+      "*.{css,md,json}": ["prettier --write"]
+   }
 }
 ```
 
@@ -2503,20 +2581,22 @@ bun run lint-staged
 **Cause:** Race conditions, different screen size, network timing
 
 **Fix:**
-- Use `waitFor()` for async elements
-- Mock API responses with MSW
-- Set explicit viewport size in config
+
+-  Use `waitFor()` for async elements
+-  Mock API responses with MSW
+-  Set explicit viewport size in config
 
 #### Out of Memory Errors
 
 **Cause:** Large dependencies, parallel test execution
 
 **Fix:**
+
 ```yaml
 - name: Run tests
   run: bun run test:silent
   env:
-    NODE_OPTIONS: '--max_old_space_size=4096'
+     NODE_OPTIONS: '--max_old_space_size=4096'
 ```
 
 #### Flaky Tests
@@ -2524,34 +2604,38 @@ bun run lint-staged
 **Cause:** Non-deterministic tests, timing issues
 
 **Fix:**
-- Add retries in config: `retries: process.env.CI ? 2 : 0`
-- Use deterministic test data
-- Mock time-based functionality
+
+-  Add retries in config: `retries: process.env.CI ? 2 : 0`
+-  Use deterministic test data
+-  Mock time-based functionality
 
 ---
 
 ### Quick Reference
 
 **Current CI workflows:**
-- ✅ **Comprehensive CI** (`.github/workflows/ci.yml`) - All quality checks
-  - ESLint linting
-  - Prettier format checking
-  - TypeScript type checking
-  - Vitest unit tests with coverage
-  - Playwright E2E tests
-- ✅ Playwright E2E tests (`.github/workflows/playwright.yml`) - Legacy workflow
-- ℹ️ Demo workflow (`.github/workflows/main.yml`) - Basic demo
-- ℹ️ Manual workflow (`.github/workflows/manual.yml`) - Manual trigger
+
+-  ✅ **Comprehensive CI** (`.github/workflows/ci.yml`) - All quality checks
+   -  ESLint linting
+   -  Prettier format checking
+   -  TypeScript type checking
+   -  Vitest unit tests with coverage
+   -  Playwright E2E tests
+-  ✅ Playwright E2E tests (`.github/workflows/playwright.yml`) - Legacy workflow
+-  ℹ️ Demo workflow (`.github/workflows/main.yml`) - Basic demo
+-  ℹ️ Manual workflow (`.github/workflows/manual.yml`) - Manual trigger
 
 **All quality checks running in CI:**
-- ✅ ESLint (`bun run lint`)
-- ✅ Prettier (`bun run format --check`)
-- ✅ TypeScript (`bun run build`)
-- ✅ Vitest (`bun run test:silent`)
-- ✅ Coverage report (`bun run coverage`)
-- ✅ Playwright E2E (`bun run playwright`)
+
+-  ✅ ESLint (`bun run lint`)
+-  ✅ Prettier (`bun run format --check`)
+-  ✅ TypeScript (`bun run build`)
+-  ✅ Vitest (`bun run test:silent`)
+-  ✅ Coverage report (`bun run coverage`)
+-  ✅ Playwright E2E (`bun run playwright`)
 
 **Recommended next steps:**
+
 1. ✅ ~~Create comprehensive CI workflow with all quality checks~~ (Done!)
 2. Set up branch protection rules in GitHub
 3. Configure pre-commit hooks locally (Husky + lint-staged)

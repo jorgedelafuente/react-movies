@@ -7,8 +7,12 @@ import { useAuth } from '@/utils/hooks/useAuth';
 import LoginForm from './login-form.component';
 
 const INITIAL_STATE = {
-   user: null, session: null, isLoading: false, error: null,
-   isModalOpen: true, modalMode: AUTH_MODAL_MODE.LOGIN,
+   user: null,
+   session: null,
+   isLoading: false,
+   error: null,
+   isModalOpen: true,
+   modalMode: AUTH_MODAL_MODE.LOGIN,
 };
 
 beforeEach(() => {
@@ -20,7 +24,9 @@ describe('LoginForm', () => {
       render(<LoginForm />);
       expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
+      expect(
+         screen.getByRole('button', { name: /sign in/i })
+      ).toBeInTheDocument();
    });
 
    it('calls signIn with entered credentials on submit', async () => {
@@ -29,15 +35,25 @@ describe('LoginForm', () => {
 
       render(<LoginForm />);
 
-      fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'test@example.com' } });
-      fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'password123' } });
+      fireEvent.change(screen.getByLabelText(/email/i), {
+         target: { value: 'test@example.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/password/i), {
+         target: { value: 'password123' },
+      });
       fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
-      expect(mockSignIn).toHaveBeenCalledWith('test@example.com', 'password123');
+      expect(mockSignIn).toHaveBeenCalledWith(
+         'test@example.com',
+         'password123'
+      );
    });
 
    it('shows error message when auth error is set', () => {
-      useAuth.setState({ ...INITIAL_STATE, error: { message: 'Invalid credentials' } });
+      useAuth.setState({
+         ...INITIAL_STATE,
+         error: { message: 'Invalid credentials' },
+      });
 
       render(<LoginForm />);
 
@@ -60,7 +76,10 @@ describe('LoginForm', () => {
       render(<LoginForm />);
       fireEvent.click(screen.getByText(/forgot password/i));
 
-      expect(mockSetModalOpen).toHaveBeenCalledWith(true, AUTH_MODAL_MODE.RESET_PASSWORD);
+      expect(mockSetModalOpen).toHaveBeenCalledWith(
+         true,
+         AUTH_MODAL_MODE.RESET_PASSWORD
+      );
    });
 
    it('switches to register modal on "Register" click', () => {
@@ -70,6 +89,9 @@ describe('LoginForm', () => {
       render(<LoginForm />);
       fireEvent.click(screen.getByText('Register'));
 
-      expect(mockSetModalOpen).toHaveBeenCalledWith(true, AUTH_MODAL_MODE.SIGNUP);
+      expect(mockSetModalOpen).toHaveBeenCalledWith(
+         true,
+         AUTH_MODAL_MODE.SIGNUP
+      );
    });
 });

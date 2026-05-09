@@ -47,7 +47,9 @@ const LoginForm = () => {
          <div className="flex flex-col items-center gap-1 text-sm text-copy">
             <button
                type="button"
-               onClick={() => setModalOpen(true, AUTH_MODAL_MODE.RESET_PASSWORD)}
+               onClick={() =>
+                  setModalOpen(true, AUTH_MODAL_MODE.RESET_PASSWORD)
+               }
                className="hover:text-sky-500"
             >
                Forgot password?

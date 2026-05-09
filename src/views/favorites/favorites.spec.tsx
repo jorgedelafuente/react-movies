@@ -9,8 +9,18 @@ import { useFavorites } from '@/utils/hooks/useFavorites';
 import FavoritesView from './favorites.view';
 
 vi.mock('@tanstack/react-router', async (importOriginal) => {
-   const actual = await importOriginal<typeof import('@tanstack/react-router')>();
-   return { ...actual, Link: ({ children, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { to?: string; params?: Record<string, string> }) => <a {...props}>{children}</a> };
+   const actual =
+      await importOriginal<typeof import('@tanstack/react-router')>();
+   return {
+      ...actual,
+      Link: ({
+         children,
+         ...props
+      }: React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+         to?: string;
+         params?: Record<string, string>;
+      }) => <a {...props}>{children}</a>,
+   };
 });
 
 vi.mock('@/utils/hooks/useFavorites', () => ({
@@ -53,7 +63,9 @@ const renderView = () =>
 
 beforeEach(() => {
    vi.clearAllMocks();
-   useAuth.setState({ user: { id: 'user-123', email: 'test@example.com' } as never });
+   useAuth.setState({
+      user: { id: 'user-123', email: 'test@example.com' } as never,
+   });
    vi.mocked(useFavorites).mockReturnValue({
       favorites: MOCK_FAVORITES,
       isLoading: false,
@@ -66,7 +78,9 @@ beforeEach(() => {
 describe('FavoritesView', () => {
    it('renders the page heading', () => {
       renderView();
-      expect(screen.getByRole('heading', { name: /my favorites/i })).toBeInTheDocument();
+      expect(
+         screen.getByRole('heading', { name: /my favorites/i })
+      ).toBeInTheDocument();
    });
 
    it('shows loading text while fetching', () => {
@@ -92,7 +106,9 @@ describe('FavoritesView', () => {
       });
 
       renderView();
-      expect(screen.getByText(/you haven't saved any favorites yet/i)).toBeInTheDocument();
+      expect(
+         screen.getByText(/you haven't saved any favorites yet/i)
+      ).toBeInTheDocument();
       expect(screen.getByText('Browse films')).toBeInTheDocument();
    });
 

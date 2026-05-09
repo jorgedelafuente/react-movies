@@ -21,21 +21,21 @@ Pass any fragment of the roadmap item's title. If `$ARGUMENTS` is empty, list al
 
 ### 1. Identify the item
 
-- Read [ROADMAP.md](ROADMAP.md).
-- Find the item matching `$ARGUMENTS` (fuzzy match on title).
-- If multiple items match, list them and stop — ask the user to clarify.
-- Read the full item text including any sub-bullets for acceptance criteria.
+-  Read [ROADMAP.md](ROADMAP.md).
+-  Find the item matching `$ARGUMENTS` (fuzzy match on title).
+-  If multiple items match, list them and stop — ask the user to clarify.
+-  Read the full item text including any sub-bullets for acceptance criteria.
 
 ### 2. Understand the codebase
 
 Before writing a single line, read every file that the change will touch:
 
-- Follow imports to understand the data flow.
-- Check existing component patterns in the same directory.
-- Read [CLAUDE.md](CLAUDE.md) for conventions (3-space indent, Tailwind dark mode via `dark:`, path alias `@/`, strict TypeScript, etc.).
-- If the item involves auth: read [src/utils/hooks/useAuth.ts](src/utils/hooks/useAuth.ts) and [src/services/supabase/auth.ts](src/services/supabase/auth.ts).
-- If the item involves UI: read the nearest sibling component for Tailwind class patterns.
-- If the item involves routing: read [src/routes/__root.tsx](src/routes/__root.tsx) and the relevant route file.
+-  Follow imports to understand the data flow.
+-  Check existing component patterns in the same directory.
+-  Read [CLAUDE.md](CLAUDE.md) for conventions (3-space indent, Tailwind dark mode via `dark:`, path alias `@/`, strict TypeScript, etc.).
+-  If the item involves auth: read [src/utils/hooks/useAuth.ts](src/utils/hooks/useAuth.ts) and [src/services/supabase/auth.ts](src/services/supabase/auth.ts).
+-  If the item involves UI: read the nearest sibling component for Tailwind class patterns.
+-  If the item involves routing: read [src/routes/\_\_root.tsx](src/routes/__root.tsx) and the relevant route file.
 
 ### 3. Plan before coding
 
@@ -45,12 +45,12 @@ Write a short plan (3–5 bullet points) stating exactly which files you will cr
 
 Apply the changes according to the plan:
 
-- Follow all conventions in [CLAUDE.md](CLAUDE.md).
-- Mobile-first Tailwind: start without breakpoint prefixes, layer `sm:` / `md:` / `lg:` on top.
-- CSS variables for colours so `dark:` mode works automatically.
-- No new dependencies unless unavoidable — check `package.json` first.
-- TypeScript strict mode: no `any`, no `!` non-null unless a comment explains why.
-- Do not add comments except for non-obvious invariants.
+-  Follow all conventions in [CLAUDE.md](CLAUDE.md).
+-  Mobile-first Tailwind: start without breakpoint prefixes, layer `sm:` / `md:` / `lg:` on top.
+-  CSS variables for colours so `dark:` mode works automatically.
+-  No new dependencies unless unavoidable — check `package.json` first.
+-  TypeScript strict mode: no `any`, no `!` non-null unless a comment explains why.
+-  Do not add comments except for non-obvious invariants.
 
 ### 5. Validate
 
@@ -78,7 +78,8 @@ Run the commit using the project's git hooks (do not use `--no-verify`).
 ### 7. Report
 
 Output:
-- Which roadmap item was implemented
-- Files created / modified (with line ranges for key changes)
-- The commit hash
-- Any follow-up items the roadmap should reference (e.g. a new item that this unblocks)
+
+-  Which roadmap item was implemented
+-  Files created / modified (with line ranges for key changes)
+-  The commit hash
+-  Any follow-up items the roadmap should reference (e.g. a new item that this unblocks)

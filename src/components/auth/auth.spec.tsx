@@ -3,7 +3,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { configureAxe } from 'vitest-axe';
 
 vi.mock('@tanstack/react-router', async (importOriginal) => {
-   const actual = await importOriginal<typeof import('@tanstack/react-router')>();
+   const actual =
+      await importOriginal<typeof import('@tanstack/react-router')>();
    return { ...actual, useNavigate: () => vi.fn() };
 });
 

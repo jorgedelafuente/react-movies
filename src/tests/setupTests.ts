@@ -5,7 +5,7 @@ import * as matchers from '@testing-library/jest-dom/matchers';
 import { cleanup } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
-import { afterEach,expect } from 'vitest';
+import { afterEach, expect } from 'vitest';
 import * as axeMatchers from 'vitest-axe/matchers';
 
 expect.extend(matchers);

@@ -10,195 +10,195 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as IndexImport } from './routes/index'
-import { Route as UpcomingIndexImport } from './routes/upcoming/index'
-import { Route as TopRatedIndexImport } from './routes/top-rated/index'
-import { Route as PopularIndexImport } from './routes/popular/index'
-import { Route as FavoritesIndexImport } from './routes/favorites/index'
-import { Route as AboutIndexImport } from './routes/about/index'
-import { Route as FilmFilmIdImport } from './routes/film/$filmId'
+import { Route as rootRoute } from './routes/__root';
+import { Route as IndexImport } from './routes/index';
+import { Route as UpcomingIndexImport } from './routes/upcoming/index';
+import { Route as TopRatedIndexImport } from './routes/top-rated/index';
+import { Route as PopularIndexImport } from './routes/popular/index';
+import { Route as FavoritesIndexImport } from './routes/favorites/index';
+import { Route as AboutIndexImport } from './routes/about/index';
+import { Route as FilmFilmIdImport } from './routes/film/$filmId';
 
 // Create/Update Routes
 
 const IndexRoute = IndexImport.update({
-  path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
+   path: '/',
+   getParentRoute: () => rootRoute,
+} as any);
 
 const UpcomingIndexRoute = UpcomingIndexImport.update({
-  path: '/upcoming/',
-  getParentRoute: () => rootRoute,
-} as any)
+   path: '/upcoming/',
+   getParentRoute: () => rootRoute,
+} as any);
 
 const TopRatedIndexRoute = TopRatedIndexImport.update({
-  path: '/top-rated/',
-  getParentRoute: () => rootRoute,
-} as any)
+   path: '/top-rated/',
+   getParentRoute: () => rootRoute,
+} as any);
 
 const PopularIndexRoute = PopularIndexImport.update({
-  path: '/popular/',
-  getParentRoute: () => rootRoute,
-} as any)
+   path: '/popular/',
+   getParentRoute: () => rootRoute,
+} as any);
 
 const FavoritesIndexRoute = FavoritesIndexImport.update({
-  path: '/favorites/',
-  getParentRoute: () => rootRoute,
-} as any)
+   path: '/favorites/',
+   getParentRoute: () => rootRoute,
+} as any);
 
 const AboutIndexRoute = AboutIndexImport.update({
-  path: '/about/',
-  getParentRoute: () => rootRoute,
-} as any)
+   path: '/about/',
+   getParentRoute: () => rootRoute,
+} as any);
 
 const FilmFilmIdRoute = FilmFilmIdImport.update({
-  path: '/film/$filmId',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/film/$filmId.lazy').then((d) => d.Route))
+   path: '/film/$filmId',
+   getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/film/$filmId.lazy').then((d) => d.Route));
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/film/$filmId': {
-      id: '/film/$filmId'
-      path: '/film/$filmId'
-      fullPath: '/film/$filmId'
-      preLoaderRoute: typeof FilmFilmIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/about/': {
-      id: '/about/'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/favorites/': {
-      id: '/favorites/'
-      path: '/favorites'
-      fullPath: '/favorites'
-      preLoaderRoute: typeof FavoritesIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/popular/': {
-      id: '/popular/'
-      path: '/popular'
-      fullPath: '/popular'
-      preLoaderRoute: typeof PopularIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/top-rated/': {
-      id: '/top-rated/'
-      path: '/top-rated'
-      fullPath: '/top-rated'
-      preLoaderRoute: typeof TopRatedIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/upcoming/': {
-      id: '/upcoming/'
-      path: '/upcoming'
-      fullPath: '/upcoming'
-      preLoaderRoute: typeof UpcomingIndexImport
-      parentRoute: typeof rootRoute
-    }
-  }
+   interface FileRoutesByPath {
+      '/': {
+         id: '/';
+         path: '/';
+         fullPath: '/';
+         preLoaderRoute: typeof IndexImport;
+         parentRoute: typeof rootRoute;
+      };
+      '/film/$filmId': {
+         id: '/film/$filmId';
+         path: '/film/$filmId';
+         fullPath: '/film/$filmId';
+         preLoaderRoute: typeof FilmFilmIdImport;
+         parentRoute: typeof rootRoute;
+      };
+      '/about/': {
+         id: '/about/';
+         path: '/about';
+         fullPath: '/about';
+         preLoaderRoute: typeof AboutIndexImport;
+         parentRoute: typeof rootRoute;
+      };
+      '/favorites/': {
+         id: '/favorites/';
+         path: '/favorites';
+         fullPath: '/favorites';
+         preLoaderRoute: typeof FavoritesIndexImport;
+         parentRoute: typeof rootRoute;
+      };
+      '/popular/': {
+         id: '/popular/';
+         path: '/popular';
+         fullPath: '/popular';
+         preLoaderRoute: typeof PopularIndexImport;
+         parentRoute: typeof rootRoute;
+      };
+      '/top-rated/': {
+         id: '/top-rated/';
+         path: '/top-rated';
+         fullPath: '/top-rated';
+         preLoaderRoute: typeof TopRatedIndexImport;
+         parentRoute: typeof rootRoute;
+      };
+      '/upcoming/': {
+         id: '/upcoming/';
+         path: '/upcoming';
+         fullPath: '/upcoming';
+         preLoaderRoute: typeof UpcomingIndexImport;
+         parentRoute: typeof rootRoute;
+      };
+   }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/film/$filmId': typeof FilmFilmIdRoute
-  '/about': typeof AboutIndexRoute
-  '/favorites': typeof FavoritesIndexRoute
-  '/popular': typeof PopularIndexRoute
-  '/top-rated': typeof TopRatedIndexRoute
-  '/upcoming': typeof UpcomingIndexRoute
+   '/': typeof IndexRoute;
+   '/film/$filmId': typeof FilmFilmIdRoute;
+   '/about': typeof AboutIndexRoute;
+   '/favorites': typeof FavoritesIndexRoute;
+   '/popular': typeof PopularIndexRoute;
+   '/top-rated': typeof TopRatedIndexRoute;
+   '/upcoming': typeof UpcomingIndexRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/film/$filmId': typeof FilmFilmIdRoute
-  '/about': typeof AboutIndexRoute
-  '/favorites': typeof FavoritesIndexRoute
-  '/popular': typeof PopularIndexRoute
-  '/top-rated': typeof TopRatedIndexRoute
-  '/upcoming': typeof UpcomingIndexRoute
+   '/': typeof IndexRoute;
+   '/film/$filmId': typeof FilmFilmIdRoute;
+   '/about': typeof AboutIndexRoute;
+   '/favorites': typeof FavoritesIndexRoute;
+   '/popular': typeof PopularIndexRoute;
+   '/top-rated': typeof TopRatedIndexRoute;
+   '/upcoming': typeof UpcomingIndexRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/film/$filmId': typeof FilmFilmIdRoute
-  '/about/': typeof AboutIndexRoute
-  '/favorites/': typeof FavoritesIndexRoute
-  '/popular/': typeof PopularIndexRoute
-  '/top-rated/': typeof TopRatedIndexRoute
-  '/upcoming/': typeof UpcomingIndexRoute
+   __root__: typeof rootRoute;
+   '/': typeof IndexRoute;
+   '/film/$filmId': typeof FilmFilmIdRoute;
+   '/about/': typeof AboutIndexRoute;
+   '/favorites/': typeof FavoritesIndexRoute;
+   '/popular/': typeof PopularIndexRoute;
+   '/top-rated/': typeof TopRatedIndexRoute;
+   '/upcoming/': typeof UpcomingIndexRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/film/$filmId'
-    | '/about'
-    | '/favorites'
-    | '/popular'
-    | '/top-rated'
-    | '/upcoming'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/film/$filmId'
-    | '/about'
-    | '/favorites'
-    | '/popular'
-    | '/top-rated'
-    | '/upcoming'
-  id:
-    | '__root__'
-    | '/'
-    | '/film/$filmId'
-    | '/about/'
-    | '/favorites/'
-    | '/popular/'
-    | '/top-rated/'
-    | '/upcoming/'
-  fileRoutesById: FileRoutesById
+   fileRoutesByFullPath: FileRoutesByFullPath;
+   fullPaths:
+      | '/'
+      | '/film/$filmId'
+      | '/about'
+      | '/favorites'
+      | '/popular'
+      | '/top-rated'
+      | '/upcoming';
+   fileRoutesByTo: FileRoutesByTo;
+   to:
+      | '/'
+      | '/film/$filmId'
+      | '/about'
+      | '/favorites'
+      | '/popular'
+      | '/top-rated'
+      | '/upcoming';
+   id:
+      | '__root__'
+      | '/'
+      | '/film/$filmId'
+      | '/about/'
+      | '/favorites/'
+      | '/popular/'
+      | '/top-rated/'
+      | '/upcoming/';
+   fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  FilmFilmIdRoute: typeof FilmFilmIdRoute
-  AboutIndexRoute: typeof AboutIndexRoute
-  FavoritesIndexRoute: typeof FavoritesIndexRoute
-  PopularIndexRoute: typeof PopularIndexRoute
-  TopRatedIndexRoute: typeof TopRatedIndexRoute
-  UpcomingIndexRoute: typeof UpcomingIndexRoute
+   IndexRoute: typeof IndexRoute;
+   FilmFilmIdRoute: typeof FilmFilmIdRoute;
+   AboutIndexRoute: typeof AboutIndexRoute;
+   FavoritesIndexRoute: typeof FavoritesIndexRoute;
+   PopularIndexRoute: typeof PopularIndexRoute;
+   TopRatedIndexRoute: typeof TopRatedIndexRoute;
+   UpcomingIndexRoute: typeof UpcomingIndexRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  FilmFilmIdRoute: FilmFilmIdRoute,
-  AboutIndexRoute: AboutIndexRoute,
-  FavoritesIndexRoute: FavoritesIndexRoute,
-  PopularIndexRoute: PopularIndexRoute,
-  TopRatedIndexRoute: TopRatedIndexRoute,
-  UpcomingIndexRoute: UpcomingIndexRoute,
-}
+   IndexRoute: IndexRoute,
+   FilmFilmIdRoute: FilmFilmIdRoute,
+   AboutIndexRoute: AboutIndexRoute,
+   FavoritesIndexRoute: FavoritesIndexRoute,
+   PopularIndexRoute: PopularIndexRoute,
+   TopRatedIndexRoute: TopRatedIndexRoute,
+   UpcomingIndexRoute: UpcomingIndexRoute,
+};
 
 export const routeTree = rootRoute
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+   ._addFileChildren(rootRouteChildren)
+   ._addFileTypes<FileRouteTypes>();
 
 /* prettier-ignore-end */
 

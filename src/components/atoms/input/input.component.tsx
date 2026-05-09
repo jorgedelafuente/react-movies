@@ -28,9 +28,7 @@ export const Input = ({
          )}
          <input
             className={`placeholder-text-copy w-full border-2 border-solid bg-neutral px-2 py-1 text-copy ${
-               error
-                  ? 'border-red-500'
-                  : 'border-secondary-background-color'
+               error ? 'border-red-500' : 'border-secondary-background-color'
             }`}
             type={type}
             id={id}

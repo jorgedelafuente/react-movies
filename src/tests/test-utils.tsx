@@ -30,10 +30,7 @@ export const renderWithQueryContext = (
    return render(ui, { wrapper: Wrapper, ...options });
 };
 
-export const renderWithAxe = async (
-   ui: React.ReactNode,
-   options = {}
-) => {
+export const renderWithAxe = async (ui: React.ReactNode, options = {}) => {
    const result = renderWithQueryContext(ui, options);
    const violations = await axe(result.container);
    return { ...result, violations };

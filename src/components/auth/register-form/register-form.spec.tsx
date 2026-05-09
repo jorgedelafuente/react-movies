@@ -7,8 +7,12 @@ import { useAuth } from '@/utils/hooks/useAuth';
 import RegisterForm from './register-form.component';
 
 const INITIAL_STATE = {
-   user: null, session: null, isLoading: false, error: null,
-   isModalOpen: true, modalMode: AUTH_MODAL_MODE.SIGNUP,
+   user: null,
+   session: null,
+   isLoading: false,
+   error: null,
+   isModalOpen: true,
+   modalMode: AUTH_MODAL_MODE.SIGNUP,
 };
 
 beforeEach(() => {
@@ -21,14 +25,20 @@ describe('RegisterForm', () => {
       expect(screen.getByLabelText(/^email/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/^password/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/confirm password/i)).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /create account/i })).toBeInTheDocument();
+      expect(
+         screen.getByRole('button', { name: /create account/i })
+      ).toBeInTheDocument();
    });
 
    it('shows inline error when passwords do not match', () => {
       render(<RegisterForm />);
 
-      fireEvent.change(screen.getByLabelText(/^password/i), { target: { value: 'abc123' } });
-      fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'different' } });
+      fireEvent.change(screen.getByLabelText(/^password/i), {
+         target: { value: 'abc123' },
+      });
+      fireEvent.change(screen.getByLabelText(/confirm password/i), {
+         target: { value: 'different' },
+      });
       fireEvent.click(screen.getByRole('button', { name: /create account/i }));
 
       expect(screen.getByText(/passwords do not match/i)).toBeInTheDocument();
@@ -39,8 +49,12 @@ describe('RegisterForm', () => {
       useAuth.setState({ ...INITIAL_STATE, signUp: mockSignUp });
 
       render(<RegisterForm />);
-      fireEvent.change(screen.getByLabelText(/^password/i), { target: { value: 'abc123' } });
-      fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'different' } });
+      fireEvent.change(screen.getByLabelText(/^password/i), {
+         target: { value: 'abc123' },
+      });
+      fireEvent.change(screen.getByLabelText(/confirm password/i), {
+         target: { value: 'different' },
+      });
       fireEvent.click(screen.getByRole('button', { name: /create account/i }));
 
       expect(mockSignUp).not.toHaveBeenCalled();
@@ -51,16 +65,25 @@ describe('RegisterForm', () => {
       useAuth.setState({ ...INITIAL_STATE, signUp: mockSignUp });
 
       render(<RegisterForm />);
-      fireEvent.change(screen.getByLabelText(/^email/i), { target: { value: 'new@example.com' } });
-      fireEvent.change(screen.getByLabelText(/^password/i), { target: { value: 'abc123' } });
-      fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'abc123' } });
+      fireEvent.change(screen.getByLabelText(/^email/i), {
+         target: { value: 'new@example.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/^password/i), {
+         target: { value: 'abc123' },
+      });
+      fireEvent.change(screen.getByLabelText(/confirm password/i), {
+         target: { value: 'abc123' },
+      });
       fireEvent.click(screen.getByRole('button', { name: /create account/i }));
 
       expect(mockSignUp).toHaveBeenCalledWith('new@example.com', 'abc123');
    });
 
    it('shows auth error message from store', () => {
-      useAuth.setState({ ...INITIAL_STATE, error: { message: 'Email already registered' } });
+      useAuth.setState({
+         ...INITIAL_STATE,
+         error: { message: 'Email already registered' },
+      });
 
       render(<RegisterForm />);
 
@@ -72,7 +95,9 @@ describe('RegisterForm', () => {
 
       render(<RegisterForm />);
 
-      expect(screen.getByRole('button', { name: /creating account/i })).toBeDisabled();
+      expect(
+         screen.getByRole('button', { name: /creating account/i })
+      ).toBeDisabled();
    });
 
    it('switches to login modal on "Sign in" click', () => {
@@ -82,6 +107,9 @@ describe('RegisterForm', () => {
       render(<RegisterForm />);
       fireEvent.click(screen.getByText('Sign in'));
 
-      expect(mockSetModalOpen).toHaveBeenCalledWith(true, AUTH_MODAL_MODE.LOGIN);
+      expect(mockSetModalOpen).toHaveBeenCalledWith(
+         true,
+         AUTH_MODAL_MODE.LOGIN
+      );
    });
 });
