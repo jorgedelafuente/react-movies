@@ -110,7 +110,7 @@ export const useAuth = create<AuthState>((set) => ({
       set({ user, session });
 
       const subscription = authService.onAuthStateChange(
-         async (event, session) => {
+         async (_event, session) => {
             if (session) {
                const user = await authService.getCurrentUser();
                set({ user, session });
