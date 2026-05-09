@@ -5,6 +5,7 @@ const backgroundColors = {
       DEFAULT: 'hsl(var(--color-bg-neutral) / <alpha-value>)',
       inverted: 'hsl(var(--color-bg-neutral-inverted) / <alpha-value>)',
    },
+   subtle: 'hsl(var(--color-bg-subtle) / <alpha-value>)',
 };
 
 const borderColors = {

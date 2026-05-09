@@ -1,8 +1,10 @@
 import axios from 'redaxios';
 
 import {
+   FilmCreditsSchema,
    FilmInfoSchema,
    FilmListSchema,
+   FilmRecommendationsSchema,
    FilmVideoListSchema,
 } from '@/types/films.schemas';
 
@@ -18,33 +20,33 @@ const paramOptions = {
    movieInfo: (filmId: number) => `movie/${filmId}${apiKey}&language=en-US`,
    movieVideo: (filmId: number) =>
       `movie/${filmId}/videos${apiKey}&language=en-US`,
+   movieCredits: (filmId: number) =>
+      `movie/${filmId}/credits${apiKey}&language=en-US`,
+   movieRecommendations: (filmId: number) =>
+      `movie/${filmId}/recommendations${apiKey}&language=en-US&page=1`,
    search: (searchQuery: string) =>
       `/search/movie${apiKey}&query=${encodeURIComponent(searchQuery)}`,
 };
 
 export const fetchPopularFilms = async () => {
-   await new Promise((res) => setTimeout(res, 500));
    return axios
       .get(paramOptions.popular())
       .then((res) => FilmListSchema.parse(res.data).results);
 };
 
 export const fetchTopRatedFilms = async () => {
-   await new Promise((res) => setTimeout(res, 500));
    return axios
       .get(paramOptions.top_rated())
       .then((res) => FilmListSchema.parse(res.data).results);
 };
 
 export const fetchUpcoming = async () => {
-   await new Promise((res) => setTimeout(res, 500));
    return axios
       .get(paramOptions.upcoming())
       .then((res) => FilmListSchema.parse(res.data).results);
 };
 
 export const fetchFilm = async (filmId: number) => {
-   await new Promise((res) => setTimeout(res, 500));
    const post = await axios
       .get(paramOptions.movieInfo(filmId))
       .then((res) => FilmInfoSchema.parse(res.data))
@@ -59,7 +61,6 @@ export const fetchFilm = async (filmId: number) => {
 };
 
 export const fetchFilmVideo = async (filmId: number) => {
-   await new Promise((res) => setTimeout(res, 500));
    const post = await axios
       .get(paramOptions.movieVideo(filmId))
       .then((res) => FilmVideoListSchema.parse(res.data))
@@ -73,8 +74,19 @@ export const fetchFilmVideo = async (filmId: number) => {
    return post;
 };
 
+export const fetchFilmCredits = async (filmId: number) => {
+   return axios
+      .get(paramOptions.movieCredits(filmId))
+      .then((res) => FilmCreditsSchema.parse(res.data));
+};
+
+export const fetchFilmRecommendations = async (filmId: number) => {
+   return axios
+      .get(paramOptions.movieRecommendations(filmId))
+      .then((res) => FilmRecommendationsSchema.parse(res.data).results.slice(0, 12));
+};
+
 export const searchFilm = async (searchQuery: string) => {
-   await new Promise((res) => setTimeout(res, 500));
    return axios
       .get(paramOptions.search(searchQuery))
       .then((res) => FilmListSchema.parse(res.data).results);

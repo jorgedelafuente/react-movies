@@ -4,7 +4,9 @@ import { createLazyFileRoute } from '@tanstack/react-router';
 import Spinner from '@/components/atoms/spinner/spinner.component';
 import { ErrorComponent } from '@/components/layout/error-component/error-component.component';
 import {
+   filmCreditsQueryOptions,
    filmQueryOptions,
+   filmRecommendationsQueryOptions,
    filmVideoQueryOptions,
 } from '@/services/films/filmQueryOptions';
 import { VIDEO_TYPES } from '@/views/film-info/film-info.constants';
@@ -22,6 +24,12 @@ function FilmComponent() {
    );
    const { data: filmTrailerList } = useSuspenseQuery(
       filmVideoQueryOptions(Number(filmId))
+   );
+   const { data: filmCredits } = useSuspenseQuery(
+      filmCreditsQueryOptions(Number(filmId))
+   );
+   const { data: recommendations } = useSuspenseQuery(
+      filmRecommendationsQueryOptions(Number(filmId))
    );
 
    const filmTrailer = filmTrailerList.results.filter(
@@ -42,7 +50,12 @@ function FilmComponent() {
          {isLoading ? (
             <Spinner />
          ) : (
-            <FilmInfo filmInfo={filmInfo} filmTrailer={officialFilmTrailer} />
+            <FilmInfo
+               filmInfo={filmInfo}
+               filmTrailer={officialFilmTrailer}
+               filmCredits={filmCredits}
+               recommendations={recommendations}
+            />
          )}
       </>
    );

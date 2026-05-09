@@ -31,6 +31,7 @@ export const FilmInfoSchema = z.object({
    vote_count: z.number().optional(),
    tagline: z.string().optional().nullable(),
    homepage: z.string().optional().nullable(),
+   imdb_id: z.string().optional().nullable(),
    runtime: z.number().optional().nullable(),
    status: z.string().optional(),
    budget: z.number().optional(),
@@ -53,4 +54,37 @@ export const FilmVideoTypeSchema = z.object({
 
 export const FilmVideoListSchema = z.object({
    results: z.array(FilmVideoTypeSchema),
+});
+
+export const CastMemberSchema = z.object({
+   id: z.number(),
+   name: z.string(),
+   character: z.string(),
+   profile_path: z.string().nullable(),
+   order: z.number(),
+});
+
+export const CrewMemberSchema = z.object({
+   id: z.number(),
+   name: z.string(),
+   job: z.string(),
+   department: z.string(),
+   profile_path: z.string().nullable(),
+});
+
+export const FilmCreditsSchema = z.object({
+   cast: z.array(CastMemberSchema),
+   crew: z.array(CrewMemberSchema),
+});
+
+export const FilmRecommendationsSchema = z.object({
+   results: z.array(
+      z.object({
+         id: z.number(),
+         title: z.string(),
+         poster_path: z.string().nullable(),
+         release_date: z.string(),
+         vote_average: z.number().optional(),
+      })
+   ),
 });

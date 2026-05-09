@@ -237,6 +237,7 @@ The app is fully responsive and must work on mobile. Follow these guidelines whe
 - Design mobile-first: start with small screens, layer up with `sm:`, `md:`, `lg:` breakpoints
 - Playwright E2E runs against Mobile Chrome and Mobile Safari in CI — new features need to pass on both
 - The Tailwind config extends the default breakpoints; do not hard-code pixel widths
+- **Film detail page (`/film/:filmId`)** does not render well on small screens. On mobile, avoid horizontal scroll layouts — use single-column stacked rows instead. Horizontal scroll is only appropriate at `sm:` and above.
 
 ## Styling
 
