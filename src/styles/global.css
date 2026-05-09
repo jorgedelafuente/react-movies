@@ -3,6 +3,16 @@
 @tailwind utilities;
 
 @layer base {
+   *,
+   *::before,
+   *::after {
+      transition:
+         background-color 0.25s ease,
+         color 0.25s ease,
+         border-color 0.25s ease,
+         fill 0.25s ease;
+   }
+
    a:hover {
       color: theme('colors.sky.500');
    }
@@ -30,6 +40,7 @@
       /* Semantic tokens */
       --color-bg-neutral: var(--color-grey-0);
       --color-bg-neutral-inverted: var(--color-grey-100);
+      --color-bg-subtle: var(--color-grey-10);
       --color-border-bold: var(--color-grey-60);
       --color-text-copy: var(--color-grey-100);
    }
@@ -43,6 +54,7 @@
       /* Semantic tokens */
       --color-bg-neutral: var(--color-grey-100);
       --color-bg-neutral-inverted: var(--color-grey-0);
+      --color-bg-subtle: var(--color-grey-80);
       --color-border-bold: var(--color-grey-40);
       --color-text-copy: var(--color-grey-0);
    }

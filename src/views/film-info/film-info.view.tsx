@@ -1,9 +1,18 @@
 import './film-info.styles.css';
 
 import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
+import FilmCard from '@/components/atoms/film-card/film-card.component';
 import Container from '@/components/layout/container/container.component';
 import { baseImagePath, baseImagePathPoster } from '@/services/config';
-import type { FilmInfoType, FilmVideoType } from '@/types/films.types';
+import type {
+   FilmCreditsType,
+   FilmInfoType,
+   FilmRecommendationType,
+   FilmVideoType,
+} from '@/types/films.types';
+
+const CREW_JOBS = new Set(['Director', 'Screenplay', 'Writer']);
+const CAST_LIMIT = 8;
 
 const formatCurrency = (amount: number) =>
    amount > 0
@@ -17,10 +26,22 @@ const formatCurrency = (amount: number) =>
 const FilmInfo = ({
    filmInfo,
    filmTrailer,
+   filmCredits,
+   recommendations,
 }: {
    filmInfo: FilmInfoType;
    filmTrailer?: FilmVideoType;
+   filmCredits?: FilmCreditsType;
+   recommendations?: FilmRecommendationType[];
 }) => {
+   const directors =
+      filmCredits?.crew.filter((c) => c.job === 'Director') ?? [];
+   const writers =
+      filmCredits?.crew.filter(
+         (c) => CREW_JOBS.has(c.job) && c.job !== 'Director'
+      ) ?? [];
+   const topCast = filmCredits?.cast.slice(0, CAST_LIMIT) ?? [];
+
    return (
       <Container>
          <div className="text-title text-copy">
@@ -144,17 +165,29 @@ const FilmInfo = ({
                            .join(', ')}
                      </div>
                   )}
-               {filmInfo.homepage && (
-                  <div>
-                     <strong>Homepage : </strong>
-                     <a
-                        href={filmInfo.homepage}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-copy underline"
-                     >
-                        {filmInfo.homepage}
-                     </a>
+
+               {(filmInfo.homepage || filmInfo.imdb_id) && (
+                  <div className="mt-2 flex flex-wrap gap-4">
+                     {filmInfo.homepage && (
+                        <a
+                           href={filmInfo.homepage}
+                           target="_blank"
+                           rel="noreferrer"
+                           className="text-copy underline"
+                        >
+                           Homepage
+                        </a>
+                     )}
+                     {filmInfo.imdb_id && (
+                        <a
+                           href={`https://www.imdb.com/title/${filmInfo.imdb_id}`}
+                           target="_blank"
+                           rel="noreferrer"
+                           className="text-copy underline"
+                        >
+                           IMDB
+                        </a>
+                     )}
                   </div>
                )}
             </div>
@@ -169,6 +202,77 @@ const FilmInfo = ({
                      height="800"
                      src={`https://www.youtube.com/embed/${filmTrailer.key}`}
                   />
+               </div>
+            )}
+
+            {(directors.length > 0 || writers.length > 0 || topCast.length > 0) && (
+               <div className="text-content rounded-lg p-4 text-copy mt-4">
+                  <h2 className="mb-3 text-2xl">
+                     <strong>Cast &amp; Crew</strong>
+                  </h2>
+
+                  {directors.length > 0 && (
+                     <div className="mb-1">
+                        <strong>Director{directors.length > 1 ? 's' : ''}: </strong>
+                        {directors.map((d) => d.name).join(', ')}
+                     </div>
+                  )}
+                  {writers.length > 0 && (
+                     <div className="mb-3">
+                        <strong>Writers: </strong>
+                        {writers.map((w) => w.name).join(', ')}
+                     </div>
+                  )}
+
+                  {topCast.length > 0 && (
+                     <div className="flex flex-wrap justify-center gap-4">
+                        {topCast.map((member) => (
+                           <div
+                              key={`${member.id}-${member.character}`}
+                              className="flex w-20 flex-col items-center gap-1 text-center"
+                           >
+                              {member.profile_path ? (
+                                 <img
+                                    loading="lazy"
+                                    src={`${baseImagePath}${member.profile_path}`}
+                                    alt={member.name}
+                                    className="h-16 w-16 rounded-full object-cover object-top"
+                                 />
+                              ) : (
+                                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-400 text-2xl text-white">
+                                    👤
+                                 </div>
+                              )}
+                              <span className="text-xs font-semibold leading-tight">
+                                 {member.name}
+                              </span>
+                              <span className="text-xs leading-tight opacity-70">
+                                 {member.character}
+                              </span>
+                           </div>
+                        ))}
+                     </div>
+                  )}
+               </div>
+            )}
+
+            {recommendations && recommendations.length > 0 && (
+               <div className="text-content rounded-lg p-4 text-copy mt-4">
+                  <h2 className="mb-4 text-2xl">
+                     <strong>Recommendations</strong>
+                  </h2>
+                  <div className="flex flex-wrap justify-center gap-4">
+                     {recommendations.map((film) => (
+                        <FilmCard
+                           key={film.id}
+                           id={film.id}
+                           title={film.title}
+                           poster_path={film.poster_path}
+                           release_date={film.release_date}
+                           showFavorite={false}
+                        />
+                     ))}
+                  </div>
                </div>
             )}
          </div>
