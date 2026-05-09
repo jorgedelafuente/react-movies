@@ -12,6 +12,7 @@ bun run dev             # dev server (http://localhost:5173)
 bun run build           # type-check + Vite build
 bun run lint            # ESLint
 bun run format          # Prettier
+bun run format:check    # Prettier check (CI)
 bun run test            # Vitest (unit)
 bun run coverage        # Vitest + Istanbul coverage
 bun run playwright      # Playwright E2E
