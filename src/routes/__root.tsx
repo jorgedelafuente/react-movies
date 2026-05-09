@@ -4,6 +4,7 @@ import {
    NotFoundRouteComponent,
    Outlet,
 } from '@tanstack/react-router';
+import { Analytics } from '@vercel/analytics/react';
 import { useEffect } from 'react';
 
 import { ErrorComponent } from '@/components/layout/error-component/error-component.component';
@@ -32,6 +33,7 @@ function RootComponent() {
       <>
          <Navbar />
          <Outlet />
+         <Analytics />
       </>
    );
 }
