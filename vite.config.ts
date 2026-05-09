@@ -43,8 +43,9 @@ export default defineConfig({
       },
       coverage: {
          provider: 'istanbul',
+         reporter: ['text-summary', 'json-summary', 'html'],
       },
-      exclude: [...configDefaults.exclude, 'src/tests/\\e2e\\/*'],
+      exclude: [...configDefaults.exclude, 'src/tests/\\e2e\\/*', '.claude/**'],
    },
    resolve: {
       alias: {
