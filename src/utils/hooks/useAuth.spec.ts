@@ -51,7 +51,10 @@ describe('useAuth — initial state', () => {
 
 describe('useAuth — signIn', () => {
    it('sets user and session on success', async () => {
-      vi.mocked(authService.signInWithPassword).mockResolvedValue({ user: MOCK_USER, error: null });
+      vi.mocked(authService.signInWithPassword).mockResolvedValue({
+         user: MOCK_USER,
+         error: null,
+      });
       vi.mocked(authService.getCurrentSession).mockResolvedValue(MOCK_SESSION);
 
       await act(async () => {
@@ -78,27 +81,39 @@ describe('useAuth — signIn', () => {
 
       const state = useAuth.getState();
       expect(state.user).toBeNull();
-      expect(state.error).toEqual({ message: 'Invalid credentials', code: 'invalid_grant' });
+      expect(state.error).toEqual({
+         message: 'Invalid credentials',
+         code: 'invalid_grant',
+      });
       expect(state.isLoading).toBe(false);
    });
 
    it('sets isLoading to true while request is in flight', async () => {
       let resolve!: (v: { user: null; error: { message: string } }) => void;
       vi.mocked(authService.signInWithPassword).mockReturnValue(
-         new Promise((r) => { resolve = r; })
+         new Promise((r) => {
+            resolve = r;
+         })
       );
 
-      act(() => { useAuth.getState().signIn('test@example.com', 'password123'); });
+      act(() => {
+         useAuth.getState().signIn('test@example.com', 'password123');
+      });
 
       expect(useAuth.getState().isLoading).toBe(true);
 
-      await act(async () => { resolve({ user: null, error: { message: 'fail' } }); });
+      await act(async () => {
+         resolve({ user: null, error: { message: 'fail' } });
+      });
    });
 });
 
 describe('useAuth — signUp', () => {
    it('sets user and session on success', async () => {
-      vi.mocked(authService.signUpWithPassword).mockResolvedValue({ user: MOCK_USER, error: null });
+      vi.mocked(authService.signUpWithPassword).mockResolvedValue({
+         user: MOCK_USER,
+         error: null,
+      });
       vi.mocked(authService.getCurrentSession).mockResolvedValue(MOCK_SESSION);
 
       await act(async () => {
@@ -122,7 +137,9 @@ describe('useAuth — signUp', () => {
          await useAuth.getState().signUp('existing@example.com', 'password123');
       });
 
-      expect(useAuth.getState().error).toEqual({ message: 'Email already registered' });
+      expect(useAuth.getState().error).toEqual({
+         message: 'Email already registered',
+      });
       expect(useAuth.getState().user).toBeNull();
    });
 });
@@ -160,7 +177,9 @@ describe('useAuth — signOut', () => {
 
 describe('useAuth — resetPassword', () => {
    it('clears loading and error on success', async () => {
-      vi.mocked(authService.sendPasswordResetEmail).mockResolvedValue({ error: null });
+      vi.mocked(authService.sendPasswordResetEmail).mockResolvedValue({
+         error: null,
+      });
 
       await act(async () => {
          await useAuth.getState().resetPassword('test@example.com');
@@ -282,7 +301,9 @@ describe('useAuth — destroy', () => {
       vi.mocked(authService.getCurrentSession).mockResolvedValue(null);
       vi.mocked(authService.getCurrentUser).mockResolvedValue(null);
 
-      await act(async () => { await useAuth.getState().initialize(); });
+      await act(async () => {
+         await useAuth.getState().initialize();
+      });
 
       useAuth.getState().destroy();
 

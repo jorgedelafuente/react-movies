@@ -83,7 +83,9 @@ export const fetchFilmCredits = async (filmId: number) => {
 export const fetchFilmRecommendations = async (filmId: number) => {
    return axios
       .get(paramOptions.movieRecommendations(filmId))
-      .then((res) => FilmRecommendationsSchema.parse(res.data).results.slice(0, 12));
+      .then((res) =>
+         FilmRecommendationsSchema.parse(res.data).results.slice(0, 12)
+      );
 };
 
 export const searchFilm = async (searchQuery: string) => {

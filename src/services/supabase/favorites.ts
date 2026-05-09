@@ -24,10 +24,19 @@ export const getUserFavorites = async (
          .select('*')
          .eq('user_id', userId);
 
-      if (error) return { data: [], error: { message: error.message, code: error.code } };
+      if (error)
+         return {
+            data: [],
+            error: { message: error.message, code: error.code },
+         };
       return { data: data ?? [], error: null };
    } catch (err) {
-      return { data: [], error: { message: err instanceof Error ? err.message : 'Unknown error' } };
+      return {
+         data: [],
+         error: {
+            message: err instanceof Error ? err.message : 'Unknown error',
+         },
+      };
    }
 };
 
@@ -51,10 +60,19 @@ export const addFavorite = async (
          .select()
          .single();
 
-      if (error) return { data: null, error: { message: error.message, code: error.code } };
+      if (error)
+         return {
+            data: null,
+            error: { message: error.message, code: error.code },
+         };
       return { data, error: null };
    } catch (err) {
-      return { data: null, error: { message: err instanceof Error ? err.message : 'Unknown error' } };
+      return {
+         data: null,
+         error: {
+            message: err instanceof Error ? err.message : 'Unknown error',
+         },
+      };
    }
 };
 
@@ -72,6 +90,10 @@ export const removeFavorite = async (
       if (error) return { error: { message: error.message, code: error.code } };
       return { error: null };
    } catch (err) {
-      return { error: { message: err instanceof Error ? err.message : 'Unknown error' } };
+      return {
+         error: {
+            message: err instanceof Error ? err.message : 'Unknown error',
+         },
+      };
    }
 };

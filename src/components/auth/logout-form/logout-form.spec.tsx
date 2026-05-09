@@ -5,7 +5,8 @@ import { AUTH_MODAL_MODE } from '@/types/auth.types';
 import { useAuth } from '@/utils/hooks/useAuth';
 
 vi.mock('@tanstack/react-router', async (importOriginal) => {
-   const actual = await importOriginal<typeof import('@tanstack/react-router')>();
+   const actual =
+      await importOriginal<typeof import('@tanstack/react-router')>();
    return { ...actual, useNavigate: () => vi.fn() };
 });
 
@@ -13,8 +14,11 @@ import LogoutForm from './logout-form.component';
 
 const INITIAL_STATE = {
    user: { id: 'user-123', email: 'test@example.com' },
-   session: null, isLoading: false, error: null,
-   isModalOpen: true, modalMode: AUTH_MODAL_MODE.LOGOUT,
+   session: null,
+   isLoading: false,
+   error: null,
+   isModalOpen: true,
+   modalMode: AUTH_MODAL_MODE.LOGOUT,
 };
 
 beforeEach(() => {
@@ -24,14 +28,22 @@ beforeEach(() => {
 describe('LogoutForm', () => {
    it('renders sign out and cancel buttons', () => {
       render(<LogoutForm />);
-      expect(screen.getByRole('button', { name: /sign out/i })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument();
+      expect(
+         screen.getByRole('button', { name: /sign out/i })
+      ).toBeInTheDocument();
+      expect(
+         screen.getByRole('button', { name: /cancel/i })
+      ).toBeInTheDocument();
    });
 
    it('calls signOut and closes modal on "Sign out" click', async () => {
       const mockSignOut = vi.fn().mockResolvedValue(undefined);
       const mockSetModalOpen = vi.fn();
-      useAuth.setState({ ...INITIAL_STATE, signOut: mockSignOut, setModalOpen: mockSetModalOpen } as never);
+      useAuth.setState({
+         ...INITIAL_STATE,
+         signOut: mockSignOut,
+         setModalOpen: mockSetModalOpen,
+      } as never);
 
       render(<LogoutForm />);
       fireEvent.click(screen.getByRole('button', { name: /^sign out$/i }));
@@ -41,7 +53,10 @@ describe('LogoutForm', () => {
 
    it('closes modal on "Cancel" click', () => {
       const mockSetModalOpen = vi.fn();
-      useAuth.setState({ ...INITIAL_STATE, setModalOpen: mockSetModalOpen } as never);
+      useAuth.setState({
+         ...INITIAL_STATE,
+         setModalOpen: mockSetModalOpen,
+      } as never);
 
       render(<LogoutForm />);
       fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
@@ -54,6 +69,8 @@ describe('LogoutForm', () => {
 
       render(<LogoutForm />);
 
-      expect(screen.getByRole('button', { name: /signing out/i })).toBeDisabled();
+      expect(
+         screen.getByRole('button', { name: /signing out/i })
+      ).toBeDisabled();
    });
 });

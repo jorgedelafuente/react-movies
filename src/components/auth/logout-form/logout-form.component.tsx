@@ -14,7 +14,10 @@ const LogoutForm = () => {
          <p className="text-sm text-copy">Are you sure you want to sign out?</p>
          <Button
             variant="secondary"
-            onClick={() => { setModalOpen(false); navigate({ to: '/favorites' }); }}
+            onClick={() => {
+               setModalOpen(false);
+               navigate({ to: '/favorites' });
+            }}
          >
             My Favorites
          </Button>
@@ -22,7 +25,10 @@ const LogoutForm = () => {
             <Button
                variant="primary"
                className="flex-1"
-               onClick={async () => { await signOut(); setModalOpen(false); }}
+               onClick={async () => {
+                  await signOut();
+                  setModalOpen(false);
+               }}
                disabled={isLoading}
             >
                {isLoading ? 'Signing out…' : 'Sign out'}

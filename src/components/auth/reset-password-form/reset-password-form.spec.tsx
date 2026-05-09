@@ -7,8 +7,12 @@ import { useAuth } from '@/utils/hooks/useAuth';
 import ResetPasswordForm from './reset-password-form.component';
 
 const INITIAL_STATE = {
-   user: null, session: null, isLoading: false, error: null,
-   isModalOpen: true, modalMode: AUTH_MODAL_MODE.RESET_PASSWORD,
+   user: null,
+   session: null,
+   isLoading: false,
+   error: null,
+   isModalOpen: true,
+   modalMode: AUTH_MODAL_MODE.RESET_PASSWORD,
 };
 
 beforeEach(() => {
@@ -19,7 +23,9 @@ describe('ResetPasswordForm', () => {
    it('renders email field and send button', () => {
       render(<ResetPasswordForm />);
       expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /send reset link/i })).toBeInTheDocument();
+      expect(
+         screen.getByRole('button', { name: /send reset link/i })
+      ).toBeInTheDocument();
    });
 
    it('calls resetPassword with entered email on submit', async () => {
@@ -27,7 +33,9 @@ describe('ResetPasswordForm', () => {
       useAuth.setState({ ...INITIAL_STATE, resetPassword: mockResetPassword });
 
       render(<ResetPasswordForm />);
-      fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'user@example.com' } });
+      fireEvent.change(screen.getByLabelText(/email/i), {
+         target: { value: 'user@example.com' },
+      });
       fireEvent.click(screen.getByRole('button', { name: /send reset link/i }));
 
       expect(mockResetPassword).toHaveBeenCalledWith('user@example.com');
@@ -40,7 +48,9 @@ describe('ResetPasswordForm', () => {
       useAuth.setState({ ...INITIAL_STATE, resetPassword: mockResetPassword });
 
       render(<ResetPasswordForm />);
-      fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'user@example.com' } });
+      fireEvent.change(screen.getByLabelText(/email/i), {
+         target: { value: 'user@example.com' },
+      });
       fireEvent.click(screen.getByRole('button', { name: /send reset link/i }));
 
       await waitFor(() => {
@@ -50,7 +60,10 @@ describe('ResetPasswordForm', () => {
    });
 
    it('shows auth error message', () => {
-      useAuth.setState({ ...INITIAL_STATE, error: { message: 'User not found' } });
+      useAuth.setState({
+         ...INITIAL_STATE,
+         error: { message: 'User not found' },
+      });
 
       render(<ResetPasswordForm />);
 
@@ -72,6 +85,9 @@ describe('ResetPasswordForm', () => {
       render(<ResetPasswordForm />);
       fireEvent.click(screen.getByRole('button', { name: /back to sign in/i }));
 
-      expect(mockSetModalOpen).toHaveBeenCalledWith(true, AUTH_MODAL_MODE.LOGIN);
+      expect(mockSetModalOpen).toHaveBeenCalledWith(
+         true,
+         AUTH_MODAL_MODE.LOGIN
+      );
    });
 });

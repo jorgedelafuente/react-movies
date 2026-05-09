@@ -71,7 +71,7 @@ const FilmInfo = ({
                   </h3>
                )}
 
-               <div className="flex justify-center my-3">
+               <div className="my-3 flex justify-center">
                   <FavoriteButton
                      filmId={filmInfo.id}
                      filmTitle={filmInfo.title}
@@ -205,15 +205,19 @@ const FilmInfo = ({
                </div>
             )}
 
-            {(directors.length > 0 || writers.length > 0 || topCast.length > 0) && (
-               <div className="text-content rounded-lg p-4 text-copy mt-4">
+            {(directors.length > 0 ||
+               writers.length > 0 ||
+               topCast.length > 0) && (
+               <div className="text-content mt-4 rounded-lg p-4 text-copy">
                   <h2 className="mb-3 text-2xl">
                      <strong>Cast &amp; Crew</strong>
                   </h2>
 
                   {directors.length > 0 && (
                      <div className="mb-1">
-                        <strong>Director{directors.length > 1 ? 's' : ''}: </strong>
+                        <strong>
+                           Director{directors.length > 1 ? 's' : ''}:{' '}
+                        </strong>
                         {directors.map((d) => d.name).join(', ')}
                      </div>
                   )}
@@ -257,7 +261,7 @@ const FilmInfo = ({
             )}
 
             {recommendations && recommendations.length > 0 && (
-               <div className="text-content rounded-lg p-4 text-copy mt-4">
+               <div className="text-content mt-4 rounded-lg p-4 text-copy">
                   <h2 className="mb-4 text-2xl">
                      <strong>Recommendations</strong>
                   </h2>

@@ -13,7 +13,13 @@ type SortDir = 'asc' | 'desc';
 const formatDate = (iso: string) => {
    if (!iso) return '—';
    const d = new Date(iso);
-   return isNaN(d.getTime()) ? '—' : d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+   return isNaN(d.getTime())
+      ? '—'
+      : d.toLocaleDateString('en-GB', {
+           day: '2-digit',
+           month: 'short',
+           year: 'numeric',
+        });
 };
 
 const extractYear = (dateStr: string) => {
@@ -51,15 +57,18 @@ const FavoritesView = () => {
    return (
       <Container>
          <div className="mx-auto w-full max-w-4xl px-4 py-8">
-            <h1 className="mb-6 text-left text-2xl font-bold text-copy">My Favorites</h1>
+            <h1 className="mb-6 text-left text-2xl font-bold text-copy">
+               My Favorites
+            </h1>
 
-            {isLoading && (
-               <p className="text-copy opacity-60">Loading…</p>
-            )}
+            {isLoading && <p className="text-copy opacity-60">Loading…</p>}
 
             {!isLoading && favorites.length === 0 && (
                <div className="text-left text-copy">
-                  <p className="mb-3">You haven't saved any favorites yet. Browse films and tap the heart icon to add them to your list.</p>
+                  <p className="mb-3">
+                     You haven't saved any favorites yet. Browse films and tap
+                     the heart icon to add them to your list.
+                  </p>
                   <Link to="/" className="text-sky-500 hover:underline">
                      Browse films
                   </Link>
@@ -78,21 +87,30 @@ const FavoritesView = () => {
                               onClick={() => handleSort('film_release_date')}
                            >
                               Year
-                              <SortIcon active={sortKey === 'film_release_date'} dir={sortDir} />
+                              <SortIcon
+                                 active={sortKey === 'film_release_date'}
+                                 dir={sortDir}
+                              />
                            </th>
                            <th
                               className="cursor-pointer whitespace-nowrap py-2 pr-4 font-semibold hover:text-sky-500"
                               onClick={() => handleSort('created_at')}
                            >
                               Added
-                              <SortIcon active={sortKey === 'created_at'} dir={sortDir} />
+                              <SortIcon
+                                 active={sortKey === 'created_at'}
+                                 dir={sortDir}
+                              />
                            </th>
                            <th className="py-2 font-semibold">Remove</th>
                         </tr>
                      </thead>
                      <tbody>
                         {sorted.map((fav) => (
-                           <tr key={fav.id} className="border-b border-bold/30 hover:bg-neutral-inverted/5">
+                           <tr
+                              key={fav.id}
+                              className="border-b border-bold/30 hover:bg-neutral-inverted/5"
+                           >
                               <td className="py-2 pr-4">
                                  {fav.film_poster_path ? (
                                     <img
@@ -101,7 +119,7 @@ const FavoritesView = () => {
                                        className="h-16 w-10 rounded object-cover"
                                     />
                                  ) : (
-                                    <div className="h-16 w-10 rounded bg-copy/10" />
+                                    <div className="bg-copy/10 h-16 w-10 rounded" />
                                  )}
                               </td>
                               <td className="max-w-xs py-2 pr-4">
@@ -109,7 +127,7 @@ const FavoritesView = () => {
                                     to="/film/$filmId"
                                     params={{ filmId: String(fav.film_id) }}
                                  >
-                                    <span className="truncate block text-copy hover:text-sky-500">
+                                    <span className="block truncate text-copy hover:text-sky-500">
                                        {fav.film_title || 'Unknown title'}
                                     </span>
                                  </Link>

@@ -23,10 +23,11 @@ Write a conventional commit message for the current staged changes.
 Common types: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `ci`, `style`, `perf`.
 
 Rules:
-- Description is lowercase, imperative mood, no trailing period
-- Max 72 characters on the first line
-- Body only when the motivation or context is not self-evident from the diff
-- Do NOT include `Co-Authored-By` or any AI attribution lines
+
+-  Description is lowercase, imperative mood, no trailing period
+-  Max 72 characters on the first line
+-  Body only when the motivation or context is not self-evident from the diff
+-  Do NOT include `Co-Authored-By` or any AI attribution lines
 
 5. Present the commit message to the user and ask for confirmation before running `git commit`.
 6. Once confirmed, run:

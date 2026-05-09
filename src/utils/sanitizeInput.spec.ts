@@ -35,6 +35,8 @@ describe('sanitizeInput', () => {
    });
 
    it('handles mixed valid and invalid characters', () => {
-      expect(sanitizeInput('  The Dark Knight (2008)  ')).toBe('  The Dark Knight 2008  ');
+      expect(sanitizeInput('  The Dark Knight (2008)  ')).toBe(
+         '  The Dark Knight 2008  '
+      );
    });
 });
