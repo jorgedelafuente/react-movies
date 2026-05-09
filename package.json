@@ -33,6 +33,15 @@
       "zod": "4.3.6",
       "zustand": "5.0.13"
    },
+   "lint-staged": {
+      "*.{ts,tsx}": [
+         "eslint --max-warnings=0",
+         "prettier --write"
+      ],
+      "*.{css,json,md,yml}": [
+         "prettier --write"
+      ]
+   },
    "devDependencies": {
       "@commitlint/cli": "^20.5.0",
       "@commitlint/config-conventional": "^20.5.0",
@@ -66,6 +75,7 @@
       "globals": "15.9.0",
       "husky": "^9.1.7",
       "jsdom": "25.0.0",
+      "lint-staged": "^17.0.4",
       "msw": "2.4.10",
       "postcss": "^8.5.10",
       "prettier": "3.3.3",

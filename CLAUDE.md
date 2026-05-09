@@ -75,6 +75,8 @@ bun run playwright:debug    # debug mode
 
 ## Linting & Formatting
 
+Lint and formatting are enforced via a **pre-commit hook** using [lint-staged](https://github.com/lint-staged/lint-staged). On every `git commit`, lint-staged runs ESLint and Prettier only on staged files. Config lives in `package.json` under the `"lint-staged"` key.
+
 ### ESLint
 
 Config: [eslint.config.js](eslint.config.js) — flat config format.
@@ -128,11 +130,11 @@ Workflows: [.github/workflows/](.github/workflows/)
 
 **[ci.yml](.github/workflows/ci.yml)** — triggered on push / PR to `main` / `master`:
 
-| Job          | Steps                                             |
-| ------------ | ------------------------------------------------- |
-| `quality`    | lint, format check, type-check, build             |
-| `unit-tests` | Vitest + upload coverage                          |
-| `e2e-tests`  | Playwright + upload `playwright-report/` artifact |
+| Job          | Steps                                                    |
+| ------------ | -------------------------------------------------------- |
+| `quality`    | type-check + build (lint/format run via pre-commit hook) |
+| `unit-tests` | Vitest + upload coverage                                 |
+| `e2e-tests`  | Playwright + upload `playwright-report/` artifact        |
 
 All jobs use **Bun v1.3.11**. The three env vars above must be set as repository secrets (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_APIKEY`).
 
