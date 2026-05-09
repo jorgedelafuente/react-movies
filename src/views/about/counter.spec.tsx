@@ -1,9 +1,9 @@
 import {
+   act,
    fireEvent,
    render,
    renderHook,
    screen,
-   waitFor,
 } from '@testing-library/react';
 
 import Counter, { useCounterHook } from './counter.component';
@@ -67,22 +67,18 @@ describe('Test Custom Hook', async () => {
       const { result } = renderHook(() => useCounterHook(1));
       expect(result.current.count).toBe(1);
    });
-   it('should increment', async () => {
+   it('should increment', () => {
       const { result } = renderHook(() => useCounterHook(1));
-      await waitFor(async () => {
-         result.current.increment();
-         result.current.increment();
-         result.current.increment();
-         result.current.increment();
-      });
+      act(() => result.current.increment());
+      act(() => result.current.increment());
+      act(() => result.current.increment());
+      act(() => result.current.increment());
       expect(result.current.count).toBe(5);
    });
-   it('should decrement', async () => {
+   it('should decrement', () => {
       const { result } = renderHook(() => useCounterHook(1));
-      await waitFor(async () => {
-         result.current.decrement();
-         result.current.decrement();
-      });
+      act(() => result.current.decrement());
+      act(() => result.current.decrement());
       expect(result.current.count).toBe(-1);
    });
 });
