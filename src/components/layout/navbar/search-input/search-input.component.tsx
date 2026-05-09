@@ -33,8 +33,10 @@ const SearchInput = () => {
 
    useEffect(() => {
       if (debouncedValue) {
-         mutate(debouncedValue as string);
+         mutate(debouncedValue);
       }
+      // mutate is stable across renders (TanStack Query guarantee)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [debouncedValue]);
 
    const resetSearchQuery = () => {
@@ -49,7 +51,7 @@ const SearchInput = () => {
             tabIndex={0}
             type="search"
             id="search-input"
-            placeholder="Search"
+            placeholder="🔍 Search"
          />
 
          {inputValue && debouncedValue ? (
@@ -58,8 +60,11 @@ const SearchInput = () => {
 
                {debouncedValue &&
                   searchInputList?.map((item: FilmInfoType) => (
-                     <li className="" key={item.id} onClick={resetSearchQuery}>
-                        <Link to={`/film/${item.id}`}>
+                     <li className="" key={item.id}>
+                        <Link
+                           to={`/film/${item.id}`}
+                           onClick={resetSearchQuery}
+                        >
                            <span className="text-sm text-copy hover:underline">
                               * {item.title}
                            </span>

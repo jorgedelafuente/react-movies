@@ -38,16 +38,18 @@ const Navbar = () => {
                />
             </svg>
          </div>
-         <div className="absolute right-2 flex items-center gap-1 pt-9 md:pt-0">
-            <ThemeToggleIcon tabIndex={0} />
-            <LoginIcon tabIndex={0} />
-         </div>
-         <div>
-            <NavLink path="/popular" text="Popular" tabIndex={1} />
-            <span className="p-1 text-copy">|</span>
-            <NavLink path="/top-rated" text="Top Rated" tabIndex={2} />
-            <span className="p-1 text-copy">|</span>
-            <NavLink path="/upcoming" text="Upcoming" tabIndex={3} />
+         <div className="flex w-full items-center justify-between">
+            <div>
+               <NavLink path="/popular" text="Popular" />
+               <span className="p-1 text-copy">|</span>
+               <NavLink path="/top-rated" text="Top Rated" />
+               <span className="p-1 text-copy">|</span>
+               <NavLink path="/upcoming" text="Upcoming" />
+            </div>
+            <div className="flex items-center gap-1">
+               <ThemeToggleIcon tabIndex={0} />
+               <LoginIcon tabIndex={0} />
+            </div>
          </div>
          <SearchInput />
       </div>
