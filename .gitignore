@@ -37,3 +37,4 @@ coverage
 /playwright/.auth/
 tsconfig.app.tsbuildinfo
 tsconfig.node.tsbuildinfo
+.tsbuildinfo
