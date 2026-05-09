@@ -15,8 +15,6 @@ bun run format          # Prettier
 bun run test            # Vitest (unit)
 bun run coverage        # Vitest + Istanbul coverage
 bun run playwright      # Playwright E2E
-bun run metrics         # collect GitHub repo metrics (scripts/collect-metrics.mjs)
-bun run metrics:dashboard  # generate metrics HTML dashboard (scripts/generate-dashboard.mjs)
 ```
 
 ## TypeScript
@@ -31,7 +29,7 @@ Strict mode is on (`"strict": true` in [tsconfig.app.json](tsconfig.app.json)). 
 Run type-check standalone:
 
 ```sh
-bun run tsc --noEmit
+bunx tsc --noEmit
 ```
 
 ## Testing
@@ -134,13 +132,9 @@ Workflows: [.github/workflows/](.github/workflows/)
 | `unit-tests` | Vitest + upload coverage |
 | `e2e-tests` | Playwright + upload `playwright-report/` artifact |
 
-**[metrics.yml](.github/workflows/metrics.yml)** — triggered daily at 07:00 UTC (supports `workflow_dispatch`):
-
-| Job | Steps |
-|---|---|
-| `collect-metrics` | run `bun run metrics`, commit results to `metrics/` |
-
 All jobs use **Bun v1.3.11**. The three env vars above must be set as repository secrets (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_APIKEY`).
+
+
 
 ## Path Aliases
 
@@ -167,7 +161,6 @@ src/
 │   ├── upcoming/       # /upcoming
 │   ├── about/          # /about
 │   └── film/$filmId    # /film/:filmId (detail page)
-├── scripts/            # Node scripts for metrics collection and dashboard generation
 ├── services/
 │   ├── config.ts       # TMDB image base URLs
 │   ├── films/          # TMDB fetch functions + TanStack Query options
