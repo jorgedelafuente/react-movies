@@ -10,11 +10,15 @@ Always use **pnpm**. Never use `npm`, `yarn`, or `bun`.
 pnpm install            # install deps
 pnpm dev                # dev server (http://localhost:5173)
 pnpm build              # type-check + Vite build
+pnpm preview            # preview production build locally
 pnpm lint               # ESLint
 pnpm format             # Prettier
 pnpm format:check       # Prettier check (CI)
-pnpm test               # Vitest (unit)
+pnpm test               # Vitest (unit, watch mode)
+pnpm test:silent        # Vitest (unit, CI-friendly, no watch)
+pnpm test:ui            # Vitest browser UI
 pnpm coverage           # Vitest + Istanbul coverage
+pnpm coverage:open      # open coverage report in browser
 pnpm playwright         # Playwright E2E
 ```
 
@@ -46,12 +50,6 @@ Config lives in [vite.config.ts](vite.config.ts) under the `test` key.
 -  E2E spec files are excluded from unit runs (`**/*.e2e.*`)
 -  Test utilities and custom render helpers live in [src/tests/test-utils.tsx](src/tests/test-utils.tsx)
 -  Shared mocks live in [src/tests/**mocks**/mocks.ts](src/tests/__mocks__/mocks.ts)
-
-```sh
-pnpm test             # watch mode
-pnpm test:silent      # CI-friendly, no watch
-pnpm test:ui          # Vitest browser UI
-```
 
 ### E2E tests — Playwright
 
@@ -153,7 +151,7 @@ import { Button } from '@/components/atoms/button/button.component';
 ```
 src/
 ├── components/
-│   ├── atoms/          # Button, Card, Input, Modal, Spinner, FavoriteButton, NavLink (link)
+│   ├── atoms/          # Button, Card, FilmCard, Input, Modal, Spinner, FavoriteButton, NavLink (link)
 │   ├── auth/           # auth modal, login/register/reset/logout forms
 │   └── layout/         # Navbar (+ search, theme toggle, login icons), Container, FlexContainer,
 │                       # ErrorBoundary, ErrorComponent, NotFoundComponent
@@ -172,7 +170,7 @@ src/
 │   └── supabase/       # Supabase client, auth service, favorites service
 ├── types/              # TypeScript types (theme.types.ts) + Zod schemas (films.schemas.ts)
 ├── utils/
-│   ├── hooks/          # useAuth, useFavorites, useTheme, useDebounce, usePrevious
+│   ├── hooks/          # useAuth, useFavorites, useTheme, useDebounce
 │   └── sanitizeInput.ts
 ├── views/              # page-level view components (FilmList, FilmInfo, About)
 ├── tests/              # Vitest setup, test-utils, mocks, E2E specs
