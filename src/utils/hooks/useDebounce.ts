@@ -11,11 +11,11 @@ const DEFAULT_DEBOUNCED_TIME = 300;
  * @param {number} delay Elapsed time to fire value change.
  */
 
-export const useDebounce = (
-   value: string | number,
+export const useDebounce = <T extends string | number>(
+   value: T,
    delay = DEFAULT_DEBOUNCED_TIME
 ) => {
-   const [debouncedValue, setDebouncedValue] = useState(value);
+   const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
    useEffect(() => {
       const timeoutHandler = setTimeout(() => {
