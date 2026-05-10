@@ -116,7 +116,7 @@ Execute the approved plan step by step. Follow ALL project conventions without e
 
 ### Package Manager
 
--  Always use `bun`. Never `npm`, `yarn`, or `pnpm`.
+-  Always use `pnpm`. Never `npm`, `yarn`, or `bun`.
 
 ### Accessibility
 
