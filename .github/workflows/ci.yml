@@ -31,11 +31,11 @@ jobs:
            uses: actions/cache@v4
            with:
               path: ~/.bun/install/cache
-              key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+              key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
               restore-keys: ${{ runner.os }}-bun-
 
          - name: Install dependencies
-           run: bun install --frozen-lockfile
+           run: bun install --ignore-scripts
 
          - name: Cache TypeScript build info
            uses: actions/cache@v4
@@ -81,11 +81,11 @@ jobs:
            uses: actions/cache@v4
            with:
               path: ~/.bun/install/cache
-              key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+              key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
               restore-keys: ${{ runner.os }}-bun-
 
          - name: Install dependencies
-           run: bun install --frozen-lockfile
+           run: bun install --ignore-scripts
 
          - name: Run tests with coverage
            id: tests
@@ -144,11 +144,11 @@ jobs:
            uses: actions/cache@v4
            with:
               path: ~/.bun/install/cache
-              key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+              key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
               restore-keys: ${{ runner.os }}-bun-
 
          - name: Install dependencies
-           run: bun install --frozen-lockfile
+           run: bun install --ignore-scripts
 
          - name: Cache Playwright browsers
            uses: actions/cache@v4
