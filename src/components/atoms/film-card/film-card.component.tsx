@@ -22,11 +22,15 @@ const FilmCard = ({
    showFavorite = true,
 }: FilmCardProps) => {
    return (
-      <Link to="/film/$filmId" params={{ filmId: String(id) }}>
+      <Link
+         to="/film/$filmId"
+         params={{ filmId: String(id) }}
+         className="w-[90%] text-inherit sm:w-[90%] md:w-[300px]"
+      >
          <Card>
             <img
                loading="lazy"
-               className="aspect-[1/1.5] rounded-md object-cover object-center"
+               className="aspect-[1/1.5] w-full rounded-md object-cover object-center"
                src={`${baseImagePath}${poster_path}`}
                alt={title}
             />
