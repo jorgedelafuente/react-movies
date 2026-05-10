@@ -19,13 +19,13 @@ Live: https://react-movies-flax.vercel.app/
 2. Install dependencies:
 
    ```sh
-   bun install
+   pnpm install
    ```
 
 3. Start the dev server:
 
    ```sh
-   bun run dev
+   pnpm dev
    ```
 
    The app runs at `http://localhost:5173`.

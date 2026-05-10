@@ -4,18 +4,18 @@ Project conventions and tooling reference for AI-assisted development.
 
 ## Package Manager
 
-Always use **bun**. Never use `npm`, `yarn`, or `pnpm`.
+Always use **pnpm**. Never use `npm`, `yarn`, or `bun`.
 
 ```sh
-bun install             # install deps
-bun run dev             # dev server (http://localhost:5173)
-bun run build           # type-check + Vite build
-bun run lint            # ESLint
-bun run format          # Prettier
-bun run format:check    # Prettier check (CI)
-bun run test            # Vitest (unit)
-bun run coverage        # Vitest + Istanbul coverage
-bun run playwright      # Playwright E2E
+pnpm install            # install deps
+pnpm dev                # dev server (http://localhost:5173)
+pnpm build              # type-check + Vite build
+pnpm lint               # ESLint
+pnpm format             # Prettier
+pnpm format:check       # Prettier check (CI)
+pnpm test               # Vitest (unit)
+pnpm coverage           # Vitest + Istanbul coverage
+pnpm playwright         # Playwright E2E
 ```
 
 ## TypeScript
@@ -30,7 +30,7 @@ Strict mode is on (`"strict": true` in [tsconfig.app.json](tsconfig.app.json)). 
 Run type-check standalone:
 
 ```sh
-bunx tsc --noEmit
+pnpm exec tsc --noEmit
 ```
 
 ## Testing
@@ -42,15 +42,15 @@ Config lives in [vite.config.ts](vite.config.ts) under the `test` key.
 -  Environment: `jsdom`
 -  Globals enabled (no need to import `describe`, `it`, `expect`)
 -  Setup file: [src/tests/setupTests.ts](src/tests/setupTests.ts)
--  Coverage provider: Istanbul (`bun run coverage`)
+-  Coverage provider: Istanbul (`pnpm coverage`)
 -  E2E spec files are excluded from unit runs (`**/*.e2e.*`)
 -  Test utilities and custom render helpers live in [src/tests/test-utils.tsx](src/tests/test-utils.tsx)
 -  Shared mocks live in [src/tests/**mocks**/mocks.ts](src/tests/__mocks__/mocks.ts)
 
 ```sh
-bun run test          # watch mode
-bun run test:silent   # CI-friendly, no watch
-bun run test:ui       # Vitest browser UI
+pnpm test             # watch mode
+pnpm test:silent      # CI-friendly, no watch
+pnpm test:ui          # Vitest browser UI
 ```
 
 ### E2E tests — Playwright
@@ -68,9 +68,9 @@ Config: [playwright.config.ts](playwright.config.ts)
 Playwright E2E tests use [MSW (Mock Service Worker)](https://mswjs.io/) to intercept network requests. Never call the real TMDB API or Supabase in E2E tests — always provide MSW handlers for any endpoints the test touches.
 
 ```sh
-bun run playwright          # headless
-bun run playwright:ui       # with browser UI
-bun run playwright:debug    # debug mode
+pnpm playwright             # headless
+pnpm playwright:ui          # with browser UI
+pnpm playwright:debug       # debug mode
 ```
 
 ## Linting & Formatting
@@ -136,9 +136,9 @@ Workflows: [.github/workflows/](.github/workflows/)
 | `unit-tests` | Vitest + upload coverage                                 |
 | `e2e-tests`  | Playwright + upload `playwright-report/` artifact        |
 
-All jobs use **Bun v1.3.11**. The three env vars above must be set as repository secrets (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_APIKEY`).
+All jobs use **pnpm v10** on Node 22. The three env vars above must be set as repository secrets (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_APIKEY`).
 
-Caching strategy: all jobs cache `~/.bun/install/cache` (keyed on `bun.lock`) so `bun install` resolves from disk rather than downloading packages. The `e2e-tests` job additionally caches `~/.cache/ms-playwright` for Chromium.
+Caching strategy: all jobs use `actions/setup-node@v4` with `cache: pnpm` (keyed on `pnpm-lock.yaml`) so `pnpm install` resolves from the pnpm store cache. The `e2e-tests` job additionally caches `~/.cache/ms-playwright` for Chromium.
 
 ## Path Aliases
 

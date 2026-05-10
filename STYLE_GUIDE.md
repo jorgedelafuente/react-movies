@@ -480,16 +480,16 @@ The project uses a **comprehensive toolchain** for code quality:
 
 ```bash
 # ESLint - Find code issues
-bun run lint
+pnpm lint
 
 # Prettier - Format all files
-bun run format
+pnpm format
 
 # TypeScript - Type check
 tsc --noEmit
 
 # Build (includes type check)
-bun run build
+pnpm build
 ```
 
 ---
@@ -665,7 +665,7 @@ function Component({ data }) {
 <div className="text-white p-4 bg-sky-500 flex rounded-md hover:bg-sky-600">
 ```
 
-**After `bun run format`:**
+**After `pnpm format`:**
 
 ```tsx
 <div className="flex rounded-md bg-sky-500 p-4 text-white hover:bg-sky-600">
@@ -708,7 +708,7 @@ css: {
 tsc --noEmit
 
 # Type check + build
-bun run build
+pnpm build
 ```
 
 #### Integration with ESLint
@@ -728,13 +728,13 @@ Both should pass before committing.
 
 ```bash
 # 1. Format code
-bun run format
+pnpm format
 
 # 2. Check linting
-bun run lint
+pnpm lint
 
 # 3. Check types (happens during build)
-bun run build
+pnpm build
 ```
 
 #### Git Pre-commit Hook (Optional)
@@ -743,8 +743,8 @@ Consider adding to `.git/hooks/pre-commit`:
 
 ```bash
 #!/bin/sh
-bun run format
-bun run lint
+pnpm format
+pnpm lint
 ```
 
 Or use **husky** + **lint-staged** for automatic enforcement.
@@ -767,7 +767,7 @@ src/routeTree.gen.ts
 **Prettier ignores** (automatic):
 
 -  Same as ESLint
--  Plus: `bun.lock`, `package-lock.json`
+-  Plus: `pnpm-lock.yaml`, `package-lock.json`
 
 ---
 
@@ -946,25 +946,25 @@ afterAll(() => server.close());
 
 ```bash
 # Run all tests (watch mode)
-bun run test
+pnpm test
 
 # Run tests once (CI mode)
-bun run test:silent
+pnpm test:silent
 
 # Run tests silently (less output)
-bun run test:silent
+pnpm test:silent
 
 # Run with UI (interactive mode)
-bun run test:ui
+pnpm test:ui
 
 # Run with coverage report
-bun run coverage
+pnpm coverage
 
 # Run specific test file
-bun run test counter.spec.tsx
+pnpm test counter.spec.tsx
 
 # Run tests matching pattern
-bun run test --grep "Counter"
+pnpm test --grep "Counter"
 ```
 
 #### Available Scripts
@@ -1438,7 +1438,7 @@ await waitFor(() => {
 
 ```bash
 # Generate coverage report
-bun run coverage
+pnpm coverage
 
 # View HTML report
 open coverage/index.html
@@ -1496,13 +1496,13 @@ Vitest runs in CI environments automatically. The `process.env.CI` flag enables 
 
 ```yaml
 - name: Install dependencies
-  run: bun install
+  run: pnpm install
 
 - name: Run unit tests
-  run: bun run test:silent
+  run: pnpm test:silent
 
 - name: Generate coverage
-  run: bun run coverage
+  run: pnpm coverage
 
 - name: Upload coverage
   uses: codecov/codecov-action@v3
@@ -1517,7 +1517,7 @@ Vitest runs in CI environments automatically. The `process.env.CI` flag enables 
 ### Interactive UI Mode
 
 ```bash
-bun run test:ui
+pnpm test:ui
 ```
 
 **Features:**
@@ -1559,7 +1559,7 @@ Add to `.vscode/launch.json`:
    "type": "node",
    "request": "launch",
    "name": "Debug Vitest",
-   "runtimeExecutable": "bun",
+   "runtimeExecutable": "node",
    "runtimeArgs": [
       "test",
       "--run",
@@ -1572,7 +1572,7 @@ Add to `.vscode/launch.json`:
 
 #### 3. Vitest UI
 
-Use `bun run test:ui` for visual debugging with hot reload.
+Use `pnpm test:ui` for visual debugging with hot reload.
 
 ---
 
@@ -1623,10 +1623,10 @@ await waitFor(() => {
 **Essential Commands:**
 
 ```bash
-bun run test           # Watch mode
-bun run test:silent          # Run once
-bun run test:ui           # Interactive UI
-bun run coverage          # Coverage report
+pnpm test           # Watch mode
+pnpm test:silent          # Run once
+pnpm test:ui           # Interactive UI
+pnpm coverage          # Coverage report
 ```
 
 **Common Queries:**
@@ -1695,7 +1695,7 @@ export default defineConfig({
       { name: 'webkit', use: { ...devices['Desktop Safari'] } },
    ],
    webServer: {
-      command: 'bun run dev',
+      command: 'pnpm dev',
       url: 'http://localhost:5173',
       reuseExistingServer: !process.env.CI,
    },
@@ -1716,24 +1716,24 @@ export default defineConfig({
 
 ```bash
 # Run all tests (headless mode)
-bun run playwright
+pnpm playwright
 
 # Run tests with UI (interactive mode)
-bun run playwright:ui
+pnpm playwright:ui
 
 # Run tests in debug mode
-bun run playwright:debug
+pnpm playwright:debug
 
 # Run specific test file
-bun run playwright routes.e2e.spec.tsx
+pnpm playwright routes.e2e.spec.tsx
 
 # Run tests in specific browser
-bun run playwright --project=chromium
-bun run playwright --project=firefox
-bun run playwright --project=webkit
+pnpm playwright --project=chromium
+pnpm playwright --project=firefox
+pnpm playwright --project=webkit
 
 # Show test report
-bunx playwright show-report
+pnpm exec playwright show-report
 ```
 
 #### Available Scripts
@@ -2046,13 +2046,13 @@ workers: process.env.CI ? 1 : undefined, // Sequential in CI
 
 ```yaml
 - name: Install dependencies
-  run: bun install
+  run: pnpm install
 
 - name: Install Playwright browsers
-  run: bunx playwright install --with-deps
+  run: pnpm exec playwright install --with-deps
 
 - name: Run Playwright tests
-  run: bun run playwright
+  run: pnpm playwright
 
 - name: Upload test results
   if: always()
@@ -2069,7 +2069,7 @@ workers: process.env.CI ? 1 : undefined, // Sequential in CI
 #### Interactive Mode
 
 ```bash
-bun run playwright:ui
+pnpm playwright:ui
 ```
 
 **Features:**
@@ -2082,7 +2082,7 @@ bun run playwright:ui
 #### Debug Mode
 
 ```bash
-bun run playwright:debug
+pnpm playwright:debug
 ```
 
 **Features:**
@@ -2095,7 +2095,7 @@ bun run playwright:debug
 #### Headed Mode
 
 ```bash
-bun run playwright --headed
+pnpm playwright --headed
 ```
 
 **Features:**
@@ -2157,9 +2157,9 @@ await page.click('.movie-card');
 **Fix:**
 
 ```bash
-bunx playwright install chromium
+pnpm exec playwright install chromium
 # or install all browsers
-bunx playwright install
+pnpm exec playwright install
 ```
 
 ---
@@ -2209,11 +2209,11 @@ src/
 **Essential Commands:**
 
 ```bash
-bun run playwright                # Run all tests
-bun run playwright:ui         # Interactive mode
-bun run playwright:debug      # Debug mode
-bun run playwright --headed     # Show browser
-bunx playwright show-report       # View HTML report
+pnpm playwright                # Run all tests
+pnpm playwright:ui         # Interactive mode
+pnpm playwright:debug      # Debug mode
+pnpm playwright --headed     # Show browser
+pnpm exec playwright show-report       # View HTML report
 ```
 
 **Common Locators:**
@@ -2279,11 +2279,11 @@ jobs:
            with:
               node-version: lts/*
          - name: Install dependencies
-           run: bun install
+           run: pnpm install
          - name: Install Playwright Browsers
-           run: bunx playwright install --with-deps
+           run: pnpm exec playwright install --with-deps
          - name: Run Playwright tests
-           run: bun run playwright
+           run: pnpm playwright
          - uses: actions/upload-artifact@v4
            if: ${{ !cancelled() }}
            with:
@@ -2351,19 +2351,19 @@ jobs:
 
 #### ✅ Code Quality Job
 
--  **ESLint** - Lints all TypeScript/React code (`bun run lint`)
--  **Prettier** - Checks code formatting (`bun run format --check`)
--  **TypeScript** - Type checking and build (`bun run build`)
+-  **ESLint** - Lints all TypeScript/React code (`pnpm lint`)
+-  **Prettier** - Checks code formatting (`pnpm format --check`)
+-  **TypeScript** - Type checking and build (`pnpm build`)
 
 #### ✅ Unit Tests Job
 
--  **Vitest** - Runs all unit tests (`bun run test:silent`)
--  **Coverage** - Generates coverage report (`bun run coverage`)
+-  **Vitest** - Runs all unit tests (`pnpm test:silent`)
+-  **Coverage** - Generates coverage report (`pnpm coverage`)
 -  **Artifacts** - Uploads coverage report for analysis
 
 #### ✅ E2E Tests Job
 
--  **Playwright** - Runs E2E tests across 3 browsers (`bun run playwright`)
+-  **Playwright** - Runs E2E tests across 3 browsers (`pnpm playwright`)
 -  **Artifacts** - Uploads Playwright HTML report
 
 **Workflow structure** (`.github/workflows/ci.yml`):
@@ -2384,21 +2384,21 @@ jobs:
       steps:
          - uses: actions/checkout@v4
 
-         - uses: oven-sh/setup-bun@v2
+         - uses: oven-sh/setup-pnpm@v2
            with:
-              bun-version: 1.3.11
+              pnpm-version: 1.3.11
 
          - name: Install dependencies
-           run: bun install
+           run: pnpm install
 
          - name: Run ESLint
-           run: bun run lint
+           run: pnpm lint
 
          - name: Check formatting
-           run: bun run format --check
+           run: pnpm format --check
 
          - name: Type check
-           run: bun run build
+           run: pnpm build
 
    unit-tests:
       name: Unit Tests
@@ -2406,18 +2406,18 @@ jobs:
       steps:
          - uses: actions/checkout@v4
 
-         - uses: oven-sh/setup-bun@v2
+         - uses: oven-sh/setup-pnpm@v2
            with:
-              bun-version: 1.3.11
+              pnpm-version: 1.3.11
 
          - name: Install dependencies
-           run: bun install
+           run: pnpm install
 
          - name: Run Vitest
-           run: bun run test:silent
+           run: pnpm test:silent
 
          - name: Generate coverage
-           run: bun run coverage
+           run: pnpm coverage
 
          - name: Upload coverage to Codecov
            uses: codecov/codecov-action@v3
@@ -2430,18 +2430,18 @@ jobs:
       steps:
          - uses: actions/checkout@v4
 
-         - uses: oven-sh/setup-bun@v2
+         - uses: oven-sh/setup-pnpm@v2
            with:
-              bun-version: 1.3.11
+              pnpm-version: 1.3.11
 
          - name: Install dependencies
-           run: bun install
+           run: pnpm install
 
          - name: Install Playwright Browsers
-           run: bunx playwright install --with-deps
+           run: pnpm exec playwright install --with-deps
 
          - name: Run Playwright tests
-           run: bun run playwright
+           run: pnpm playwright
 
          - uses: actions/upload-artifact@v4
            if: ${{ !cancelled() }}
@@ -2493,7 +2493,7 @@ This workflow:
 ```yaml
 # Add to workflow
 - name: Run ESLint
-  run: bun run lint
+  run: pnpm lint
   # If this fails, workflow stops (don't waste CI time on later steps)
 ```
 
@@ -2503,7 +2503,7 @@ This workflow:
 - uses: actions/setup-node@v4
   with:
      node-version: lts/*
-     bun-version: 1.3.11 # Bun handles its own caching
+     pnpm-version: 1.3.11 # Bun handles its own caching
 ```
 
 #### 4. Matrix Testing (Optional)
@@ -2536,29 +2536,29 @@ To ensure commits pass CI, run checks locally:
 
 ```bash
 # Run all checks
-bun run lint && bun run format && bun run test:silent && bun run build
+pnpm lint && pnpm format && pnpm test:silent && pnpm build
 ```
 
 **Or set up pre-commit hook** (`.git/hooks/pre-commit`):
 
 ```bash
 #!/bin/sh
-bun run lint
-bun run format
-bun run test:silent
+pnpm lint
+pnpm format
+pnpm test:silent
 ```
 
 **Or use Husky + lint-staged:**
 
 ```bash
-bun add -d husky lint-staged
+pnpm add -D husky lint-staged
 ```
 
 `.husky/pre-commit`:
 
 ```bash
 #!/bin/sh
-bun run lint-staged
+pnpm lint-staged
 ```
 
 `package.json`:
@@ -2594,7 +2594,7 @@ bun run lint-staged
 
 ```yaml
 - name: Run tests
-  run: bun run test:silent
+  run: pnpm test:silent
   env:
      NODE_OPTIONS: '--max_old_space_size=4096'
 ```
@@ -2627,12 +2627,12 @@ bun run lint-staged
 
 **All quality checks running in CI:**
 
--  ✅ ESLint (`bun run lint`)
--  ✅ Prettier (`bun run format --check`)
--  ✅ TypeScript (`bun run build`)
--  ✅ Vitest (`bun run test:silent`)
--  ✅ Coverage report (`bun run coverage`)
--  ✅ Playwright E2E (`bun run playwright`)
+-  ✅ ESLint (`pnpm lint`)
+-  ✅ Prettier (`pnpm format --check`)
+-  ✅ TypeScript (`pnpm build`)
+-  ✅ Vitest (`pnpm test:silent`)
+-  ✅ Coverage report (`pnpm coverage`)
+-  ✅ Playwright E2E (`pnpm playwright`)
 
 **Recommended next steps:**
 
