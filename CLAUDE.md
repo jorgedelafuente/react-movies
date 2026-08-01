@@ -55,9 +55,9 @@ Config lives in [vite.config.ts](vite.config.ts) under the `test` key.
 
 Config: [playwright.config.ts](playwright.config.ts)
 
--  Test directory: `src/tests` (files matching `*.e2e.*`)
+-  Test directory: `src/tests` (Playwright scans recursively; E2E specs live in `src/tests/e2e/`)
 -  Base URL: `http://localhost:5173` (dev server started automatically)
--  Browsers: Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari, Edge, Chrome
+-  Browsers: Chromium only (CI runs Chromium; other browsers removed from config)
 -  Retries: 2 on CI, 0 locally
 -  Reports: HTML (`playwright-report/`)
 
@@ -86,6 +86,7 @@ Active rule sets:
 -  `react-refresh`
 -  `jsx-a11y` (accessibility — all recommended rules)
 -  `@tanstack/query` (recommended)
+-  `simple-import-sort` (import/export order enforced)
 -  `prettier` (last, disables conflicting rules)
 
 Ignored paths: `dist/`, `node_modules/`, `coverage/`, `src/routeTree.gen.ts`, and config files.
@@ -128,11 +129,11 @@ Workflows: [.github/workflows/](.github/workflows/)
 
 **[ci.yml](.github/workflows/ci.yml)** — triggered on push / PR to `main` / `master`:
 
-| Job          | Steps                                                    |
-| ------------ | -------------------------------------------------------- |
-| `quality`    | type-check + build (lint/format run via pre-commit hook) |
-| `unit-tests` | Vitest + upload coverage                                 |
-| `e2e-tests`  | Playwright + upload `playwright-report/` artifact        |
+| Job          | Steps                                             |
+| ------------ | ------------------------------------------------- |
+| `quality`    | type-check + build                                |
+| `unit-tests` | Vitest + upload coverage                          |
+| `e2e-tests`  | Playwright + upload `playwright-report/` artifact |
 
 All jobs use **pnpm v10** on Node 22. The three env vars above must be set as repository secrets (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_APIKEY`).
 
@@ -162,7 +163,8 @@ src/
 │   ├── top-rated/      # /top-rated
 │   ├── upcoming/       # /upcoming
 │   ├── about/          # /about
-│   └── film/$filmId    # /film/:filmId (detail page)
+│   ├── favorites/      # /favorites
+│   └── film/           # /film/:filmId — $filmId.tsx (loader) + $filmId.lazy.tsx (component)
 ├── services/
 │   ├── config.ts       # TMDB image base URLs
 │   ├── films/          # TMDB fetch functions + TanStack Query options
@@ -172,7 +174,7 @@ src/
 ├── utils/
 │   ├── hooks/          # useAuth, useFavorites, useTheme, useDebounce
 │   └── sanitizeInput.ts
-├── views/              # page-level view components (FilmList, FilmInfo, About)
+├── views/              # page-level view components (FilmList, FilmInfo, Favorites, About)
 ├── tests/              # Vitest setup, test-utils, mocks, E2E specs
 └── styles/             # global.css, scrollbar styles, index.css (CSS vars)
 ```
@@ -237,7 +239,7 @@ Use `sanitizeInput` from [src/utils/sanitizeInput.ts](src/utils/sanitizeInput.ts
 The app is fully responsive and must work on mobile. Follow these guidelines when adding UI:
 
 -  Design mobile-first: start with small screens, layer up with `sm:`, `md:`, `lg:` breakpoints
--  Playwright E2E runs against Mobile Chrome and Mobile Safari in CI — new features need to pass on both
+-  Playwright E2E runs against Chromium (Desktop Chrome) in CI
 -  The Tailwind config extends the default breakpoints; do not hard-code pixel widths
 -  **Film detail page (`/film/:filmId`)** does not render well on small screens. On mobile, avoid horizontal scroll layouts — use single-column stacked rows instead. Horizontal scroll is only appropriate at `sm:` and above.
 
