@@ -265,7 +265,7 @@ const FilmInfo = ({
                   <h2 className="mb-4 text-2xl">
                      <strong>Recommendations</strong>
                   </h2>
-                  <div className="flex flex-wrap justify-center gap-4">
+                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4 lg:gap-8">
                      {recommendations.map((film) => (
                         <FilmCard
                            key={film.id}

@@ -25,7 +25,7 @@ const FilmCard = ({
       <Link
          to="/film/$filmId"
          params={{ filmId: String(id) }}
-         className="w-[90%] text-inherit sm:w-[90%] md:w-[300px]"
+         className="w-full text-inherit"
       >
          <Card>
             <img
