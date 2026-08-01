@@ -19,7 +19,9 @@ pnpm test:silent        # Vitest (unit, CI-friendly, no watch)
 pnpm test:ui            # Vitest browser UI
 pnpm coverage           # Vitest + Istanbul coverage
 pnpm coverage:open      # open coverage report in browser
-pnpm playwright         # Playwright E2E
+pnpm playwright         # Playwright E2E (headless)
+pnpm playwright:ui      # Playwright with browser UI
+pnpm playwright:debug   # Playwright debug mode
 ```
 
 ## TypeScript
