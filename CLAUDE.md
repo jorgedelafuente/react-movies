@@ -160,7 +160,7 @@ src/
 │   ├── films/          # TMDB fetch functions + TanStack Query options
 │   ├── favorites/      # favorites TanStack Query options
 │   └── supabase/       # Supabase client, auth service, favorites service
-├── types/              # TypeScript types (theme.types.ts) + Zod schemas (films.schemas.ts)
+├── types/              # TypeScript types (auth.types.ts, films.types.ts, theme.types.ts) + Zod schemas (films.schemas.ts)
 ├── utils/
 │   ├── hooks/          # useAuth, useFavorites, useTheme, useDebounce
 │   └── sanitizeInput.ts
