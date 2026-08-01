@@ -13,7 +13,11 @@ import autoprefixer from 'autoprefixer';
 // https://vitejs.dev/config/
 export default defineConfig({
    plugins: [react(), TanStackRouterVite(), tsconfigPaths()],
+   optimizeDeps: {
+      esbuildOptions: { target: 'esnext' },
+   },
    build: {
+      target: 'esnext',
       rollupOptions: {
          output: {
             manualChunks: {

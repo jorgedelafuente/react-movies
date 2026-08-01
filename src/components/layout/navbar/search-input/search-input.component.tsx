@@ -62,7 +62,8 @@ const SearchInput = () => {
                   searchInputList?.map((item: FilmInfoType) => (
                      <li className="" key={item.id}>
                         <Link
-                           to={`/film/${item.id}`}
+                           to="/film/$filmId"
+                           params={{ filmId: String(item.id) }}
                            onClick={resetSearchQuery}
                         >
                            <span className="text-sm text-copy hover:underline">
