@@ -127,19 +127,7 @@ Variables are prefixed with `VITE_` and exposed to the browser bundle by Vite. D
 
 ## CI — GitHub Actions
 
-Workflows: [.github/workflows/](.github/workflows/)
-
-**[ci.yml](.github/workflows/ci.yml)** — triggered on push / PR to `main` / `master`:
-
-| Job          | Steps                                             |
-| ------------ | ------------------------------------------------- |
-| `quality`    | type-check + build                                |
-| `unit-tests` | Vitest + upload coverage                          |
-| `e2e-tests`  | Playwright + upload `playwright-report/` artifact |
-
-All jobs use **pnpm v10** on Node 22. The three env vars above must be set as repository secrets (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_APIKEY`).
-
-Caching strategy: all jobs use `actions/setup-node@v4` with `cache: pnpm` (keyed on `pnpm-lock.yaml`) so `pnpm install` resolves from the pnpm store cache. The `e2e-tests` job additionally caches `~/.cache/ms-playwright` for Chromium.
+No CI workflow is currently configured. The `.github/workflows/` directory exists but is empty.
 
 ## Path Aliases
 
@@ -154,7 +142,7 @@ import { Button } from '@/components/atoms/button/button.component';
 ```
 src/
 ├── components/
-│   ├── atoms/          # Button, Card, FilmCard, Input, Modal, Spinner, FavoriteButton, NavLink (link)
+│   ├── atoms/          # Button, Card, FilmCard, Input, Modal, Spinner, FavoriteButton, NavLink
 │   ├── auth/           # auth modal, login/register/reset/logout forms
 │   └── layout/         # Navbar (+ search, theme toggle, login icons), Container, FlexContainer,
 │                       # ErrorBoundary, ErrorComponent, NotFoundComponent
