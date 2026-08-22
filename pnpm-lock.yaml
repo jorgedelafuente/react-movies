@@ -10,7 +10,7 @@ overrides:
   js-yaml: '>=5.3.0'
   '@babel/core': ^7.29.7
   esbuild: '>=0.28.1'
-  brace-expansion: '>=5.0.8'
+  brace-expansion: '>=5.0.9'
   minimatch: '>=9'
   fast-uri: '>=4.1.1'
   postcss: '>=8.5.26'
@@ -1805,6 +1805,7 @@ packages:
   eslint@9.39.5:
     resolution: {integrity: sha512-DgZS62aPLXKlnxILS/AYCoRvHaZeXceIzlXPkkGGzJWSow1aEk0lbTlxUSlyjC8jcaKxAdOnTDz+o1JFSBsyjw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
