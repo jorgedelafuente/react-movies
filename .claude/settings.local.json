@@ -5,7 +5,11 @@
          "Bash(git add:*)",
          "mcp__supabase__list_projects",
          "mcp__supabase__list_tables",
-         "mcp__supabase__execute_sql"
+         "mcp__supabase__execute_sql",
+         "Bash(grep -v \":0$\")",
+         "Bash(cat)",
+         "Bash(chmod +x /tmp/detailed_audit.sh)",
+         "Bash(/tmp/detailed_audit.sh)"
       ]
    },
    "enabledMcpjsonServers": ["playwright", "supabase"]
