@@ -105,7 +105,9 @@ vi.mock('@/services/supabase/favorites', () => ({
 vi.mocked(getUserFavorites).mockResolvedValue(MOCK_FAVORITES);
 ```
 
-`useAuth.spec.ts` does the same for `@/services/supabase/auth`. TMDB fetchers in `src/services/films/` and `src/services/series/` are mocked the same way when a component fetches for itself; most views take data as props, so usually the parsed mock is enough.
+`useAuth.spec.ts` does the same for `@/services/supabase/auth`. TMDB fetchers in `src/services/films/`, `src/services/series/` and `src/services/search/` are mocked the same way when a component fetches for itself (`search-input.spec.tsx` and `keyword-filter.spec.tsx` mock `@/services/search/search`, which also covers the query options built on it); most views take data as props, so usually the parsed mock is enough.
+
+When asserting on a react-aria `ComboBox`, query options by name and wait for the expected count: the empty-state placeholder is rendered with `role="option"` too, so a bare `findAllByRole('option')` resolves before the results arrive.
 
 ### Zustand stores
 
