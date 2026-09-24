@@ -1,18 +1,23 @@
 import { z } from 'zod';
 
-const GenreSchema = z.object({
+import { MEDIA_TYPES } from './media.types';
+
+/** Discriminates TMDB movies from TV series; the two id spaces overlap. */
+export const MediaTypeSchema = z.enum(MEDIA_TYPES);
+
+export const GenreSchema = z.object({
    id: z.number(),
    name: z.string(),
 });
 
-const ProductionCompanySchema = z.object({
+export const ProductionCompanySchema = z.object({
    id: z.number(),
    logo_path: z.string().nullable(),
    name: z.string(),
    origin_country: z.string(),
 });
 
-const SpokenLanguageSchema = z.object({
+export const SpokenLanguageSchema = z.object({
    english_name: z.string(),
    iso_639_1: z.string(),
    name: z.string(),
@@ -20,6 +25,7 @@ const SpokenLanguageSchema = z.object({
 
 export const FilmInfoSchema = z.object({
    id: z.number(),
+   media_type: MediaTypeSchema.default(MEDIA_TYPES.MOVIE),
    title: z.string(),
    original_title: z.string(),
    original_language: z.string().optional(),
@@ -29,6 +35,7 @@ export const FilmInfoSchema = z.object({
    release_date: z.string(),
    vote_average: z.number().optional(),
    vote_count: z.number().optional(),
+   popularity: z.number().optional(),
    tagline: z.string().optional().nullable(),
    homepage: z.string().optional().nullable(),
    imdb_id: z.string().optional().nullable(),
@@ -81,6 +88,7 @@ export const FilmRecommendationsSchema = z.object({
    results: z.array(
       z.object({
          id: z.number(),
+         media_type: MediaTypeSchema.default(MEDIA_TYPES.MOVIE),
          title: z.string(),
          poster_path: z.string().nullable(),
          release_date: z.string(),

@@ -1,19 +1,39 @@
+import { MEDIA_TYPES, type MediaType } from '@/types/media.types';
+
 import { supabase } from './supabaseClient';
 
 export type FavoriteRow = {
    id: string;
    user_id: string;
    film_id: number;
+   media_type: MediaType;
    created_at: string;
    film_title: string;
    film_poster_path: string | null;
    film_release_date: string;
 };
 
+/** Everything needed to save a film or series as a favorite. */
+export type FavoriteInput = {
+   filmId: number;
+   mediaType: MediaType;
+   filmTitle: string;
+   filmPosterPath: string | null;
+   filmReleaseDate: string;
+};
+
 type FavoritesError = {
    message: string;
    code?: string;
 };
+
+/** Rows written before the `media_type` column existed are films. */
+const normalizeRow = (
+   row: Partial<FavoriteRow> & FavoriteRow
+): FavoriteRow => ({
+   ...row,
+   media_type: row.media_type ?? MEDIA_TYPES.MOVIE,
+});
 
 export const getUserFavorites = async (
    userId: string
@@ -29,7 +49,7 @@ export const getUserFavorites = async (
             data: [],
             error: { message: error.message, code: error.code },
          };
-      return { data: data ?? [], error: null };
+      return { data: (data ?? []).map(normalizeRow), error: null };
    } catch (err) {
       return {
          data: [],
@@ -42,10 +62,13 @@ export const getUserFavorites = async (
 
 export const addFavorite = async (
    userId: string,
-   filmId: number,
-   filmTitle: string,
-   filmPosterPath: string | null,
-   filmReleaseDate: string
+   {
+      filmId,
+      mediaType,
+      filmTitle,
+      filmPosterPath,
+      filmReleaseDate,
+   }: FavoriteInput
 ): Promise<{ data: FavoriteRow | null; error: FavoritesError | null }> => {
    try {
       const { data, error } = await supabase
@@ -53,6 +76,7 @@ export const addFavorite = async (
          .insert({
             user_id: userId,
             film_id: filmId,
+            media_type: mediaType,
             film_title: filmTitle,
             film_poster_path: filmPosterPath,
             film_release_date: filmReleaseDate,
@@ -65,7 +89,7 @@ export const addFavorite = async (
             data: null,
             error: { message: error.message, code: error.code },
          };
-      return { data, error: null };
+      return { data: normalizeRow(data), error: null };
    } catch (err) {
       return {
          data: null,
@@ -78,14 +102,16 @@ export const addFavorite = async (
 
 export const removeFavorite = async (
    userId: string,
-   filmId: number
+   filmId: number,
+   mediaType: MediaType
 ): Promise<{ error: FavoritesError | null }> => {
    try {
       const { error } = await supabase
          .from('favorites')
          .delete()
          .eq('user_id', userId)
-         .eq('film_id', filmId);
+         .eq('film_id', filmId)
+         .eq('media_type', mediaType);
 
       if (error) return { error: { message: error.message, code: error.code } };
       return { error: null };

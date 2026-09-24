@@ -38,14 +38,46 @@ const Navbar = () => {
                />
             </svg>
          </div>
-         <div className="flex w-full items-center justify-between">
-            <div>
-               <NavLink path="/popular" text="Popular" />
-               <span className="p-1 text-copy">|</span>
-               <NavLink path="/top-rated" text="Top Rated" />
-               <span className="p-1 text-copy">|</span>
-               <NavLink path="/upcoming" text="Upcoming" />
-            </div>
+         <div className="flex w-full items-start justify-between sm:items-center">
+            <nav
+               aria-label="Browse"
+               className="flex flex-col gap-1 sm:flex-row sm:gap-6"
+            >
+               <div
+                  role="group"
+                  aria-label="Films"
+                  className="flex flex-wrap items-center"
+               >
+                  <span
+                     className="mr-2 text-xs font-semibold uppercase tracking-wider text-copy/60"
+                     aria-hidden="true"
+                  >
+                     Films
+                  </span>
+                  <NavLink path="/popular" text="Popular" />
+                  <span className="p-1 text-copy">|</span>
+                  <NavLink path="/top-rated" text="Top Rated" />
+                  <span className="p-1 text-copy">|</span>
+                  <NavLink path="/upcoming" text="Upcoming" />
+               </div>
+               <div
+                  role="group"
+                  aria-label="Series"
+                  className="flex flex-wrap items-center"
+               >
+                  <span
+                     className="mr-2 text-xs font-semibold uppercase tracking-wider text-copy/60"
+                     aria-hidden="true"
+                  >
+                     Series
+                  </span>
+                  <NavLink path="/series/popular" text="Popular" />
+                  <span className="p-1 text-copy">|</span>
+                  <NavLink path="/series/top-rated" text="Top Rated" />
+                  <span className="p-1 text-copy">|</span>
+                  <NavLink path="/series/on-the-air" text="On The Air" />
+               </div>
+            </nav>
             <div className="flex items-center gap-1">
                <ThemeToggleIcon tabIndex={0} />
                <LoginIcon tabIndex={0} />

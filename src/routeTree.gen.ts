@@ -15,7 +15,11 @@ import { Route as TopRatedIndexRouteImport } from './routes/top-rated/index'
 import { Route as PopularIndexRouteImport } from './routes/popular/index'
 import { Route as FavoritesIndexRouteImport } from './routes/favorites/index'
 import { Route as AboutIndexRouteImport } from './routes/about/index'
+import { Route as TvSeriesIdRouteImport } from './routes/tv/$seriesId'
 import { Route as FilmFilmIdRouteImport } from './routes/film/$filmId'
+import { Route as SeriesTopRatedIndexRouteImport } from './routes/series/top-rated/index'
+import { Route as SeriesPopularIndexRouteImport } from './routes/series/popular/index'
+import { Route as SeriesOnTheAirIndexRouteImport } from './routes/series/on-the-air/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -47,78 +51,126 @@ const AboutIndexRoute = AboutIndexRouteImport.update({
   path: '/about/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TvSeriesIdRoute = TvSeriesIdRouteImport.update({
+  id: '/tv/$seriesId',
+  path: '/tv/$seriesId',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() => import('./routes/tv/$seriesId.lazy').then((d) => d.Route))
 const FilmFilmIdRoute = FilmFilmIdRouteImport.update({
   id: '/film/$filmId',
   path: '/film/$filmId',
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/film/$filmId.lazy').then((d) => d.Route))
+const SeriesTopRatedIndexRoute = SeriesTopRatedIndexRouteImport.update({
+  id: '/series/top-rated/',
+  path: '/series/top-rated/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SeriesPopularIndexRoute = SeriesPopularIndexRouteImport.update({
+  id: '/series/popular/',
+  path: '/series/popular/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SeriesOnTheAirIndexRoute = SeriesOnTheAirIndexRouteImport.update({
+  id: '/series/on-the-air/',
+  path: '/series/on-the-air/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/film/$filmId': typeof FilmFilmIdRoute
+  '/tv/$seriesId': typeof TvSeriesIdRoute
   '/about/': typeof AboutIndexRoute
   '/favorites/': typeof FavoritesIndexRoute
   '/popular/': typeof PopularIndexRoute
   '/top-rated/': typeof TopRatedIndexRoute
   '/upcoming/': typeof UpcomingIndexRoute
+  '/series/on-the-air/': typeof SeriesOnTheAirIndexRoute
+  '/series/popular/': typeof SeriesPopularIndexRoute
+  '/series/top-rated/': typeof SeriesTopRatedIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/film/$filmId': typeof FilmFilmIdRoute
+  '/tv/$seriesId': typeof TvSeriesIdRoute
   '/about': typeof AboutIndexRoute
   '/favorites': typeof FavoritesIndexRoute
   '/popular': typeof PopularIndexRoute
   '/top-rated': typeof TopRatedIndexRoute
   '/upcoming': typeof UpcomingIndexRoute
+  '/series/on-the-air': typeof SeriesOnTheAirIndexRoute
+  '/series/popular': typeof SeriesPopularIndexRoute
+  '/series/top-rated': typeof SeriesTopRatedIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/film/$filmId': typeof FilmFilmIdRoute
+  '/tv/$seriesId': typeof TvSeriesIdRoute
   '/about/': typeof AboutIndexRoute
   '/favorites/': typeof FavoritesIndexRoute
   '/popular/': typeof PopularIndexRoute
   '/top-rated/': typeof TopRatedIndexRoute
   '/upcoming/': typeof UpcomingIndexRoute
+  '/series/on-the-air/': typeof SeriesOnTheAirIndexRoute
+  '/series/popular/': typeof SeriesPopularIndexRoute
+  '/series/top-rated/': typeof SeriesTopRatedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/film/$filmId'
+    | '/tv/$seriesId'
     | '/about/'
     | '/favorites/'
     | '/popular/'
     | '/top-rated/'
     | '/upcoming/'
+    | '/series/on-the-air/'
+    | '/series/popular/'
+    | '/series/top-rated/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/film/$filmId'
+    | '/tv/$seriesId'
     | '/about'
     | '/favorites'
     | '/popular'
     | '/top-rated'
     | '/upcoming'
+    | '/series/on-the-air'
+    | '/series/popular'
+    | '/series/top-rated'
   id:
     | '__root__'
     | '/'
     | '/film/$filmId'
+    | '/tv/$seriesId'
     | '/about/'
     | '/favorites/'
     | '/popular/'
     | '/top-rated/'
     | '/upcoming/'
+    | '/series/on-the-air/'
+    | '/series/popular/'
+    | '/series/top-rated/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FilmFilmIdRoute: typeof FilmFilmIdRoute
+  TvSeriesIdRoute: typeof TvSeriesIdRoute
   AboutIndexRoute: typeof AboutIndexRoute
   FavoritesIndexRoute: typeof FavoritesIndexRoute
   PopularIndexRoute: typeof PopularIndexRoute
   TopRatedIndexRoute: typeof TopRatedIndexRoute
   UpcomingIndexRoute: typeof UpcomingIndexRoute
+  SeriesOnTheAirIndexRoute: typeof SeriesOnTheAirIndexRoute
+  SeriesPopularIndexRoute: typeof SeriesPopularIndexRoute
+  SeriesTopRatedIndexRoute: typeof SeriesTopRatedIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -165,11 +217,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tv/$seriesId': {
+      id: '/tv/$seriesId'
+      path: '/tv/$seriesId'
+      fullPath: '/tv/$seriesId'
+      preLoaderRoute: typeof TvSeriesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/film/$filmId': {
       id: '/film/$filmId'
       path: '/film/$filmId'
       fullPath: '/film/$filmId'
       preLoaderRoute: typeof FilmFilmIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/series/top-rated/': {
+      id: '/series/top-rated/'
+      path: '/series/top-rated'
+      fullPath: '/series/top-rated/'
+      preLoaderRoute: typeof SeriesTopRatedIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/series/popular/': {
+      id: '/series/popular/'
+      path: '/series/popular'
+      fullPath: '/series/popular/'
+      preLoaderRoute: typeof SeriesPopularIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/series/on-the-air/': {
+      id: '/series/on-the-air/'
+      path: '/series/on-the-air'
+      fullPath: '/series/on-the-air/'
+      preLoaderRoute: typeof SeriesOnTheAirIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -178,11 +258,15 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FilmFilmIdRoute: FilmFilmIdRoute,
+  TvSeriesIdRoute: TvSeriesIdRoute,
   AboutIndexRoute: AboutIndexRoute,
   FavoritesIndexRoute: FavoritesIndexRoute,
   PopularIndexRoute: PopularIndexRoute,
   TopRatedIndexRoute: TopRatedIndexRoute,
   UpcomingIndexRoute: UpcomingIndexRoute,
+  SeriesOnTheAirIndexRoute: SeriesOnTheAirIndexRoute,
+  SeriesPopularIndexRoute: SeriesPopularIndexRoute,
+  SeriesTopRatedIndexRoute: SeriesTopRatedIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

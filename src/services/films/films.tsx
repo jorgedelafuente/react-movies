@@ -1,5 +1,6 @@
 import axios from 'redaxios';
 
+import { tmdbBaseUrl } from '@/services/config';
 import {
    FilmCreditsSchema,
    FilmInfoSchema,
@@ -11,7 +12,7 @@ import {
 export class FilmNotFoundError extends Error {}
 
 const apiKey = import.meta.env.VITE_APIKEY;
-axios.defaults.baseURL = 'https://api.themoviedb.org/3';
+axios.defaults.baseURL = tmdbBaseUrl;
 
 const paramOptions = {
    popular: () => `/movie/popular${apiKey}&language=en-US&page=1`,

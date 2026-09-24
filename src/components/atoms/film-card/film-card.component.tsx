@@ -1,11 +1,12 @@
-import { Link } from '@tanstack/react-router';
-
 import Card from '@/components/atoms/card/card.component';
 import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
+import MediaLink from '@/components/atoms/link/media-link.component';
 import { baseImagePath } from '@/services/config';
+import type { MediaType } from '@/types/media.types';
 
 interface FilmCardProps {
    id: number;
+   media_type: MediaType;
    title: string;
    poster_path: string | null;
    overview?: string;
@@ -15,6 +16,7 @@ interface FilmCardProps {
 
 const FilmCard = ({
    id,
+   media_type,
    title,
    poster_path,
    overview,
@@ -22,11 +24,7 @@ const FilmCard = ({
    showFavorite = true,
 }: FilmCardProps) => {
    return (
-      <Link
-         to="/film/$filmId"
-         params={{ filmId: String(id) }}
-         className="w-full text-inherit"
-      >
+      <MediaLink id={id} mediaType={media_type} className="w-full text-inherit">
          <Card>
             <img
                loading="lazy"
@@ -40,6 +38,7 @@ const FilmCard = ({
                {showFavorite && (
                   <FavoriteButton
                      filmId={id}
+                     mediaType={media_type}
                      filmTitle={title}
                      filmPosterPath={poster_path}
                      filmReleaseDate={release_date}
@@ -48,7 +47,7 @@ const FilmCard = ({
                )}
             </div>
          </Card>
-      </Link>
+      </MediaLink>
    );
 };
 

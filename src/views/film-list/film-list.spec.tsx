@@ -8,6 +8,7 @@ import { act, screen } from '@testing-library/react';
 
 import { MOCK_FILM_LIST } from '@/tests/__mocks__/mocks';
 import { renderWithQueryContext } from '@/tests/test-utils';
+import { FilmListSchema } from '@/types/films.schemas';
 
 import FilmList from './film-list.view';
 
@@ -23,13 +24,15 @@ export const router = createRouter({
 
 describe('Film Lists Component', () => {
    it('should fetch the popular list from the popular page', async () => {
-      const element = () => <FilmList list={MOCK_FILM_LIST.results} />;
+      const element = () => (
+         <FilmList list={FilmListSchema.parse(MOCK_FILM_LIST).results} />
+      );
       await act(async () => {
          renderWithQueryContext(
             <RouterProvider router={router as any} defaultComponent={element} />
          );
       });
 
-      expect(screen.getByText(/The Substance/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/The Substance/i)[0]).toBeInTheDocument();
    });
 });

@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createTestQueryClient } from '@/tests/test-utils';
+import { MEDIA_TYPES } from '@/types/media.types';
 import { useAuth } from '@/utils/hooks/useAuth';
 import { useFavorites } from '@/utils/hooks/useFavorites';
 
@@ -38,6 +39,7 @@ const MOCK_FAVORITES = [
       id: 'fav-1',
       user_id: 'user-123',
       film_id: 533535,
+      media_type: MEDIA_TYPES.MOVIE,
       film_title: 'Deadpool & Wolverine',
       film_poster_path: '/poster1.jpg',
       film_release_date: '2024-07-24',
@@ -47,10 +49,21 @@ const MOCK_FAVORITES = [
       id: 'fav-2',
       user_id: 'user-123',
       film_id: 933260,
+      media_type: MEDIA_TYPES.MOVIE,
       film_title: 'The Substance',
       film_poster_path: '/poster2.jpg',
       film_release_date: '2024-09-07',
       created_at: '2024-02-20T10:00:00.000Z',
+   },
+   {
+      id: 'fav-3',
+      user_id: 'user-123',
+      film_id: 1399,
+      media_type: MEDIA_TYPES.TV,
+      film_title: 'Game of Thrones',
+      film_poster_path: '/poster3.jpg',
+      film_release_date: '2011-04-17',
+      created_at: '2024-03-01T10:00:00.000Z',
    },
 ];
 
@@ -110,12 +123,28 @@ describe('FavoritesView', () => {
          screen.getByText(/you haven't saved any favorites yet/i)
       ).toBeInTheDocument();
       expect(screen.getByText('Browse films')).toBeInTheDocument();
+      expect(screen.getByText('Browse series')).toBeInTheDocument();
    });
 
    it('renders a row for each favorite', () => {
       renderView();
       expect(screen.getByText('Deadpool & Wolverine')).toBeInTheDocument();
       expect(screen.getByText('The Substance')).toBeInTheDocument();
+      expect(screen.getByText('Game of Thrones')).toBeInTheDocument();
+   });
+
+   it('labels each favorite as a film or a series', () => {
+      renderView();
+      expect(screen.getAllByText('Film')).toHaveLength(2);
+      expect(screen.getAllByText('Series')).toHaveLength(1);
+   });
+
+   it('links series to the TV detail route and films to the film route', () => {
+      renderView();
+      const seriesLink = screen.getByText('Game of Thrones').closest('a');
+      const filmLink = screen.getByText('The Substance').closest('a');
+      expect(seriesLink).toHaveAttribute('to', '/tv/$seriesId');
+      expect(filmLink).toHaveAttribute('to', '/film/$filmId');
    });
 
    it('displays the release year for each favorite', () => {
@@ -147,9 +176,10 @@ describe('FavoritesView', () => {
    it('renders poster images when poster path is provided', () => {
       renderView();
       const images = screen.getAllByRole('img');
-      expect(images.length).toBe(2);
+      expect(images.length).toBe(3);
       const alts = images.map((img) => img.getAttribute('alt'));
       expect(alts).toContain('Deadpool & Wolverine');
       expect(alts).toContain('The Substance');
+      expect(alts).toContain('Game of Thrones');
    });
 });

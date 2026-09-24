@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from '@testing-library/react';
 
 import { MOCK_FILM_INFO, MOCK_FILM_TRAILER } from '@/tests/__mocks__/mocks';
+import { FilmInfoSchema } from '@/types/films.schemas';
 
 import FilmInfo from './film-info.view';
 
@@ -13,7 +14,7 @@ describe('Film Info Component', () => {
       const { getByTestId } = render(
          <QueryClientProvider client={queryClient}>
             <FilmInfo
-               filmInfo={MOCK_FILM_INFO}
+               filmInfo={FilmInfoSchema.parse(MOCK_FILM_INFO)}
                filmTrailer={MOCK_FILM_TRAILER}
             />
          </QueryClientProvider>

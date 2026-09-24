@@ -7,8 +7,9 @@ const FilmList = ({ list }: { list: FilmInfoType[] }) => {
       <FlexContainer>
          {list.map((item) => (
             <FilmCard
-               key={item.id}
+               key={`${item.media_type}-${item.id}`}
                id={item.id}
+               media_type={item.media_type}
                title={item.title}
                poster_path={item.poster_path}
                overview={item.overview}

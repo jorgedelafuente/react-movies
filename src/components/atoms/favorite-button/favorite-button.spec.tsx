@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createTestQueryClient } from '@/tests/test-utils';
+import { MEDIA_TYPES } from '@/types/media.types';
 import { useAuth } from '@/utils/hooks/useAuth';
 import { useFavorites } from '@/utils/hooks/useFavorites';
 
@@ -79,16 +80,38 @@ describe('FavoriteButton', () => {
          ).toBeInTheDocument();
       });
 
-      it('calls toggle with correct args when clicked', () => {
+      it('calls toggle with a film payload by default when clicked', () => {
          renderButton();
          fireEvent.click(
             screen.getByRole('button', { name: 'Add to favorites' })
          );
+         expect(mockToggle).toHaveBeenCalledWith({
+            filmId: 533535,
+            mediaType: MEDIA_TYPES.MOVIE,
+            filmTitle: 'Deadpool & Wolverine',
+            filmPosterPath: '/poster.jpg',
+            filmReleaseDate: '2024-07-24',
+         });
+      });
+
+      it('passes the series media type through to toggle and isFavorited', () => {
+         const isFavorited = vi.fn().mockReturnValue(false);
+         vi.mocked(useFavorites).mockReturnValue({
+            favorites: [],
+            isLoading: false,
+            isFavorited,
+            toggle: mockToggle,
+            isPending: false,
+         });
+
+         renderButton({ filmId: 1399, mediaType: MEDIA_TYPES.TV });
+         expect(isFavorited).toHaveBeenCalledWith(1399, MEDIA_TYPES.TV);
+
+         fireEvent.click(
+            screen.getByRole('button', { name: 'Add to favorites' })
+         );
          expect(mockToggle).toHaveBeenCalledWith(
-            533535,
-            'Deadpool & Wolverine',
-            '/poster.jpg',
-            '2024-07-24'
+            expect.objectContaining({ filmId: 1399, mediaType: MEDIA_TYPES.TV })
          );
       });
 

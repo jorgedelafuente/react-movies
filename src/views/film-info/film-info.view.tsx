@@ -270,6 +270,7 @@ const FilmInfo = ({
                         <FilmCard
                            key={film.id}
                            id={film.id}
+                           media_type={film.media_type}
                            title={film.title}
                            poster_path={film.poster_path}
                            release_date={film.release_date}

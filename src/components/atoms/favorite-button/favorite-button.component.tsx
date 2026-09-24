@@ -1,8 +1,10 @@
+import { MEDIA_TYPES, type MediaType } from '@/types/media.types';
 import { useAuth } from '@/utils/hooks/useAuth';
 import { useFavorites } from '@/utils/hooks/useFavorites';
 
 type FavoriteButtonProps = {
    filmId: number;
+   mediaType?: MediaType;
    filmTitle?: string;
    filmPosterPath?: string | null;
    filmReleaseDate?: string;
@@ -11,6 +13,7 @@ type FavoriteButtonProps = {
 
 const FavoriteButton = ({
    filmId,
+   mediaType = MEDIA_TYPES.MOVIE,
    filmTitle = '',
    filmPosterPath = null,
    filmReleaseDate = '',
@@ -21,12 +24,12 @@ const FavoriteButton = ({
 
    if (!user) return null;
 
-   const favorited = isFavorited(filmId);
+   const favorited = isFavorited(filmId, mediaType);
 
    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      toggle(filmId, filmTitle, filmPosterPath, filmReleaseDate);
+      toggle({ filmId, mediaType, filmTitle, filmPosterPath, filmReleaseDate });
    };
 
    return (

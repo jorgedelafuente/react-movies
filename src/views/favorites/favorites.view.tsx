@@ -2,12 +2,14 @@ import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 
 import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
+import MediaLink from '@/components/atoms/link/media-link.component';
 import Container from '@/components/layout/container/container.component';
 import { baseImagePath } from '@/services/config';
 import type { FavoriteRow } from '@/services/supabase/favorites';
+import { MEDIA_TYPE_LABELS } from '@/types/media.types';
 import { useFavorites } from '@/utils/hooks/useFavorites';
 
-type SortKey = 'created_at' | 'film_release_date';
+type SortKey = 'created_at' | 'film_release_date' | 'media_type';
 type SortDir = 'asc' | 'desc';
 
 const formatDate = (iso: string) => {
@@ -66,12 +68,20 @@ const FavoritesView = () => {
             {!isLoading && favorites.length === 0 && (
                <div className="text-left text-copy">
                   <p className="mb-3">
-                     You haven't saved any favorites yet. Browse films and tap
-                     the heart icon to add them to your list.
+                     You haven't saved any favorites yet. Browse films or series
+                     and tap the heart icon to add them to your list.
                   </p>
-                  <Link to="/" className="text-sky-500 hover:underline">
-                     Browse films
-                  </Link>
+                  <div className="flex flex-wrap gap-4">
+                     <Link to="/" className="text-sky-500 hover:underline">
+                        Browse films
+                     </Link>
+                     <Link
+                        to="/series/popular"
+                        className="text-sky-500 hover:underline"
+                     >
+                        Browse series
+                     </Link>
+                  </div>
                </div>
             )}
 
@@ -82,6 +92,16 @@ const FavoritesView = () => {
                         <tr className="border-b border-bold">
                            <th className="py-2 pr-4 font-semibold">Poster</th>
                            <th className="py-2 pr-4 font-semibold">Title</th>
+                           <th
+                              className="cursor-pointer whitespace-nowrap py-2 pr-4 font-semibold hover:text-sky-500"
+                              onClick={() => handleSort('media_type')}
+                           >
+                              Type
+                              <SortIcon
+                                 active={sortKey === 'media_type'}
+                                 dir={sortDir}
+                              />
+                           </th>
                            <th
                               className="cursor-pointer whitespace-nowrap py-2 pr-4 font-semibold hover:text-sky-500"
                               onClick={() => handleSort('film_release_date')}
@@ -115,7 +135,7 @@ const FavoritesView = () => {
                                  {fav.film_poster_path ? (
                                     <img
                                        src={`${baseImagePath}${fav.film_poster_path}`}
-                                       alt={fav.film_title || 'Film poster'}
+                                       alt={fav.film_title || 'Poster'}
                                        className="h-16 w-10 rounded object-cover"
                                     />
                                  ) : (
@@ -123,14 +143,19 @@ const FavoritesView = () => {
                                  )}
                               </td>
                               <td className="max-w-xs py-2 pr-4">
-                                 <Link
-                                    to="/film/$filmId"
-                                    params={{ filmId: String(fav.film_id) }}
+                                 <MediaLink
+                                    id={fav.film_id}
+                                    mediaType={fav.media_type}
                                  >
                                     <span className="block truncate text-copy hover:text-sky-500">
                                        {fav.film_title || 'Unknown title'}
                                     </span>
-                                 </Link>
+                                 </MediaLink>
+                              </td>
+                              <td className="whitespace-nowrap py-2 pr-4">
+                                 <span className="rounded-full bg-primary-background-color px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-copy/80">
+                                    {MEDIA_TYPE_LABELS[fav.media_type]}
+                                 </span>
                               </td>
                               <td className="whitespace-nowrap py-2 pr-4">
                                  {extractYear(fav.film_release_date)}
@@ -141,6 +166,7 @@ const FavoritesView = () => {
                               <td className="py-2">
                                  <FavoriteButton
                                     filmId={fav.film_id}
+                                    mediaType={fav.media_type}
                                     filmTitle={fav.film_title}
                                     filmPosterPath={fav.film_poster_path}
                                     filmReleaseDate={fav.film_release_date}
