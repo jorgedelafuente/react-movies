@@ -47,8 +47,26 @@ export default tseslint.config(
          'simple-import-sort': simpleImportSort,
       },
       rules: {
-         // Import order
-         'simple-import-sort/imports': 'error',
+         // Import order. Each inner array is a group; groups are separated by
+         // a blank line and sorted alphabetically within. The longest regex
+         // match wins; anything unmatched falls into a trailing group.
+         'simple-import-sort/imports': [
+            'error',
+            {
+               groups: [
+                  // 1. Side-effect imports: import './x.styles.css'
+                  ['^\\u0000'],
+                  // 2. Node built-ins: import fs from 'node:fs'
+                  ['^node:'],
+                  // 3. Packages: react, @tanstack/react-query, ...
+                  ['^@?\\w'],
+                  // 4. Project alias: @/components/..., @/services/...
+                  ['^@/'],
+                  // 5. Relative imports: ../x, ./x
+                  ['^\\.'],
+               ],
+            },
+         ],
          'simple-import-sort/exports': 'error',
 
          // React Hooks rules
