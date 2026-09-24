@@ -11,11 +11,13 @@ import {
    StatNote,
 } from '@/components/atoms/stat/stat.component';
 import CastList from '@/components/cast-list/cast-list.component';
+import ImageGallery from '@/components/image-gallery/image-gallery.component';
 import Container from '@/components/layout/container/container.component';
 import {
    CertificationBadge,
    ReleaseDatesList,
 } from '@/components/release-dates/release-dates.component';
+import ReviewList from '@/components/review-list/review-list.component';
 import { baseImagePathPoster } from '@/services/config';
 import type {
    FilmCreditsType,
@@ -23,6 +25,7 @@ import type {
    FilmRecommendationType,
    FilmVideoType,
 } from '@/types/films.types';
+import { MEDIA_TYPES } from '@/types/media.types';
 import { formatReleaseDate } from '@/utils/releaseDates';
 
 const CREW_JOBS = new Set(['Director', 'Screenplay', 'Writer']);
@@ -284,6 +287,14 @@ const FilmInfo = ({
                   )}
                </div>
             )}
+
+            <ReviewList mediaType={MEDIA_TYPES.MOVIE} id={filmInfo.id} />
+
+            <ImageGallery
+               mediaType={MEDIA_TYPES.MOVIE}
+               id={filmInfo.id}
+               title={filmInfo.title}
+            />
 
             {recommendations && recommendations.length > 0 && (
                <div className="text-content mt-4 gap-4 rounded-lg p-5 text-copy sm:p-8">

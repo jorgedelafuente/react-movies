@@ -7,7 +7,9 @@ import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.c
 import FilmCard from '@/components/atoms/film-card/film-card.component';
 import MediaImage from '@/components/atoms/media-image/media-image.component';
 import CastList from '@/components/cast-list/cast-list.component';
+import ImageGallery from '@/components/image-gallery/image-gallery.component';
 import Container from '@/components/layout/container/container.component';
+import ReviewList from '@/components/review-list/review-list.component';
 import { baseImagePathPoster } from '@/services/config';
 import type {
    FilmCreditsType,
@@ -227,32 +229,35 @@ const SeriesInfo = ({
             {seasons.length > 0 && (
                <div className="text-content mt-4 rounded-lg p-4 text-copy">
                   <h2 className="mb-3 text-display-md">Seasons</h2>
-                  <ul className="flex flex-col gap-3">
+                  <ul className="mx-auto grid w-full max-w-xl grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5">
                      {seasons.map((season) => (
-                        <li key={season.id}>
+                        <li key={season.id} className="min-w-0">
                            <Link
                               to="/tv/$seriesId/season/$seasonNumber"
                               params={{
                                  seriesId: String(seriesInfo.id),
                                  seasonNumber: String(season.season_number),
                               }}
-                              className="bg-primary-background-color/40 hover:bg-primary-background-color/70 flex items-center gap-3 rounded-md p-2 text-inherit hover:text-accent"
+                              className="group flex flex-col gap-2 rounded-lg text-center text-inherit hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                            >
-                              <MediaImage
-                                 path={season.poster_path}
-                                 alt=""
-                                 className="h-16 w-11 flex-none rounded object-cover"
-                              />
-                              <div className="min-w-0 flex-1">
-                                 <div className="font-display text-sm font-semibold leading-tight">
+                              <div className="overflow-hidden rounded-lg">
+                                 <MediaImage
+                                    path={season.poster_path}
+                                    alt=""
+                                    className="aspect-[2/3] w-full object-cover transition-transform duration-200 group-hover:scale-105 motion-reduce:transition-none"
+                                 />
+                              </div>
+                              {/* Fixed-height caption so rows stay aligned whatever the text length. */}
+                              <div className="flex h-11 flex-col gap-0.5">
+                                 <span className="truncate font-display text-sm font-semibold leading-tight">
                                     {season.name}
-                                 </div>
-                                 <div className="text-xs tabular-nums text-copy/70">
+                                 </span>
+                                 <span className="truncate text-xs tabular-nums text-copy/70">
                                     {extractYear(season.air_date)}
                                     <span className="mx-1 opacity-50">·</span>
                                     {season.episode_count} episode
                                     {season.episode_count === 1 ? '' : 's'}
-                                 </div>
+                                 </span>
                               </div>
                            </Link>
                         </li>
@@ -267,6 +272,14 @@ const SeriesInfo = ({
                   <CastList cast={topCast} />
                </div>
             )}
+
+            <ReviewList mediaType={MEDIA_TYPES.TV} id={seriesInfo.id} />
+
+            <ImageGallery
+               mediaType={MEDIA_TYPES.TV}
+               id={seriesInfo.id}
+               title={seriesInfo.name}
+            />
 
             {recommendations && recommendations.length > 0 && (
                <div className="text-content mt-4 rounded-lg p-4 text-copy">

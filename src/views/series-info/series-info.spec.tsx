@@ -6,6 +6,22 @@ import {
 } from '@tanstack/react-router';
 import { act, screen } from '@testing-library/react';
 
+// The embedded gallery and reviews fetch on mount; keep the view test off the network.
+vi.mock('@/services/images/images', () => ({
+   fetchMediaImages: vi
+      .fn()
+      .mockResolvedValue({ id: 0, backdrops: [], posters: [] }),
+}));
+vi.mock('@/services/reviews/reviews', () => ({
+   fetchMediaReviews: vi.fn().mockResolvedValue({
+      id: 0,
+      page: 1,
+      results: [],
+      total_pages: 0,
+      total_results: 0,
+   }),
+}));
+
 import {
    MOCK_FILM_TRAILER,
    MOCK_SERIES_CREDITS,

@@ -26,3 +26,16 @@ Object.defineProperty(globalThis, 'matchMedia', {
       dispatchEvent: vi.fn(),
    })),
 });
+
+// jsdom has no showModal/close on <dialog>; the Modal atom needs both.
+if (typeof HTMLDialogElement.prototype.showModal !== 'function') {
+   HTMLDialogElement.prototype.showModal = function showModal() {
+      this.setAttribute('open', '');
+   };
+}
+if (typeof HTMLDialogElement.prototype.close !== 'function') {
+   HTMLDialogElement.prototype.close = function close() {
+      this.removeAttribute('open');
+      this.dispatchEvent(new Event('close'));
+   };
+}
