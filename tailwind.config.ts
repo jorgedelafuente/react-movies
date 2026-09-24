@@ -42,6 +42,17 @@ const fontFamily = {
    display: ['var(--font-display)', ...defaultTheme.fontFamily.sans],
 };
 
+/*
+ * The UI uses exactly three weights. Defining them here (not under `extend`)
+ * removes every other `font-*` weight utility, so `font-bold` or `font-light`
+ * compile to nothing and the Prettier plugin leaves them unsorted as a tell.
+ */
+const fontWeight = {
+   normal: '400',
+   medium: '500',
+   semibold: '600',
+};
+
 const fontSize = {
    'display-xl': [
       'clamp(2.25rem, 1.75rem + 2vw, 3.5rem)',
@@ -69,8 +80,10 @@ export default {
    content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
    darkMode: 'class',
    theme: {
+      // Replaces the defaults: no `font-serif`, `font-mono` or extra weights.
+      fontFamily,
+      fontWeight,
       extend: {
-         fontFamily,
          fontSize,
          colors: {
             'primary-background-color': 'var(--primary-background-color)',

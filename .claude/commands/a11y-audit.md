@@ -85,7 +85,7 @@ Fix violations in order of severity. Common patterns in this codebase:
 -  **Focus not trapped in modal**: add `aria-modal="true"` and a focus-trap to the auth modal — see [src/components/auth/auth-modal/](src/components/auth/auth-modal/)
 -  **Color contrast**: use the existing CSS variable system in [src/styles/index.css](src/styles/index.css) — do not hardcode hex values
 
-Follow all conventions in [CLAUDE.md](CLAUDE.md): 3-space indent, Tailwind `dark:` prefix, TypeScript strict mode, no inline comments unless non-obvious.
+Follow all conventions in [CLAUDE.md](CLAUDE.md): 3-space indent, semantic colour tokens (no `dark:` variants), the typography rules, TypeScript strict mode, no inline comments unless non-obvious. Visual fixes copy recipes from [docs/STYLE_GUIDE.md](docs/STYLE_GUIDE.md).
 
 ### 5. Re-audit after fixes
 

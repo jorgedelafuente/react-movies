@@ -1,6 +1,14 @@
 # React Movies Style Guide
 
-This is the look and feel the app already has, written down so new pages and components adopt it instead of inventing their own. Every value here is lifted from the code; if the two disagree, fix one of them. Hard rules for tooling live in [CLAUDE.md](../CLAUDE.md); testing patterns live in [TESTING.md](TESTING.md).
+This is the look and feel the app already has, written down so new pages and components adopt it instead of inventing their own. Every value here is lifted from the code; if the two disagree, fix one of them. [tailwind.config.ts](../tailwind.config.ts) is the reference for which utilities exist: it defines the semantic colour maps, the two font families, the three weights and the fluid `display-*` sizes, and anything it does not define compiles to nothing. This guide explains how to use what the config provides; when you need a new token, size or weight, extend the config first and then document it here. Hard rules for tooling live in [CLAUDE.md](../CLAUDE.md); testing patterns live in [TESTING.md](TESTING.md).
+
+| What                                                | Where it is defined                                                     |
+| --------------------------------------------------- | ----------------------------------------------------------------------- |
+| Colour values, light and dark                       | `src/styles/global.css` (HSL variables under `:root` / `.dark`)         |
+| Which colour utilities exist                        | `tailwind.config.ts` → `backgroundColors`, `borderColors`, `textColors` |
+| Font files and `@font-face`                         | `src/styles/index.css`                                                  |
+| Family names, weights, `display-*` sizes            | `tailwind.config.ts` → `fontFamily`, `fontWeight`, `fontSize`           |
+| Element defaults (`h1`–`h6`, `strong`, transitions) | `src/styles/global.css` `@layer base`                                   |
 
 1. [Foundations](#1-foundations) — colour, dark mode, typography, spacing, motion, states
 2. [Layout](#2-layout) — building a page, page roots, page anatomy, the card grid, responsive rules
@@ -14,18 +22,22 @@ This is the look and feel the app already has, written down so new pages and com
 
 ### Colour
 
-Colours are HSL triplets in CSS variables in [src/styles/global.css](../src/styles/global.css). A raw greyscale (`--color-grey-0` white … `--color-grey-100` black, plus `--color-sky`) feeds a small set of semantic tokens. The `.dark` class re-points the semantic tokens, so components never branch on theme. [tailwind.config.ts](../tailwind.config.ts) exposes each token as `hsl(var(--token) / <alpha-value>)`, which is why the `/70`-style alpha modifiers work everywhere.
+Colours are HSL triplets in CSS variables in [src/styles/global.css](../src/styles/global.css). A raw greyscale (`--color-grey-0` white … `--color-grey-100` black, plus `--color-sky`) feeds a small set of semantic tokens. The `.dark` class re-points the semantic tokens, so components never branch on theme. [tailwind.config.ts](../tailwind.config.ts) exposes each token as `hsl(var(--token) / <alpha-value>)`, which is why the `/70`-style alpha modifiers work everywhere. The config wires three maps to specific utility families, and that wiring decides which classes exist:
 
-| Token                         | Light   | Dark    | Tailwind utilities                                        | Use for                                                       |
-| ----------------------------- | ------- | ------- | --------------------------------------------------------- | ------------------------------------------------------------- |
-| `--color-bg-neutral`          | white   | black   | `bg-neutral`, `from/to-neutral`                           | Page and panel backgrounds, inputs, table body                |
-| `--color-bg-neutral-inverted` | black   | white   | `bg-neutral-inverted`                                     | Selected segment in ViewToggle; row hover at `/5`             |
-| `--color-bg-subtle`           | grey-10 | grey-80 | `bg-subtle`                                               | Zebra rows, hovered list items, image placeholders            |
-| `--color-text-copy`           | black   | white   | `text-copy`, `border-copy`, `divide-copy`, `fill-copy`    | Body text; outlined borders; dividers; icon fills             |
-| `--color-border-bold`         | grey-60 | grey-40 | `border-bold`, `outline-bold`, `ring-bold`, `stroke-bold` | Dividers (`<hr>`), table header rule, ViewToggle frame        |
-| `--color-accent`              | sky-500 | sky-500 | `text/border/bg/fill/stroke/outline-accent`               | Links, hover colour, focus ring, selected chips, icon strokes |
+-  `backgroundColors` (`neutral`, `neutral-inverted`, `subtle`, `accent`) → `bg-*` and the gradient stops `from-*` / `via-*` / `to-*`.
+-  `borderColors` (`bold`, `copy`, `accent`) → `border-*`, `divide-*`, `stroke-*`, `outline-*`, `ring-*`.
+-  `textColors` (`copy`, `accent`) → `text-*` and `fill-*`.
 
-Only the utilities in that column exist. `copy` has no background utility and there is no `primary` colour, so `bg-copy/10` and `bg-primary` compile to nothing. The tell is Prettier: it leaves classes it does not recognise at the front of the string.
+| Token                         | Light   | Dark    | Tailwind utilities                                                                   | Use for                                                                      |
+| ----------------------------- | ------- | ------- | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| `--color-bg-neutral`          | white   | black   | `bg-neutral`, `from/via/to-neutral`                                                  | Page and panel backgrounds, inputs, table body                               |
+| `--color-bg-neutral-inverted` | black   | white   | `bg-neutral-inverted`, `from/via/to-neutral-inverted`                                | Favourites row hover at `/5`                                                 |
+| `--color-bg-subtle`           | grey-10 | grey-80 | `bg-subtle`, `from/via/to-subtle`                                                    | Zebra rows, hovered list items, image placeholders                           |
+| `--color-text-copy`           | black   | white   | `text-copy`, `fill-copy`, `border-copy`, `divide-copy`, `stroke/outline/ring-copy`   | Body text; outlined borders; dividers; icon fills                            |
+| `--color-border-bold`         | grey-60 | grey-40 | `border-bold`, `divide-bold`, `stroke-bold`, `outline-bold`, `ring-bold`             | Dividers (`<hr>`), table header rule, ViewToggle track and ring at low alpha |
+| `--color-accent`              | sky-500 | sky-500 | all of the above: `bg/from/via/to`, `border/divide/stroke/outline/ring`, `text/fill` | Links, hover colour, focus ring, selected chips, icon strokes                |
+
+Only the utilities in that column exist. `copy` and `bold` have no background utility, no token has a `placeholder-*`, `decoration-*` or `caret-*` form, and there is no `primary` colour, so `bg-copy/10`, `placeholder-text-copy` and `bg-primary` compile to nothing. The tell is Prettier: it leaves classes it does not recognise at the front of the string. Tailwind's default palette is still in the theme (`red-500`, `white`, `black` rely on it), so the ban on raw palette colours is a convention, not something the build enforces.
 
 **Alpha carries hierarchy.** Do not reach for a lighter grey; lower the alpha of the token that is already there.
 
@@ -67,7 +79,7 @@ Two self-hosted variable fonts, loaded in [src/styles/index.css](../src/styles/i
 -  **Inter Variable** — `font-sans`, the default on `<html>`. Body, controls, tables. Italic file is loaded.
 -  **Outfit Variable** — `font-display`. Headings, navigation, card titles. No italic exists and `font-synthesis: none` is set, so never write `italic` on display text.
 
-Headings get the display face automatically (`text-balance font-display font-semibold`) with a fluid size:
+Headings get the display face automatically (`text-balance font-display font-semibold`, set in `global.css`) with a fluid size from `fontSize` in [tailwind.config.ts](../tailwind.config.ts). Each `display-*` entry bundles its own line-height and letter-spacing, so one class gives a tuned heading:
 
 | Element   | Class             | Size                                      |
 | --------- | ----------------- | ----------------------------------------- |
@@ -95,30 +107,40 @@ Text roles in use:
 | Tagline            | `font-sans text-lg font-normal italic tracking-normal text-copy/75 sm:text-xl`     |
 | Emphasis           | `<strong>` renders `font-semibold` (Inter's 700 is too heavy inline)               |
 
+**Weights.** Three, defined as `fontWeight` at the top level of [tailwind.config.ts](../tailwind.config.ts) so Tailwind's defaults are replaced: `font-bold`, `font-light` and the rest compile to nothing.
+
+| Weight | Utility         | Used for                                           |
+| ------ | --------------- | -------------------------------------------------- |
+| 400    | `font-normal`   | Body, meta, the tagline, resets inside headings    |
+| 500    | `font-medium`   | Form labels, nav links, buttons, table cells       |
+| 600    | `font-semibold` | Headings, card and cast titles, badges, `<strong>` |
+
+In CSS files write `font-weight: 500` or `600` to match, or `theme('fontWeight.medium')`. `fontFamily` is defined the same way, so there is no `font-serif` or `font-mono`; numbers get `tabular-nums`, not a different face.
+
 Anything numeric — ratings, years, dates, counts, money — gets `tabular-nums` so columns align. FilmTable sets `font-variant-numeric: tabular-nums` on the whole table.
 
 ### Spacing, width, radius
 
-| Concern                 | Value                                                                                 |
-| ----------------------- | ------------------------------------------------------------------------------------- |
-| Page padding            | `p-4 sm:p-6 lg:p-10` (list root) · `px-4 py-6` (detail column)                        |
-| Page column width       | `max-w-4xl`                                                                           |
-| Stack gaps              | `gap-4 sm:gap-6 lg:gap-8` for page columns and the card grid                          |
-| Form gaps               | Stacked form `gap-4`; filter row `gap-3`; label-to-control `gap-1`; chip rows `gap-2` |
-| Between sections        | `mt-4`; under a section heading `mb-3` or `mb-4`; `<hr className="my-3 border-bold">` |
-| New block in a panel    | `mt-3`; a new section heading after content `mt-8`                                    |
-| Modal panel             | `max-w-md p-6`                                                                        |
-| Pagination              | `max-w-xs gap-3`                                                                      |
-| Controls, posters       | `rounded-md`                                                                          |
-| Panels, sections, modal | `rounded-lg` (cards use `10px` in CSS, the hero poster `25px`)                        |
-| Chips, badges, avatars  | `rounded-full`                                                                        |
-| Control borders         | `border-2 border-solid`; secondary button, chips and pills use 1px `border`           |
+| Concern                 | Value                                                                                                                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Page padding            | `p-4 sm:p-6 lg:px-10 lg:py-6` (list root: vertical padding equals the column gap, so the first child sits centred between navbar and cards) · `px-4 py-6` (detail column) |
+| Page column width       | `max-w-4xl`                                                                                                                                                               |
+| Stack gaps              | `gap-4 sm:gap-6` for the list page column · `gap-4 sm:gap-6 lg:gap-8` for the card grid                                                                                   |
+| Form gaps               | Stacked form `gap-4`; filter row `gap-3`; label-to-control `gap-1`; chip rows `gap-2`                                                                                     |
+| Between sections        | `mt-4`; under a section heading `mb-3` or `mb-4`; `<hr className="my-3 border-bold">`                                                                                     |
+| New block in a panel    | `mt-3`; a new section heading after content `mt-8`                                                                                                                        |
+| Modal panel             | `max-w-md p-6`                                                                                                                                                            |
+| Pagination              | `max-w-xs gap-3`                                                                                                                                                          |
+| Controls, posters       | `rounded-md`                                                                                                                                                              |
+| Panels, sections, modal | `rounded-lg` (cards use `10px` in CSS, the hero poster `25px`)                                                                                                            |
+| Chips, badges, avatars  | `rounded-full`                                                                                                                                                            |
+| Control borders         | `border-2 border-solid`; secondary button, chips and pills use 1px `border`                                                                                               |
 
 ### Images
 
 Both TMDB size prefixes live in [src/services/config.ts](../src/services/config.ts). `baseImagePath` is `w500`: use it for every poster, still, avatar and thumbnail. `baseImagePathPoster` is `w1280`: use it only for the detail-page hero backdrop. Always `loading="lazy"`; `alt` is the title on card posters and empty on decorative images beside a visible title.
 
-When an image may be missing, render a placeholder with the same box and radius on `bg-subtle` (person-info's `flex h-72 w-48 items-center justify-center rounded-[25px] bg-subtle text-6xl` is the reference).
+When an image may be missing, render a placeholder with the same box and radius on `bg-subtle` (person-info's portrait is the reference: photo and placeholder share one class string, `aspect-[2/3] w-40 flex-none rounded-2xl object-cover object-top shadow-lg sm:w-48 lg:w-56`, and the placeholder adds `flex items-center justify-center bg-subtle text-6xl`).
 
 ### Motion
 
@@ -130,13 +152,13 @@ A global rule in `global.css` transitions `background-color`, `color`, `border-c
 
 ### Interactive states
 
-| State    | Recipe                                                                                                                                                                                                     |
-| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Hover    | Text or border to `accent`. Rows and list items: `bg-subtle` (CSS `[data-hovered]`) or `hover:bg-neutral-inverted/5`                                                                                       |
-| Focus    | `focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent`; in CSS `outline: 2px solid hsl(var(--color-accent) / 1)`, offset `-2px` inside a framed group |
-| Selected | Chips: `border-accent bg-accent/10 text-accent` with `aria-pressed` or `aria-current`. ViewToggle: inverted (`bg-neutral-inverted`, text in `bg-neutral`)                                                  |
-| Disabled | `disabled:opacity-50`                                                                                                                                                                                      |
-| Loading  | `Spinner` (see components)                                                                                                                                                                                 |
+| State    | Recipe                                                                                                                                                                                                                |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hover    | Text or border to `accent`. Rows and list items: `bg-subtle` (CSS `[data-hovered]`) or `hover:bg-neutral-inverted/5`                                                                                                  |
+| Focus    | `focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent`; in CSS `outline: 2px solid hsl(var(--color-accent) / 1)`, offset `-2px` inside a framed group            |
+| Selected | Chips: `border-accent bg-accent/10 text-accent` with `aria-pressed` or `aria-current`. ViewToggle: raised pill (`bg-neutral` segment on a `bg-subtle/70` track, `border-bold/30` ring, soft shadow, icon in `accent`) |
+| Disabled | `disabled:opacity-50`                                                                                                                                                                                                 |
+| Loading  | `Spinner` (see components)                                                                                                                                                                                            |
 
 ---
 
@@ -173,19 +195,27 @@ Skeleton of a utility page:
 Every route renders `Navbar` (sticky, `top-0 z-10`) then an `Outlet`. The view chooses one of two roots, both of which apply the theme class:
 
 -  **`Container`** — detail and utility pages (film, series, season, person, favourites, discover). `flex min-h-screen flex-col bg-neutral text-center`.
--  **`FlexContainer`** — list pages (`FilmList`). Adds the responsive page padding and an inner `flex w-full max-w-4xl flex-col gap-4 sm:gap-6 lg:gap-8` column.
+-  **`FlexContainer`** — list pages (`FilmList`). Adds the responsive page padding (`p-4 sm:p-6 lg:px-10 lg:py-6`) and an inner `flex w-full max-w-4xl flex-col gap-4 sm:gap-6` column. Vertical padding and column gap are the same value at every breakpoint on purpose: the first child is the `ViewToggle`, and equal spacing keeps it halfway between the navbar and the first row.
 
 ### Page anatomy
 
 > **In flight (2026-09-24).** The film detail page is being redesigned in the working tree: frosted-glass panels (`bg-neutral` at 0.9 alpha, `backdrop-filter: blur(16px)`, a 1px `copy/10` border, `p-5 sm:p-8`), small-caps eyebrow labels instead of `<strong>` rows, a `grid grid-cols-2 … sm:grid-cols-3` fact grid inside `border-y border-copy/10`, badges as `rounded-full border border-copy/15 bg-neutral-inverted/5 px-3 py-1`, and 2:3 portrait cast avatars (`aspect-[2/3] w-full rounded-2xl` in `w-24` columns). When it lands, rewrite this section and the Badge and CastList recipes from it, then port series-info and person-info to match. Until then the skeleton below is what is committed.
 
-**Detail pages** (film, series, person) share one skeleton:
+**Detail pages** (film, series) share one skeleton:
 
-1. `<div className="text-title text-copy">` — the sticky, scroll-animated title with a `data-testid="…-info-title"`. Person pages add `text-title--static`.
+1. `<div className="text-title text-copy">` — the sticky, scroll-animated title with a `data-testid="…-info-title"`.
 2. `.container-bg` — hero with the backdrop (`baseImagePathPoster`) as a fixed cover background and the poster centred. The CSS file rounds the poster to `25px`; the `rounded-lg` on the `<img>` is overridden.
 3. Stacked panels. The first is `<div className="text-content rounded-lg p-4 text-copy">`; every later one adds `mt-4`. The first holds the `h2 mb-2 text-display-lg` title with the tagline span, `<hr className="my-3 border-bold">` dividers between groups, genre badges in a `mt-3 flex flex-wrap items-center justify-center gap-2` row, fact rows with `<strong>` labels in a `tabular-nums` block, and external links in a `mt-2 flex flex-wrap gap-4` row. Later panels are titled with `h2 text-display-md mb-3` ("Cast & Crew", via `CastList`) and `mb-4` ("Recommendations", the card grid).
 
 **Season page** is a detail page without the hero. Under the title bar, a back link (`text-sm text-accent hover:underline`, prefixed `←`), then a header row `mt-3 flex flex-col gap-4 sm:flex-row` holding the poster (`mx-auto w-40 flex-none rounded-lg sm:mx-0`) and a `min-w-0 flex-1` text block (`h1 text-display-lg`, meta line `mt-1 text-sm tabular-nums text-copy/70`, overview `mt-3 leading-relaxed`). The season switcher is `<nav aria-label="Seasons" className="mt-6 flex flex-wrap gap-2">` of chips. Episodes follow under `h2 mt-8 text-display-md` as an `ol mt-3 flex flex-col gap-4` of episode rows.
+
+**Profile page** (person) is the pattern for any page **without a backdrop**: no parallax hero, no sticky title bar, no frosted panels and no hover fade on anything (the only hover feedback is the card scale and link colour). It is a plain column, `mx-auto flex w-full max-w-4xl flex-col gap-10 px-4 py-6 text-left text-copy`, and the `h1` carries the `data-testid`.
+
+1. **Header** — `flex flex-col items-center gap-6 text-center sm:flex-row sm:items-start sm:gap-10 sm:text-left`: the portrait (recipe under Media and numbers) beside a `flex min-w-0 flex-1 flex-col items-center gap-6 sm:items-start` block. Everything in that block is centred on phones and left-aligned from `sm`.
+2. **Name** — an eyebrow `p` (`EYEBROW`, the department) over `h1 text-display-xl`.
+3. **Facts** — `dl grid w-full grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3` of `Stat` cells with `className="sm:items-start"` (Born with an `(age N)` `StatNote`, Died with `(aged N)`, Birthplace). Aliases are an eyebrow `span` over `p text-sm text-copy/80` joined with `·`.
+4. **External links** — `ExternalLink` pills in `flex flex-wrap justify-center gap-3 sm:justify-start`.
+5. **Sections** (Biography, Known for, Crew) — each a `section border-t border-copy/10 pt-8` with `h2 text-display-md`; counts sit inside the heading as `ml-2 font-sans text-base font-normal tabular-nums text-copy/60`. Biography is `mt-4 max-w-prose whitespace-pre-line text-pretty leading-relaxed sm:text-lg`, clamped with `line-clamp-6` past 600 characters behind a `Read more` button; credit grids use the card grid with `mt-6`. Toggle buttons are `text-sm font-medium text-accent hover:underline`.
 
 **List pages**: a centred `ViewToggle`, then either the card grid or `FilmTable`.
 
@@ -236,7 +266,8 @@ Primary for the main action of a view, secondary beside it (pagination uses one 
 A labelled block, not a bare input: `flex w-full flex-col gap-1` → `<label className="text-sm font-medium text-copy">` → the control → optional `<span className="text-xs text-red-500">`.
 
 ```
-w-full border-2 border-solid bg-neutral px-2 py-1 text-copy placeholder-text-copy
+w-full border-2 border-solid bg-neutral px-2 py-1 text-copy
+(placeholder-text-copy is also in the string but compiles to nothing; see divergences)
 border-secondary-background-color   (or border-red-500 when `error` is set)
 ```
 
@@ -275,6 +306,14 @@ Static labels, never interactive.
 -  **Badge** (genres, media type): `rounded-full bg-primary-background-color px-2 py-1 text-xs font-semibold uppercase tracking-wider text-copy/70`. Rows of badges are `flex flex-wrap items-center justify-center gap-2`.
 -  **Age rating** (`CertificationBadge`): `rounded-md border border-copy/40 px-2 py-0.5 text-sm font-semibold tabular-nums`, with the region as `<span className="ml-1 text-xs font-normal opacity-70">`.
 -  **Inline code-like value** (a certification inside a row): `rounded border border-copy/30 px-1 text-xs tabular-nums`.
+
+### Eyebrow and Stat — `atoms/stat`
+
+The label-over-value pattern used by the film and person pages instead of `Label: value` rows and `<hr>` dividers.
+
+-  **`EYEBROW`** (exported class string): `text-xs font-semibold uppercase tracking-wider text-copy/60`. Use it for facts labels, crew roles, a department, and small section captions; add `font-sans` when it sits on an `h3`, which otherwise inherits the display face.
+-  **`Stat`** — one cell of a facts `<dl>`: `div flex flex-col items-center gap-1` holding an eyebrow `dt` and `dd font-display text-lg font-semibold tabular-nums`. Lay the `dl` out as `grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3` (film: `border-y border-copy/10 py-5`) or as a wrapping row `flex flex-wrap justify-center gap-x-10 gap-y-4` (crew). Pass `className="sm:items-start"` for a left-aligned column.
+-  **`StatNote`** — a secondary line under the value: `block font-sans text-xs font-normal text-copy/60` (vote count, age).
 
 ### Disclosure — `release-dates`
 
@@ -326,7 +365,17 @@ A `<th aria-sort="…">` whose content is a reset `<button>` plus an `aria-hidde
 
 ### ViewToggle — `atoms/view-toggle`
 
-`react-aria-components` `ToggleButtonGroup` in single-selection mode, so it is a radiogroup with arrow-key navigation. Styles in `view-toggle.styles.css`: a `border-bold` frame, `bg-subtle` on `[data-hovered]`, inverted colours on `[data-selected]`, accent outline inset `-2px` on `[data-focus-visible]`. Copy this pairing of states for any future segmented control built on react-aria.
+`react-aria-components` `ToggleButtonGroup` in single-selection mode, so it is a radiogroup with arrow-key navigation. Each `ToggleButton` holds an `aria-hidden` 16-unit SVG glyph (grid for Cards, rows for Table) followed by the label, which carries the accessible name.
+
+Styles in `view-toggle.styles.css`, a segmented pill in the same 1px-border-plus-shadow language as the nav menu and search popover:
+
+-  **Track** — `inline-flex`, `padding: 0.25rem`, `gap: 0.125rem`, `border-radius: 9999px`, `1px solid border-bold/35`, background `bg-subtle/70`, `inset 0 1px 2px` shadow at 6 % black.
+-  **Segment** — `inline-flex items-center gap-0.375rem`, `padding: 0.375rem 0.875rem`, fully rounded, transparent, `font-display` 0.875rem/500 with `0.02em` tracking, text `copy/70`. Icon `0.875rem` square, `fill: currentColor`. 150 ms transition on background, colour and shadow.
+-  **`[data-hovered]`** — text to `copy` (no background change; the track already reads as a surface).
+-  **`[data-selected]`** — background `bg-neutral`, text `copy`, shadow `0 1px 3px` at 18 % black plus a `0 0 0 1px border-bold/30` ring; the icon fills with `accent`.
+-  **`[data-focus-visible]`** — `2px` accent outline, `2px` offset (outside the pill, unlike the inset outline on chips).
+
+Copy this pairing of states for any future segmented control built on react-aria.
 
 ### Search combobox — `layout/navbar/search-input`
 
@@ -337,7 +386,7 @@ A `<th aria-sort="…">` whose content is a reset `<button>` plus an `aria-hidde
 -  **`NavLink`** puts colour on a `<span>` inside the router `Link` — `font-display text-lg font-medium tracking-wide text-copy hover:text-accent` — because `index.css` forces `a, a:visited { color: black }` and a colour on the anchor itself would not survive `:visited` in dark mode.
 -  **`MediaLink`** chooses `/film/:id` or `/tv/:id` by media type; always use it for detail links.
 -  **Internal text links** are `text-accent hover:underline`; back links are `text-sm text-accent hover:underline` prefixed with `←`.
--  **External links** (homepage, IMDb) are `text-copy underline` with `target="_blank" rel="noreferrer"`. The colour difference is deliberate: accent means "stays in the app".
+-  **`ExternalLink`** (homepage, IMDb) is a pill: `group rounded-full border border-copy/30 px-4 py-1.5 text-sm font-medium transition-colors hover:border-accent` with `target="_blank" rel="noreferrer"`, the label in `<span className="text-copy group-hover:text-accent">` (same `:visited` reason as NavLink) and a trailing `↗` that is `aria-hidden`. Label it `IMDb`, not `IMDB`. The colour difference from internal links is deliberate: accent means "stays in the app".
 -  **Links that inherit** (a whole card or cast column) are `text-inherit hover:text-accent`.
 
 ### FavoriteButton — `atoms/favorite-button`
@@ -368,6 +417,10 @@ Write utilities in `className`. Create a co-located `<name>.styles.css`, importe
 
 Anything with selection, keyboard or popover semantics — comboboxes, toggle groups, and future menus or dialogs — is built on `react-aria-components` and styled through its data attributes: `[data-hovered]`, `[data-focused]`, `[data-focus-visible]`, `[data-selected]`, `[data-pressed]`. This is what gives ViewToggle its radiogroup role and the search box its listbox for free.
 
+### Extending the theme
+
+If the utility you need does not exist, the answer is never an arbitrary value (`text-[#0ea5e9]`, `bg-[hsl(var(--color-accent))]`) or a raw palette class. Add the token to the relevant map in [tailwind.config.ts](../tailwind.config.ts) so it gets the `<alpha-value>` slot and shows up for every theme, then add the row to the tables in this guide. New fonts, weights and sizes go through `fontFamily`, `fontWeight` and `fontSize` the same way. Arbitrary values are fine for one-off geometry (`aspect-[2/3]`, `min-w-[8rem]`, `rounded-[25px]`).
+
 ### Class strings
 
 Prettier's Tailwind plugin sorts classes on commit; do not hand-order them. If a class stays at the front of the string after formatting, the plugin does not know it and it is probably not a real utility. Build conditional classes with a template literal whose static part comes first and a ternary for the variant, as the chips do. Components accept an optional `className` and append it: `` `${base} ${className}`.trim() ``.
@@ -386,6 +439,7 @@ Posters: `aspect-[1/1.5] w-full rounded-md object-cover object-center`. Stills: 
 
 Places where the code does not yet follow this guide. Fixing them is tracked in the roadmap.
 
+-  **Input placeholder** — `placeholder-text-copy` compiles to nothing because no map feeds `placeholderColor`. Wire `placeholderColor: textColors` in the config and use `placeholder-copy/50`.
 -  **Discover** uses a `max-w-6xl` column where every other page uses `max-w-4xl`, inlines the Select recipe as a local string, and hand-rolls its type switch instead of a Chip atom.
 -  **Favourites** hand-rolls a `<table>` (`py-8` column, `text-copy/80 py-0.5` badges, `border-bold/30` rows) instead of rendering `FilmTable`, and its poster placeholder is `bg-copy/10`, which is not a utility.
 -  **Error and not-found views** style their action with `border-blue-700 hover:bg-blue-900 text-slate-300` instead of the Button primary recipe or the accent token.
@@ -395,6 +449,7 @@ Places where the code does not yet follow this guide. Fixing them is tracked in 
 -  **Detail panel CSS** (`.text-content`) fixes `width: 80%`, `margin: 10px`, `height: 90%` and a `600px` media query, none of which is mobile-first or on the `sm` breakpoint. The column classes should own the width.
 -  **Hero poster** — `.container-bg img:hover` drops the poster to 10% opacity for no reason, and the CSS `25px` radius overrides the `rounded-lg` utility on the element. Remove the fade and pick one radius. (`.text-content:hover` also fades panels to 50% at HEAD; the in-flight redesign replaces that with a background-only glass fade, which is intentional.)
 -  **`opacity-*` on coloured text** appears where `text-copy/N` should be used (favourites `text-copy opacity-60`, discover and season meta). Reserve `opacity-*` for inherited colour.
+-  **Sticky title keyframe** in `film-info.styles.css` ends at `font-weight: 700`, the only 700 in the app; it should end at 600 and let the size change carry the effect.
 -  **Spinner** uses the legacy primary variable and a fixed `300px` margin rather than a token and flex centring.
 -  **Legacy hex variables** still define control borders and panel backgrounds. They need semantic tokens (a `border-subtle` and a panel background) before they can be retired.
 -  **Reduced motion** is not honoured anywhere; the card scale and the scroll-driven title need a `prefers-reduced-motion` guard.

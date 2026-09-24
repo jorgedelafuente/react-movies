@@ -92,8 +92,9 @@ Execute the approved plan step by step. Follow ALL project conventions without e
 ### Styling
 
 -  Tailwind CSS v3, mobile-first (`sm:`, `md:`, `lg:` breakpoints)
--  Dark mode via `dark:` prefix
--  Custom colors via HSL CSS variables — never hard-code hex/rgb colors
+-  Dark mode through the semantic tokens (`bg-neutral`, `text-copy`, `border-bold`, `accent`), never `dark:` variants or raw palette colours
+-  Typography: Inter (`font-sans`) for text, Outfit (`font-display`) for headings and navigation, weights 400/500/600 only, `tabular-nums` on numbers (CLAUDE.md § Typography)
+-  Before writing any UI, read `docs/STYLE_GUIDE.md` and reuse its component recipes and text roles instead of inventing class strings
 -  Tab width: 3 spaces (Prettier config); single quotes; semi-colons; trailing commas ES5
 -  Run `pnpm format` after changes
 

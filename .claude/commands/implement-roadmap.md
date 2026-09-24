@@ -32,9 +32,9 @@ Before writing a single line, read every file that the change will touch:
 
 -  Follow imports to understand the data flow.
 -  Check existing component patterns in the same directory.
--  Read [CLAUDE.md](CLAUDE.md) for conventions (3-space indent, Tailwind dark mode via `dark:`, path alias `@/`, strict TypeScript, etc.).
+-  Read [CLAUDE.md](CLAUDE.md) for conventions (3-space indent, semantic colour tokens instead of `dark:` variants, path alias `@/`, strict TypeScript, etc.).
 -  If the item involves auth: read [src/utils/hooks/useAuth.ts](src/utils/hooks/useAuth.ts) and [src/services/supabase/auth.ts](src/services/supabase/auth.ts).
--  If the item involves UI: read the nearest sibling component for Tailwind class patterns.
+-  If the item involves UI: read [docs/STYLE_GUIDE.md](docs/STYLE_GUIDE.md) and copy its recipes (tokens, text roles and weights, spacing, component class strings). Read the nearest sibling component only to see how those recipes are composed.
 -  If the item involves routing: read [src/routes/\_\_root.tsx](src/routes/__root.tsx) and the relevant route file.
 
 ### 3. Plan before coding
@@ -47,7 +47,7 @@ Apply the changes according to the plan:
 
 -  Follow all conventions in [CLAUDE.md](CLAUDE.md).
 -  Mobile-first Tailwind: start without breakpoint prefixes, layer `sm:` / `md:` / `lg:` on top.
--  CSS variables for colours so `dark:` mode works automatically.
+-  Semantic colour tokens (`bg-neutral`, `text-copy`, `border-bold`, `accent`) so both themes work without `dark:` variants; two font faces and three weights as set out in CLAUDE.md § Typography.
 -  No new dependencies unless unavoidable — check `package.json` first.
 -  TypeScript strict mode: no `any`, no `!` non-null unless a comment explains why.
 -  Do not add comments except for non-obvious invariants.
