@@ -2,13 +2,13 @@ import { useState } from 'react';
 
 import FilmCard from '@/components/atoms/film-card/film-card.component';
 import { ExternalLink } from '@/components/atoms/link/external-link.component';
+import MediaImage from '@/components/atoms/media-image/media-image.component';
 import {
    EYEBROW,
    Stat,
    StatNote,
 } from '@/components/atoms/stat/stat.component';
 import Container from '@/components/layout/container/container.component';
-import { baseImagePath } from '@/services/config';
 import type { PersonInfoType } from '@/types/people.types';
 import { dedupeCredits, type DedupedCredit } from '@/utils/dedupeCredits';
 
@@ -125,21 +125,12 @@ const PersonInfo = ({ person }: { person: PersonInfoType }) => {
       <Container>
          <div className="mx-auto flex w-full max-w-4xl flex-col gap-10 px-4 py-6 text-left text-copy">
             <header className="flex flex-col items-center gap-6 text-center sm:flex-row sm:items-start sm:gap-10 sm:text-left">
-               {person.profile_path ? (
-                  <img
-                     loading="lazy"
-                     src={`${baseImagePath}${person.profile_path}`}
-                     alt=""
-                     className={PORTRAIT}
-                  />
-               ) : (
-                  <div
-                     aria-hidden="true"
-                     className={`flex items-center justify-center bg-subtle text-6xl ${PORTRAIT}`}
-                  >
-                     👤
-                  </div>
-               )}
+               <MediaImage
+                  path={person.profile_path}
+                  alt=""
+                  variant="person"
+                  className={PORTRAIT}
+               />
 
                <div className="flex min-w-0 flex-1 flex-col items-center gap-6 sm:items-start">
                   <div className="flex flex-col gap-2">

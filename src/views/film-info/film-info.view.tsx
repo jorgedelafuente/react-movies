@@ -3,6 +3,7 @@ import './film-info.styles.css';
 import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
 import FilmCard from '@/components/atoms/film-card/film-card.component';
 import { ExternalLink } from '@/components/atoms/link/external-link.component';
+import MediaImage from '@/components/atoms/media-image/media-image.component';
 import {
    EYEBROW,
    Stat,
@@ -14,7 +15,7 @@ import {
    CertificationBadge,
    ReleaseDatesList,
 } from '@/components/release-dates/release-dates.component';
-import { baseImagePath, baseImagePathPoster } from '@/services/config';
+import { baseImagePathPoster } from '@/services/config';
 import type {
    FilmCreditsType,
    FilmInfoType,
@@ -89,10 +90,10 @@ const FilmInfo = ({
             }}
          >
             <div>
-               <img
-                  loading="lazy"
-                  src={`${baseImagePath}${filmInfo.poster_path}`}
+               <MediaImage
+                  path={filmInfo.poster_path}
                   alt=""
+                  fallbackClassName="mx-auto aspect-[2/3] w-full max-w-[500px] rounded-[25px]"
                />
             </div>
 

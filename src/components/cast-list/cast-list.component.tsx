@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
-import { baseImagePath } from '@/services/config';
+import MediaImage from '@/components/atoms/media-image/media-image.component';
 import type { CastMemberType } from '@/types/films.types';
 
 /** Rows hold at most this many members; longer lists split evenly across two rows. */
@@ -25,21 +25,12 @@ const CastList = ({ cast }: { cast: CastMemberType[] }) => {
                params={{ personId: String(member.id) }}
                className="group flex w-[7.5rem] flex-col items-center gap-1.5 text-center text-inherit hover:text-accent"
             >
-               {member.profile_path ? (
-                  <img
-                     loading="lazy"
-                     src={`${baseImagePath}${member.profile_path}`}
-                     alt=""
-                     className="aspect-[3/4] w-full rounded-2xl object-cover object-top transition-transform duration-200 group-hover:scale-105 group-focus-visible:scale-105 motion-reduce:transition-none"
-                  />
-               ) : (
-                  <div
-                     aria-hidden="true"
-                     className="flex aspect-[3/4] w-full items-center justify-center rounded-2xl bg-subtle text-4xl text-copy transition-transform duration-200 group-hover:scale-105 group-focus-visible:scale-105 motion-reduce:transition-none"
-                  >
-                     👤
-                  </div>
-               )}
+               <MediaImage
+                  path={member.profile_path}
+                  alt=""
+                  variant="person"
+                  className="aspect-[3/4] w-full rounded-2xl object-cover object-top transition-transform duration-200 group-hover:scale-105 group-focus-visible:scale-105 motion-reduce:transition-none"
+               />
                <span className="relative z-10 font-display text-sm font-semibold leading-tight">
                   {member.name}
                </span>

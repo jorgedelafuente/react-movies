@@ -66,6 +66,15 @@ describe('MediaImage', () => {
       expect(skeleton).toHaveClass('bg-subtle');
    });
 
+   it('draws a silhouette instead of the picture glyph for the person variant', () => {
+      render(<MediaImage path={null} alt="" variant="person" />);
+      const svg = screen
+         .getByTestId('media-image-skeleton')
+         .querySelector('svg');
+      expect(svg?.querySelector('rect')).toBeNull();
+      expect(svg?.querySelector('circle')).toHaveAttribute('r', '4');
+   });
+
    it('has no accessibility violations in either state', async () => {
       const withImage = await renderWithAxe(
          <MediaImage path="/poster.jpg" alt="Poster" />

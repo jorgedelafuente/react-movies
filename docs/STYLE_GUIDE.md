@@ -140,7 +140,7 @@ Anything numeric — ratings, years, dates, counts, money — gets `tabular-nums
 
 Both TMDB size prefixes live in [src/services/config.ts](../src/services/config.ts). `baseImagePath` is `w500`: use it for every poster, still, avatar and thumbnail. `baseImagePathPoster` is `w1280`: use it only for the detail-page hero backdrop. Always `loading="lazy"`; `alt` is the title on card posters and empty on decorative images beside a visible title.
 
-When an image may be missing, render a placeholder with the same box and radius on `bg-subtle` (person-info's portrait is the reference: photo and placeholder share one class string, `aspect-[2/3] w-56 flex-none rounded-2xl object-cover object-top shadow-lg sm:w-64 lg:w-72`, and the placeholder adds `flex items-center justify-center bg-subtle text-6xl`).
+Never write a bare `<img>` for TMDB artwork. Render it through `MediaImage` (recipe under Components), which draws a `bg-subtle` skeleton with the same box and radius whenever the path is null or the request fails. Give it the class string you would have put on the image; person-info's portrait is the reference (`aspect-[2/3] w-56 flex-none rounded-2xl object-cover object-top shadow-lg sm:w-64 lg:w-72` with `variant="person"`).
 
 ### Motion
 
@@ -321,11 +321,13 @@ The label-over-value pattern used by the film and person pages instead of `Label
 
 ### MediaImage — `atoms/media-image`
 
-Every TMDB picture (posters, stills, season thumbnails) renders through `MediaImage`, never a bare `<img>`. It takes the TMDB `path`, an `alt` (empty when a caption already names the item) and the same `className` you would put on the image. When the path is null or the request fails, a skeleton takes the image's place:
+Every TMDB picture (posters, stills, thumbnails, portraits, avatars) renders through `MediaImage`, never a bare `<img>`. It takes the TMDB `path`, an `alt` (empty when a caption already names the item) and the same `className` you would put on the image. When the path is null or the request fails, a skeleton takes the image's place:
 
 ```
 skeleton: flex items-center justify-center bg-subtle text-copy/30  + className + fallbackClassName
-glyph:    h-auto w-1/3 max-w-12 fill-none stroke-current  (a framed-picture outline)
+glyph:    h-auto w-1/3 max-w-12 fill-none stroke-current
+          variant="picture" (default) a framed-picture outline for posters and stills
+          variant="person"            a head-and-shoulders silhouette for portraits and avatars
 a11y:     role="img" aria-label={alt} when alt is set; aria-hidden when it is empty
 ```
 
@@ -411,7 +413,7 @@ Icon-only `<button>` with `aria-label` "Add to favorites" / "Remove from favorit
 
 ### CastList — `cast-list`
 
-`flex flex-wrap justify-center gap-4` of `w-20` columns (`flex flex-col items-center gap-1 text-center text-inherit hover:text-accent`), each an avatar `h-16 w-16 rounded-full object-cover object-top`, a `font-display text-sm font-semibold leading-tight` name and a `text-xs leading-tight text-copy/70` role.
+`mx-auto flex flex-wrap justify-center gap-4`, with an inline `maxWidth` of `perRow × 8.5rem` so a long cast splits into two even rows. Each member is a `Link` with `group flex w-[7.5rem] flex-col items-center gap-1.5 text-center text-inherit hover:text-accent`, holding a `MediaImage` avatar (`variant="person"`, `aspect-[3/4] w-full rounded-2xl object-cover object-top transition-transform duration-200 group-hover:scale-105 group-focus-visible:scale-105 motion-reduce:transition-none`), a `relative z-10 font-display text-sm font-semibold leading-tight` name and a `relative z-10 text-xs leading-tight text-copy/70` role.
 
 ### Spinner — `atoms/spinner`
 
@@ -459,7 +461,6 @@ Places where the code does not yet follow this guide. Fixing them is tracked in 
 -  **Discover** uses a `max-w-6xl` column where every other page uses `max-w-4xl`, inlines the Select recipe as a local string, and hand-rolls its type switch instead of a Chip atom.
 -  **Favourites** hand-rolls a `<table>` (`py-8` column, `text-copy/80 py-0.5` badges, `border-bold/30` rows) instead of rendering `FilmTable`.
 -  **Error and not-found views** style their action with `border-blue-700 hover:bg-blue-900 text-slate-300` instead of the Button primary recipe or the accent token.
--  **Bare `<img>` tags** remain on the film detail hero poster, the person portrait and CastList avatars (all part of the in-flight detail redesign), so a null path or a failed request there still shows the browser's broken-image icon. Swap each for `MediaImage`; the person and cast fallbacks can keep their 👤 glyph via `fallbackClassName` or stay as they are.
 -  **Detail-page card grids** (film and series recommendations, person credits) still use the `grid grid-cols-*` utilities and so leave a short last row flush left instead of centred like the list pages.
 -  **Film detail** genre and age-rating badges carry `bg-primary`, which is not a utility in this config and does nothing; they should use `bg-primary-background-color` like the badge recipe.
 -  **FlexContainer** sets both `bg-neutral` and `bg-primary-background-color` on the same element; one must go.

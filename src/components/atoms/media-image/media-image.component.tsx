@@ -15,21 +15,41 @@ type MediaImageProps = {
     * no height.
     */
    fallbackClassName?: string;
+   /** Which glyph the skeleton shows: a framed picture (default) or a person silhouette. */
+   variant?: 'picture' | 'person';
    loading?: 'lazy' | 'eager';
 };
+
+const GLYPHS = {
+   picture: (
+      <>
+         <rect x="3" y="5" width="18" height="14" rx="2" />
+         <circle cx="8.5" cy="10" r="1.5" />
+         <path d="m21 16-5-5-9 9" />
+      </>
+   ),
+   person: (
+      <>
+         <circle cx="12" cy="8" r="4" />
+         <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" />
+      </>
+   ),
+} as const;
 
 /**
  * A TMDB image that never shows the browser's broken-image icon. When there is
  * nothing to render, either because TMDB has no artwork (`path` is null) or the
  * request failed, a skeleton block takes the image's place. It is drawn with
  * the `subtle` and `copy` tokens, so it follows light and dark mode with the
- * rest of the page.
+ * rest of the page. Posters and stills get a framed-picture glyph; portraits
+ * and avatars pass `variant="person"` for a silhouette.
  */
 const MediaImage = ({
    path,
    alt,
    className = '',
    fallbackClassName = '',
+   variant = 'picture',
    loading = 'lazy',
 }: MediaImageProps) => {
    // Remember which path failed rather than a plain boolean: if the same
@@ -55,9 +75,7 @@ const MediaImage = ({
                strokeLinecap="round"
                strokeLinejoin="round"
             >
-               <rect x="3" y="5" width="18" height="14" rx="2" />
-               <circle cx="8.5" cy="10" r="1.5" />
-               <path d="m21 16-5-5-9 9" />
+               {GLYPHS[variant]}
             </svg>
          </div>
       );
