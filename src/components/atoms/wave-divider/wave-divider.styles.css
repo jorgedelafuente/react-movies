@@ -1,0 +1,42 @@
+/*
+ * Hangs from the top edge of a `relative` parent. The wrapper clips the SVG,
+ * which is drawn wider than the box so the waves stretch into slow curves,
+ * and `pointer-events: none` keeps it from catching clicks meant for the
+ * content underneath.
+ */
+.wave-divider {
+   --wave-height: 24px;
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   overflow: hidden;
+   line-height: 0;
+   pointer-events: none;
+}
+
+.wave-divider svg {
+   position: relative;
+   display: block;
+   width: calc(168% + 1.3px);
+   height: var(--wave-height);
+}
+
+/* Consumers tint the wave with a `text-*` utility or a `color` rule. */
+.wave-divider path {
+   fill: currentColor;
+}
+
+/*
+ * Bottom edge: pinned to the bottom and drawn upside down. The rotation is on
+ * the SVG, not the wrapper, so corner classes on the wrapper stay visual
+ * (`rounded-b-lg` still rounds the bottom).
+ */
+.wave-divider--bottom {
+   top: auto;
+   bottom: 0;
+}
+
+.wave-divider--bottom svg {
+   transform: rotate(180deg);
+}

@@ -60,6 +60,8 @@ describe('Discover view', () => {
          screen.getByRole('heading', { name: 'Discover' })
       ).toBeInTheDocument();
       expect(screen.getByLabelText('Genre')).toBeInTheDocument();
+      expect(screen.getByLabelText('Keyword')).toBeInTheDocument();
+      expect(screen.getByLabelText('Streaming on')).toBeInTheDocument();
       expect(screen.getByLabelText('Sort by')).toBeInTheDocument();
       expect(screen.getByLabelText('Year')).toBeInTheDocument();
       expect(screen.getByRole('status')).toHaveTextContent('16,231 results');
@@ -105,11 +107,32 @@ describe('Discover view', () => {
 
    it('counts the active filters on the disclosure button', async () => {
       await renderView({
-         params: { ...defaultParams, genre: 28, year: 1999 },
+         params: {
+            ...defaultParams,
+            genre: 28,
+            keyword: 4379,
+            provider: 350,
+            year: 1999,
+         },
+         keyword: { id: 4379, name: 'time travel' },
       });
       expect(
-         screen.getByRole('button', { name: /show filters 2 active/i })
+         screen.getByRole('button', { name: /show filters 4 active/i })
       ).toBeInTheDocument();
+   });
+
+   it('shows the resolved keyword and clearing it resets to page 1', async () => {
+      const { onChange } = await renderView({
+         params: { ...defaultParams, keyword: 4379 },
+         keyword: { id: 4379, name: 'time travel' },
+      });
+      expect(screen.getByLabelText('Keyword')).toHaveValue('time travel');
+
+      fireEvent.click(screen.getByRole('button', { name: 'Clear keyword' }));
+      expect(onChange).toHaveBeenLastCalledWith({
+         keyword: undefined,
+         page: 1,
+      });
    });
 
    it('shows no count when only the defaults are selected', async () => {
@@ -126,9 +149,9 @@ describe('Discover view', () => {
       ).toBeInTheDocument();
    });
 
-   it('marks the active media type and switching it drops the genre', async () => {
+   it('marks the active media type and switching it drops the genre but keeps the provider', async () => {
       const { onChange } = await renderView({
-         params: { ...defaultParams, genre: 28 },
+         params: { ...defaultParams, genre: 28, provider: 350 },
       });
       expect(screen.getByRole('button', { name: 'Films' })).toHaveAttribute(
          'aria-pressed',
@@ -173,6 +196,36 @@ describe('Discover view', () => {
          target: { value: '' },
       });
       expect(onChange).toHaveBeenLastCalledWith({ year: undefined, page: 1 });
+   });
+
+   it('lists the streaming services and selecting one resets to page 1', async () => {
+      const { onChange } = await renderView();
+      const select = screen.getByLabelText('Streaming on');
+      const options = Array.from(select.querySelectorAll('option')).map(
+         (o) => o.textContent
+      );
+      expect(options).toEqual([
+         'Any service',
+         'Apple TV',
+         'Disney+',
+         'HBO Max',
+         'Netflix',
+         'Prime Video',
+      ]);
+
+      fireEvent.change(select, { target: { value: '350' } });
+      expect(onChange).toHaveBeenLastCalledWith({ provider: 350, page: 1 });
+
+      fireEvent.change(select, { target: { value: '' } });
+      expect(onChange).toHaveBeenLastCalledWith({
+         provider: undefined,
+         page: 1,
+      });
+   });
+
+   it('shows the chosen service as selected', async () => {
+      await renderView({ params: { ...defaultParams, provider: 8 } });
+      expect(screen.getByLabelText('Streaming on')).toHaveValue('8');
    });
 
    it('hides the revenue sort for series', async () => {

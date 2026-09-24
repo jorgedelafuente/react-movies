@@ -11,6 +11,8 @@ import {
    Popover,
 } from 'react-aria-components';
 
+import { FIELD_CONTROL } from '@/components/atoms/select/select.component';
+import { EYEBROW } from '@/components/atoms/stat/stat.component';
 import { keywordSearchQueryOptions } from '@/services/search/searchQueryOptions';
 import type { KeywordType } from '@/types/search.schemas';
 import { useDebounce } from '@/utils/hooks/useDebounce';
@@ -77,7 +79,7 @@ const KeywordFilter = ({
    return (
       <ComboBox<KeywordType>
          ref={setPortalContainer}
-         className={`keyword-filter flex flex-col gap-1 ${className}`.trim()}
+         className={`keyword-filter flex flex-col gap-1.5 text-left ${className}`.trim()}
          inputValue={inputValue}
          onInputChange={(value) => setInputValue(sanitizeInput(value))}
          items={items}
@@ -86,10 +88,10 @@ const KeywordFilter = ({
          defaultFilter={() => true}
          allowsEmptyCollection
       >
-         <Label className="text-sm font-medium">Keyword</Label>
+         <Label className={EYEBROW}>Keyword</Label>
          <div className="relative flex items-center">
             <Input
-               className="w-full rounded-md border-2 border-solid border-secondary-background-color bg-neutral py-1 pl-2 pr-7 text-copy"
+               className={`${FIELD_CONTROL} pr-10 placeholder:text-copy/50`}
                placeholder="Any keyword"
             />
             {inputValue && (
@@ -97,7 +99,7 @@ const KeywordFilter = ({
                // the popover trigger and takes the field's label as its name.
                <button
                   type="button"
-                  className="absolute right-2 cursor-pointer text-copy hover:text-accent"
+                  className="absolute right-1.5 grid h-7 w-7 place-items-center rounded-full text-copy/60 hover:bg-subtle hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
                   aria-label="Clear keyword"
                   onClick={clear}
                >

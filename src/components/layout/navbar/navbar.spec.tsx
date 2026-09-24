@@ -36,6 +36,25 @@ const openMenu = async (label: string) => {
 };
 
 describe('Navbar Component', () => {
+   it('lists Discover, Films and Series in that order, with Discover at the home route', async () => {
+      await renderNavbar();
+
+      const browse = within(screen.getByRole('navigation', { name: 'Browse' }));
+      const discover = browse.getByRole('link', { name: 'Discover' });
+      const films = browse.getByRole('button', { name: 'Films menu' });
+      const series = browse.getByRole('button', { name: 'Series menu' });
+
+      expect(discover).toHaveAttribute('href', '/');
+      expect(
+         discover.compareDocumentPosition(films) &
+            Node.DOCUMENT_POSITION_FOLLOWING
+      ).toBeTruthy();
+      expect(
+         films.compareDocumentPosition(series) &
+            Node.DOCUMENT_POSITION_FOLLOWING
+      ).toBeTruthy();
+   });
+
    it('opens the Series menu with links to the series list routes', async () => {
       await renderNavbar();
       await openMenu('Series');

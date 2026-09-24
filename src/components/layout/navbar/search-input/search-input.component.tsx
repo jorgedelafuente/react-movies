@@ -14,6 +14,7 @@ import {
 
 import MediaImage from '@/components/atoms/media-image/media-image.component';
 import Spinner from '@/components/atoms/spinner/spinner.component';
+import WaveDivider from '@/components/atoms/wave-divider/wave-divider.component';
 import { baseImagePathThumb } from '@/services/config';
 import { mediaSearchQueryOptions } from '@/services/search/searchQueryOptions';
 import type { FilmInfoType } from '@/types/films.types';
@@ -154,6 +155,8 @@ const SearchInput = () => {
             // Centre under the field: from `lg` the panel is wider than it.
             placement="bottom"
          >
+            {/* Fainter and shorter than the page waves; sized in the stylesheet. */}
+            <WaveDivider className="text-copy/10" />
             <ListBox<FilmInfoType>
                className="search-combobox__list"
                renderEmptyState={renderEmptyState}

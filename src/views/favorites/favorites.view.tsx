@@ -67,7 +67,10 @@ const FavoritesView = () => {
                      and tap the heart icon to add them to your list.
                   </p>
                   <div className="flex flex-wrap gap-4">
-                     <Link to="/" className="text-accent hover:underline">
+                     <Link
+                        to="/popular"
+                        className="text-accent hover:underline"
+                     >
                         Browse films
                      </Link>
                      <Link

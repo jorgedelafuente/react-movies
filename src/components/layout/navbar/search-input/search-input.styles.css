@@ -158,6 +158,15 @@
    z-index: 20;
 }
 
+/*
+ * The wave under the popover's top edge is shorter than the 24px default so it
+ * stays in the frame's padding band and barely touches the first row. The
+ * popover's own overflow clipping rounds its corners.
+ */
+.search-combobox__popover .wave-divider {
+   --wave-height: 14px;
+}
+
 .search-combobox__list {
    display: flex;
    flex-direction: column;
