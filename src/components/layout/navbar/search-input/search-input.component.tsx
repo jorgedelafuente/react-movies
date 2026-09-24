@@ -1,35 +1,45 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link } from '@tanstack/react-router';
-import { ChangeEvent, useEffect, useState } from 'react';
+import './search-input.styles.css';
 
-import { Input } from '@/components/atoms/input/input.component';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { type Key, useEffect, useState } from 'react';
+import {
+   Button,
+   ComboBox,
+   Input,
+   Label,
+   ListBox,
+   ListBoxItem,
+   Popover,
+} from 'react-aria-components';
+
 import Spinner from '@/components/atoms/spinner/spinner.component';
 import { searchFilm } from '@/services/films/films';
 import type { FilmInfoType } from '@/types/films.types';
+import { THEME_OPTIONS } from '@/types/theme.types';
 import { useDebounce } from '@/utils/hooks/useDebounce';
+import { useTheme } from '@/utils/hooks/useTheme';
 import { sanitizeInput } from '@/utils/sanitizeInput';
 
 const SearchInput = () => {
-   const [inputValue, setInputValue] = useState<string>('');
+   const [inputValue, setInputValue] = useState('');
+   const [portalContainer, setPortalContainer] =
+      useState<HTMLDivElement | null>(null);
+   const theme = useTheme((state) => state.theme);
+   const navigate = useNavigate();
    const queryClient = useQueryClient();
    const debouncedValue = useDebounce(inputValue, 400);
 
    const {
       mutate,
       isPending,
-      data: searchInputList,
+      data: searchResults,
    } = useMutation({
-      mutationFn: (debouncedValue: string) =>
-         searchFilm(String(debouncedValue)),
+      mutationFn: (query: string) => searchFilm(query),
       onSuccess: () => {
          queryClient.invalidateQueries({ queryKey: ['searchFilm'] });
       },
    });
-
-   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const sanitizedValue = sanitizeInput(e.target.value);
-      setInputValue(sanitizedValue);
-   };
 
    useEffect(() => {
       if (debouncedValue) {
@@ -39,42 +49,86 @@ const SearchInput = () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [debouncedValue]);
 
-   const resetSearchQuery = () => {
+   const handleInputChange = (value: string) => {
+      setInputValue(sanitizeInput(value));
+   };
+
+   const handleSelectionChange = (key: Key | null) => {
+      if (key == null) {
+         return;
+      }
+      navigate({ to: '/film/$filmId', params: { filmId: String(key) } });
       setInputValue('');
    };
 
+   const items = debouncedValue ? (searchResults ?? []) : [];
+
    return (
-      <div>
-         <Input
-            inputValue={inputValue}
-            handleOnChange={handleOnChange}
-            tabIndex={0}
-            type="search"
-            id="search-input"
-            placeholder="🔍 Search"
-         />
-
-         {inputValue && debouncedValue ? (
-            <ol className="absolute w-48 rounded-b-sm border-bold bg-neutral pb-1 pl-2 pt-1 text-copy">
-               {isPending && debouncedValue && <Spinner />}
-
-               {debouncedValue &&
-                  searchInputList?.map((item: FilmInfoType) => (
-                     <li className="" key={item.id}>
-                        <Link
-                           to="/film/$filmId"
-                           params={{ filmId: String(item.id) }}
-                           onClick={resetSearchQuery}
-                        >
-                           <span className="text-sm text-copy hover:underline">
-                              * {item.title}
-                           </span>
-                        </Link>
-                     </li>
-                  ))}
-            </ol>
-         ) : null}
-      </div>
+      <ComboBox<FilmInfoType>
+         ref={setPortalContainer}
+         className={`search-combobox ${theme === THEME_OPTIONS.DARK ? 'dark' : ''}`.trim()}
+         inputValue={inputValue}
+         onInputChange={handleInputChange}
+         items={items}
+         defaultFilter={() => true}
+         allowsEmptyCollection
+         onSelectionChange={handleSelectionChange}
+      >
+         <Label className="search-combobox__label">Search films</Label>
+         <div className="search-combobox__field">
+            <Input
+               id="search-input"
+               className="search-combobox__input"
+               placeholder="🔍 Search"
+            />
+            {isPending && (
+               <div className="search-combobox__spinner">
+                  <Spinner />
+               </div>
+            )}
+            {inputValue && (
+               <Button
+                  className="search-combobox__clear"
+                  aria-label="Clear search"
+                  onPress={() => setInputValue('')}
+               >
+                  ✕
+               </Button>
+            )}
+         </div>
+         <Popover
+            className="search-combobox__popover"
+            UNSTABLE_portalContainer={portalContainer ?? undefined}
+         >
+            <ListBox<FilmInfoType>
+               className="search-combobox__list"
+               renderEmptyState={() =>
+                  debouncedValue && !isPending ? (
+                     <div className="search-combobox__empty">
+                        No films found for &quot;{debouncedValue}&quot;
+                     </div>
+                  ) : null
+               }
+            >
+               {(item) => (
+                  <ListBoxItem
+                     id={item.id}
+                     textValue={item.title}
+                     className="search-combobox__item"
+                  >
+                     <span className="search-combobox__item-title">
+                        {item.title}
+                     </span>
+                     {item.release_date && (
+                        <span className="search-combobox__item-year">
+                           {item.release_date.slice(0, 4)}
+                        </span>
+                     )}
+                  </ListBoxItem>
+               )}
+            </ListBox>
+         </Popover>
+      </ComboBox>
    );
 };
 

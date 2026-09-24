@@ -23,7 +23,7 @@ describe('Search Input', () => {
    });
 
    it('search input should start with empty default state', () => {
-      const { textContent } = screen.getByRole('searchbox');
+      const { textContent } = screen.getByRole('combobox');
       expect(textContent).toBe('');
    });
 
@@ -41,7 +41,7 @@ describe('Search Input', () => {
    });
 
    it('search input does not accept backticks', async () => {
-      const input = screen.getByRole('searchbox');
+      const input = screen.getByRole('combobox');
       await userEvent.type(input, '`te`st`');
       await waitFor(() => {
          expect(input).toHaveValue('test');

@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
 import MediaLink from '@/components/atoms/link/media-link.component';
+import SortableHeader from '@/components/atoms/sortable-header/sortable-header.component';
 import Container from '@/components/layout/container/container.component';
 import { baseImagePath } from '@/services/config';
 import type { FavoriteRow } from '@/services/supabase/favorites';
@@ -30,12 +31,6 @@ const extractYear = (dateStr: string) => {
    return /^\d{4}$/.test(year) ? year : '—';
 };
 
-const SortIcon = ({ active, dir }: { active: boolean; dir: SortDir }) => (
-   <span className="ml-1 inline-block text-xs opacity-60">
-      {active ? (dir === 'asc' ? '▲' : '▼') : '⇅'}
-   </span>
-);
-
 const FavoritesView = () => {
    const { favorites, isLoading } = useFavorites();
    const [sortKey, setSortKey] = useState<SortKey>('created_at');
@@ -59,7 +54,7 @@ const FavoritesView = () => {
    return (
       <Container>
          <div className="mx-auto w-full max-w-4xl px-4 py-8">
-            <h1 className="mb-6 text-left text-2xl font-bold text-copy">
+            <h1 className="mb-6 text-left text-display-lg text-copy">
                My Favorites
             </h1>
 
@@ -67,7 +62,7 @@ const FavoritesView = () => {
 
             {!isLoading && favorites.length === 0 && (
                <div className="text-left text-copy">
-                  <p className="mb-3">
+                  <p className="mb-3 max-w-prose leading-relaxed">
                      You haven't saved any favorites yet. Browse films or series
                      and tap the heart icon to add them to your list.
                   </p>
@@ -88,40 +83,42 @@ const FavoritesView = () => {
             {!isLoading && favorites.length > 0 && (
                <div className="overflow-x-auto">
                   <table className="w-full border-collapse text-left text-sm text-copy">
-                     <thead>
+                     <thead className="text-xs uppercase tracking-wider text-copy/70">
                         <tr className="border-b border-bold">
                            <th className="py-2 pr-4 font-semibold">Poster</th>
                            <th className="py-2 pr-4 font-semibold">Title</th>
-                           <th
-                              className="cursor-pointer whitespace-nowrap py-2 pr-4 font-semibold hover:text-accent"
-                              onClick={() => handleSort('media_type')}
+                           <SortableHeader
+                              className="py-2 pr-4 font-semibold"
+                              buttonClassName="whitespace-nowrap hover:text-accent"
+                              sorted={
+                                 sortKey === 'media_type' ? sortDir : false
+                              }
+                              onSort={() => handleSort('media_type')}
                            >
                               Type
-                              <SortIcon
-                                 active={sortKey === 'media_type'}
-                                 dir={sortDir}
-                              />
-                           </th>
-                           <th
-                              className="cursor-pointer whitespace-nowrap py-2 pr-4 font-semibold hover:text-accent"
-                              onClick={() => handleSort('film_release_date')}
+                           </SortableHeader>
+                           <SortableHeader
+                              className="py-2 pr-4 font-semibold"
+                              buttonClassName="whitespace-nowrap hover:text-accent"
+                              sorted={
+                                 sortKey === 'film_release_date'
+                                    ? sortDir
+                                    : false
+                              }
+                              onSort={() => handleSort('film_release_date')}
                            >
                               Year
-                              <SortIcon
-                                 active={sortKey === 'film_release_date'}
-                                 dir={sortDir}
-                              />
-                           </th>
-                           <th
-                              className="cursor-pointer whitespace-nowrap py-2 pr-4 font-semibold hover:text-accent"
-                              onClick={() => handleSort('created_at')}
+                           </SortableHeader>
+                           <SortableHeader
+                              className="py-2 pr-4 font-semibold"
+                              buttonClassName="whitespace-nowrap hover:text-accent"
+                              sorted={
+                                 sortKey === 'created_at' ? sortDir : false
+                              }
+                              onSort={() => handleSort('created_at')}
                            >
                               Added
-                              <SortIcon
-                                 active={sortKey === 'created_at'}
-                                 dir={sortDir}
-                              />
-                           </th>
+                           </SortableHeader>
                            <th className="py-2 font-semibold">Remove</th>
                         </tr>
                      </thead>
@@ -147,7 +144,7 @@ const FavoritesView = () => {
                                     id={fav.film_id}
                                     mediaType={fav.media_type}
                                  >
-                                    <span className="block truncate text-copy hover:text-accent">
+                                    <span className="block truncate font-medium text-copy hover:text-accent">
                                        {fav.film_title || 'Unknown title'}
                                     </span>
                                  </MediaLink>
@@ -157,10 +154,10 @@ const FavoritesView = () => {
                                     {MEDIA_TYPE_LABELS[fav.media_type]}
                                  </span>
                               </td>
-                              <td className="whitespace-nowrap py-2 pr-4">
+                              <td className="whitespace-nowrap py-2 pr-4 tabular-nums">
                                  {extractYear(fav.film_release_date)}
                               </td>
-                              <td className="whitespace-nowrap py-2 pr-4">
+                              <td className="whitespace-nowrap py-2 pr-4 tabular-nums">
                                  {formatDate(fav.created_at)}
                               </td>
                               <td className="py-2">

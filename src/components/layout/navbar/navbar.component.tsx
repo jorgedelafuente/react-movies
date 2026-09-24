@@ -13,7 +13,7 @@ const Navbar = () => {
 
    return (
       <div
-         className={`${theme === THEME_OPTIONS.DARK ? 'dark' : null} navbar sticky top-0 z-10 m-auto flex flex-col items-center gap-2 border-b-2 border-solid border-secondary-background-color bg-primary-background-color p-4 text-lg`}
+         className={`${theme === THEME_OPTIONS.DARK ? 'dark' : null} navbar sticky top-0 z-10 m-auto flex flex-col items-center gap-2 border-b-2 border-solid border-secondary-background-color bg-primary-background-color p-4`}
       >
          <div className="custom-shape-divider-top">
             <svg
@@ -55,11 +55,17 @@ const Navbar = () => {
                      Films
                   </span>
                   <NavLink path="/popular" text="Popular" />
-                  <span className="p-1 text-copy">|</span>
+                  <span className="p-1 text-copy/40" aria-hidden="true">
+                     |
+                  </span>
                   <NavLink path="/top-rated" text="Top Rated" />
-                  <span className="p-1 text-copy">|</span>
+                  <span className="p-1 text-copy/40" aria-hidden="true">
+                     |
+                  </span>
                   <NavLink path="/upcoming" text="Upcoming" />
-                  <span className="p-1 text-copy">|</span>
+                  <span className="p-1 text-copy/40" aria-hidden="true">
+                     |
+                  </span>
                   <NavLink path="/now-playing" text="Now Playing" />
                </div>
                <div
@@ -74,9 +80,13 @@ const Navbar = () => {
                      Series
                   </span>
                   <NavLink path="/series/popular" text="Popular" />
-                  <span className="p-1 text-copy">|</span>
+                  <span className="p-1 text-copy/40" aria-hidden="true">
+                     |
+                  </span>
                   <NavLink path="/series/top-rated" text="Top Rated" />
-                  <span className="p-1 text-copy">|</span>
+                  <span className="p-1 text-copy/40" aria-hidden="true">
+                     |
+                  </span>
                   <NavLink path="/series/on-the-air" text="On The Air" />
                </div>
                <div className="flex items-center">

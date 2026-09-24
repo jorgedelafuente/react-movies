@@ -17,7 +17,50 @@
       color: hsl(var(--color-accent));
    }
 
+   /*
+     Type scale
+     Headings use the display face with a fluid size (see `fontSize.display-*`
+     in tailwind.config.ts). Utilities on an element still win, so a component
+     can opt into a different size with e.g. `text-display-sm` or `text-lg`.
+   */
+   h1,
+   h2,
+   h3,
+   h4,
+   h5,
+   h6 {
+      @apply text-balance font-display font-semibold;
+   }
+
+   h1 {
+      @apply text-display-lg;
+   }
+
+   h2 {
+      @apply text-display-md;
+   }
+
+   h3 {
+      @apply text-display-sm;
+   }
+
+   h4,
+   h5,
+   h6 {
+      @apply text-display-xs;
+   }
+
+   /* Semibold reads cleaner than Inter's 700 for inline emphasis and labels */
+   strong,
+   b {
+      @apply font-semibold;
+   }
+
    :root {
+      /* Typography — consumed by `font-sans` / `font-display` (tailwind.config.ts) */
+      --font-sans: 'Inter Variable';
+      --font-display: 'Outfit Variable', 'Inter Variable';
+
       /* Global Variables */
       --primary-background-color: #dedede;
       --secondary-background-color: #a6a6a6;

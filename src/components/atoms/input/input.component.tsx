@@ -22,7 +22,7 @@ export const Input = ({
    return (
       <div className="flex w-full flex-col gap-1">
          {label && (
-            <label htmlFor={id} className="text-sm text-copy">
+            <label htmlFor={id} className="text-sm font-medium text-copy">
                {label}
             </label>
          )}

@@ -25,13 +25,15 @@ export function ErrorComponent({ error }: ErrorComponentProps) {
 
    return (
       <Container>
-         <p className="mb-8 p-4 text-copy">Error...</p>
+         <p className="mb-8 p-4 font-display text-display-md font-semibold text-copy">
+            Error...
+         </p>
          <button
             onClick={() => {
                router.invalidate();
             }}
          >
-            <span className="rounded-lg border-2 border-solid border-blue-700 p-4 text-copy hover:bg-blue-900 hover:text-slate-300">
+            <span className="rounded-lg border-2 border-solid border-blue-700 p-4 font-medium tracking-wide text-copy hover:bg-blue-900 hover:text-slate-300">
                Retry
             </span>
          </button>

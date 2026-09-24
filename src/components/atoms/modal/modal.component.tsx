@@ -67,6 +67,9 @@ const Modal = ({
    };
 
    return (
+      // Backdrop click is a pointer-only shortcut; keyboard users close the
+      // dialog with Escape, handled through the native `cancel` event above.
+      // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
       <dialog
          ref={dialogRef}
          onClick={handleDialogClick}
@@ -82,7 +85,7 @@ const Modal = ({
                   <button
                      type="button"
                      onClick={onClose}
-                     className="absolute right-3 top-3 rounded p-1 text-copy transition-colors hover:text-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+                     className="absolute right-3 top-3 rounded p-1 text-copy transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                      aria-label="Close modal"
                   >
                      x
@@ -90,7 +93,7 @@ const Modal = ({
                ) : null}
 
                {title ? (
-                  <h2 id="modal-title" className="mb-4 text-xl font-bold">
+                  <h2 id="modal-title" className="mb-4 text-display-sm">
                      {title}
                   </h2>
                ) : null}
