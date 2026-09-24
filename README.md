@@ -2,6 +2,8 @@
 
 > A movie and TV browsing app built to explore modern React patterns — type-safe, fully tested, and deployed to production.
 
+**Live:** https://react-movies-flax-mu.vercel.app/
+
 ---
 
 ## Features
@@ -71,6 +73,7 @@ See [.env.example](.env.example) for the required variables.
 | 💅  | [Prettier](https://prettier.io/)                                                                       | Code formatting                                                             |
 | 🐶  | [Husky](https://typicode.github.io/husky/) + [lint-staged](https://github.com/lint-staged/lint-staged) | Pre-commit quality gate                                                     |
 | 📝  | [commitlint](https://commitlint.js.org/)                                                               | Conventional commit enforcement                                             |
+| 🚀  | [Vercel](https://vercel.com/)                                                                          | Hosting and deployments                                                     |
 
 ---
 
