@@ -13,6 +13,7 @@ import { FilmListSchema } from '@/types/films.schemas';
 import { LIST_VIEWS } from '@/types/list-view.types';
 import { SeriesListSchema } from '@/types/series.schemas';
 import { useListView } from '@/utils/hooks/useListView';
+import { masonryAspect } from '@/utils/posterAspect';
 
 import FilmList from './film-list.view';
 
@@ -108,6 +109,36 @@ describe('Film Lists Component', () => {
       expect(grid).not.toBeNull();
       expect(grid?.children).toHaveLength(films.length);
       expect(document.querySelector('.film-list__rhythm')).toBeNull();
+   });
+
+   it('crops home masonry posters to the fixed ratio cycle, not their natural size', async () => {
+      const element = () => <FilmList list={films} cardLayout="masonry" />;
+      await act(async () => {
+         renderWithQueryContext(
+            <RouterProvider router={router} defaultComponent={element} />
+         );
+      });
+
+      const masonry = document.querySelector('.film-list__masonry');
+      expect(masonry).not.toBeNull();
+      expect(document.querySelector('.card-grid')).toBeNull();
+
+      const posters = Array.from(masonry!.querySelectorAll('img'));
+      expect(posters).toHaveLength(films.length);
+      const classFor = {
+         '2/3': 'aspect-[2/3]',
+         '3/4': 'aspect-[3/4]',
+         '1/1': 'aspect-square',
+      };
+      posters.forEach((img, index) => {
+         expect(img).toHaveClass(
+            classFor[masonryAspect(index)],
+            'object-cover'
+         );
+      });
+      // The cycle really varies: the second card is 3:4 and the fourth is square.
+      expect(posters[1]).toHaveClass('aspect-[3/4]');
+      expect(posters[3]).toHaveClass('aspect-square');
    });
 
    it('switches to the table view when the user picks "Table"', async () => {

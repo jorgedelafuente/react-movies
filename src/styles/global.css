@@ -61,6 +61,23 @@
       --font-sans: 'Inter Variable';
       --font-display: 'Outfit Variable', 'Inter Variable';
 
+      /*
+        Layout — floor for the auto-fill card grids (`.card-grid`, home
+        masonry). Stepped per tier: phones keep two columns down to a 336px
+        viewport, tablets and desktops get a floor 25% above the old fixed
+        columns (220px and 250px) so cards read large and the grid fills the
+        width. Grids fit as many columns of at least this width as the row
+        allows and stretch them to fill it.
+      */
+      --card-min: 9rem;
+
+      /*
+        Layout — the navbar's rendered height in px. Navbar overwrites this
+        inline on <html> from a ResizeObserver whenever its box changes; the
+        sticky page title (atoms/sticky-title) reads it for its `top`.
+      */
+      --navbar-height: 0px;
+
       /* Global Variables */
       --primary-background-color: #dedede;
       --secondary-background-color: #a6a6a6;
@@ -89,6 +106,18 @@
       --color-text-copy: var(--color-grey-100);
       /* Interactive accent: links, hover, focus rings, selected state. Same in both themes. */
       --color-accent: var(--color-sky);
+   }
+
+   @media (min-width: 640px) {
+      :root {
+         --card-min: 13.75rem;
+      }
+   }
+
+   @media (min-width: 1024px) {
+      :root {
+         --card-min: 15.625rem;
+      }
    }
 
    .dark {

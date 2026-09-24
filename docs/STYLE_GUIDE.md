@@ -122,20 +122,21 @@ Anything numeric — ratings, years, dates, counts, money — gets `tabular-nums
 
 ### Spacing, width, radius
 
-| Concern                 | Value                                                                                                                                                                     |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Page padding            | `p-4 sm:p-6 lg:px-10 lg:py-6` (list root: vertical padding equals the column gap, so the first child sits centred between navbar and cards) · `px-4 py-6` (detail column) |
-| Page column width       | `max-w-4xl`                                                                                                                                                               |
-| Stack gaps              | `gap-4 sm:gap-6` for the list page column · `gap-4 sm:gap-6 lg:gap-8` for the card grid                                                                                   |
-| Form gaps               | Stacked form `gap-4`; filter row `gap-3`; label-to-control `gap-1`; chip rows `gap-2`                                                                                     |
-| Between sections        | `mt-4`; under a section heading `mb-3` or `mb-4`; `<hr className="my-3 border-bold">`                                                                                     |
-| New block in a panel    | `mt-3`; a new section heading after content `mt-8`                                                                                                                        |
-| Modal panel             | `max-w-md p-6`                                                                                                                                                            |
-| Pagination              | `max-w-xs gap-3`                                                                                                                                                          |
-| Controls, posters       | `rounded-md`                                                                                                                                                              |
-| Panels, sections, modal | `rounded-lg` (cards use `10px` in CSS, the hero poster `25px`)                                                                                                            |
-| Chips, badges, avatars  | `rounded-full`                                                                                                                                                            |
-| Control borders         | `border-2 border-solid`; secondary button, chips and pills use 1px `border`                                                                                               |
+| Concern                 | Value                                                                                                                                                                                                               |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Page padding            | `p-4 sm:p-6 lg:px-10 lg:py-6` (list root: vertical padding equals the column gap, so the first child sits centred between navbar and cards) · `px-4 py-6` (detail column)                                           |
+| Page column width       | `max-w-4xl` (detail and utility pages) · `max-w-screen-2xl` (list pages: on a 15" laptop the card grid runs edge to edge inside the page padding, four cards of about 316px; only monitors past 1616px gain margin) |
+| Card minimum width      | `--card-min` in global.css: `9rem` on phones, `13.75rem` from `sm`, `15.625rem` from `lg`. The card grids fit as many columns of at least this as the row allows                                                    |
+| Stack gaps              | `gap-4 sm:gap-6` for the list page column · `gap-4 sm:gap-6 lg:gap-8` for the card grid                                                                                                                             |
+| Form gaps               | Stacked form `gap-4`; filter row `gap-3`; label-to-control `gap-1`; chip rows `gap-2`                                                                                                                               |
+| Between sections        | `mt-4`; under a section heading `mb-3` or `mb-4`; `<hr className="my-3 border-bold">`                                                                                                                               |
+| New block in a panel    | `mt-3`; a new section heading after content `mt-8`                                                                                                                                                                  |
+| Modal panel             | `max-w-md p-6`                                                                                                                                                                                                      |
+| Pagination              | `max-w-xs gap-3`                                                                                                                                                                                                    |
+| Controls, posters       | `rounded-md`                                                                                                                                                                                                        |
+| Panels, sections, modal | `rounded-lg` (cards use `10px` in CSS, the hero poster `25px`)                                                                                                                                                      |
+| Chips, badges, avatars  | `rounded-full`                                                                                                                                                                                                      |
+| Control borders         | `border-2 border-solid`; secondary button, chips and pills use 1px `border`                                                                                                                                         |
 
 ### Images
 
@@ -197,7 +198,7 @@ Skeleton of a utility page:
 Every route renders `Navbar` (sticky, `top-0 z-10`) then an `Outlet`. The view chooses one of two roots, both of which apply the theme class:
 
 -  **`Container`** — detail and utility pages (film, series, season, person, favourites, discover). `flex min-h-screen flex-col bg-neutral text-center`.
--  **`FlexContainer`** — list pages (`FilmList`). Adds the responsive page padding (`p-4 sm:p-6 lg:px-10 lg:py-6`) and an inner `flex w-full max-w-4xl flex-col gap-4 sm:gap-6` column. Vertical padding and column gap are the same value at every breakpoint on purpose: the first child is the `ViewToggle`, and equal spacing keeps it halfway between the navbar and the first row.
+-  **`FlexContainer`** — list pages (`FilmList`). Adds the responsive page padding (`p-4 sm:p-6 lg:px-10 lg:py-6`) and an inner `flex w-full max-w-screen-2xl flex-col gap-4 sm:gap-6` column, wider than the detail pages so the card grid fills a 15" laptop edge to edge inside the page padding. Vertical padding and column gap are the same value at every breakpoint on purpose: the first child is the `ViewToggle`, and equal spacing keeps it halfway between the navbar and the first row.
 
 ### Page anatomy
 
@@ -235,11 +236,11 @@ Every route renders `Navbar` (sticky, `top-0 z-10`) then an `Outlet`. The view c
 </CardGrid>
 ```
 
-Two columns on phones, three from `sm`, four from `lg`, and the gap grows with the columns (`1rem`, `1.5rem`, `2rem`). `CardGrid` is used everywhere cards sit in a fixed grid: the plain list pages, the recommendation panels on the film and series pages, and the person credits. Do not write `grid grid-cols-*` for cards. The `.card-grid` class is flexbox, not CSS grid: every item gets a `flex-basis` of `calc(100% / N - gap)` so N of them fill a row exactly, and `justify-content: center` centres whatever is left on the last row (two cards under a three-column grid sit in the middle, never flush left). Grid's `1fr` tracks cannot do that. `className` is for spacing around the grid only. Keys combine media type and id because TMDB movie and TV ids overlap.
+Cards have a minimum width and grow with the viewport. `.card-grid` is CSS grid with `repeat(auto-fill, minmax(min(100%, var(--card-min)), 1fr))`: the browser fits as many columns of at least `--card-min` (`9rem` / `13.75rem` / `15.625rem` at the base / `sm` / `lg` tiers, see the tokens table) as the row allows and stretches them to fill it. On a 375px phone that is two cards of about 164px, on a 768px tablet three of about 224px, on a 15" laptop four of about 316px inside the `max-w-screen-2xl` list column, and three of about 277px inside a `max-w-4xl` detail column. Cards widen until one more column fits, then snap back toward the floor, so sizes move in a sawtooth rather than a straight line. The gap grows with the tier (`1rem`, `1.5rem`, `2rem`). It is `auto-fill`, not `auto-fit`, so two recommendation cards stay card-sized instead of stretching to half the row each. A short last row sits flush left: `1fr` tracks always fill the row, and that was traded for the minimum size on purpose (the earlier flexbox version centred it). `CardGrid` is used everywhere cards sit in a grid: the plain list pages, the recommendation panels on the film and series pages, and the person credits. Do not write `grid grid-cols-*` for cards. `className` is for spacing around the grid only. Keys combine media type and id because TMDB movie and TV ids overlap.
 
 ### Responsive rules
 
-Mobile first; the breakpoints in use are `sm` and `lg`, with `md` appearing rarely. Side-by-side rows are `flex flex-col … sm:flex-row` with the image `flex-none` and the text `min-w-0 flex-1` so long titles truncate instead of overflowing. Detail pages must stack on phones and never scroll horizontally. Tables are the exception: `FilmTable` wraps in a `.film-table__scroll` overflow container and tightens type and padding under 640px so four columns fit.
+Mobile first; the breakpoints in use are `sm` and `lg` (nothing uses `md`, `xl` or `2xl` as a utility; the one wider media query is the Discover 4-5-4 rhythm at 1536px). The desktop tier targets a 15" laptop, about 1440 CSS pixels wide, and must still hold at 1024. Card grids do not pick a column count per tier; they fit as many `--card-min` columns as the row allows. Side-by-side rows are `flex flex-col … sm:flex-row` with the image `flex-none` and the text `min-w-0 flex-1` so long titles truncate instead of overflowing. Detail pages must stack on phones and never scroll horizontally. Tables are the exception: `FilmTable` wraps in a `.film-table__scroll` overflow container and tightens type and padding under 640px so four columns fit.
 
 ---
 
@@ -380,7 +381,7 @@ Open and close through the `isOpen` prop; the component calls `showModal()` and 
 
 `Card` is the hover shell (`custom-card w-full`, CSS in `card.styles.css`): relative, hidden overflow, `10px` radius, and on hover or `focus-within` it scales to 1.15, blurs the image and fades in `.content`, a `rgba(0,0,0,.72)` overlay with white text.
 
-`FilmCard` fills it: a `MediaImage` poster (`aspect-[1/1.5] w-full rounded-md object-cover object-center`, `alt={title}`, `fallbackClassName="aspect-[1/1.5]"`; the `masonry` prop drops the fixed aspect from the image but not from the skeleton), then `.content` holding a `MediaLink` with the `h2` title (`mb-2 text-center text-base font-semibold leading-tight sm:text-lg`) and the overview (`line-clamp-4 text-center text-xs leading-snug text-white/85 sm:line-clamp-6 sm:text-sm`), and a `FavoriteButton` **beside** the link, not inside it. The link covers the whole card through a stretched `::after`; the button sits above it with `z-index: 1`. Never nest a control inside an `<a>`.
+`FilmCard` fills it: a `MediaImage` poster (`aspect-[2/3] w-full rounded-md object-cover object-center`, `alt={title}`; the skeleton gets the same classes so a missing poster keeps its slot). The `aspect` prop picks the crop from `'2/3' | '3/4' | '1/1'` (`aspect-[2/3]`, `aspect-[3/4]`, `aspect-square`) and defaults to 2:3. Only the home masonry varies it, through `masonryAspect(index)` in `utils/posterAspect.ts`, a seven-card cycle of mostly 2:3 with one 3:4 and one 1:1: TMDB posters are all about 2:3, so natural heights would only drift out of line, and fixed crops make the stagger deliberate and the heights even. Then `.content` holding a `MediaLink` with the `h2` title (`mb-2 text-center text-base font-semibold leading-tight sm:text-lg`) and the overview (`line-clamp-4 text-center text-xs leading-snug text-white/85 sm:line-clamp-6 sm:text-sm`), and a `FavoriteButton` **beside** the link, not inside it. The link covers the whole card through a stretched `::after`; the button sits above it with `z-index: 1`. Never nest a control inside an `<a>`.
 
 ### FilmTable — `film-table`
 
