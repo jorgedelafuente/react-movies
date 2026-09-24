@@ -105,73 +105,70 @@ const PersonInfo = ({ person }: { person: PersonInfoType }) => {
    const age = yearsBetween(person.birthday, person.deathday);
    const longBio = person.biography.length > 600;
 
+   // Same shell as the film and series pages, minus the backdrop image. The
+   // title bar stays but is static: with no backdrop to parallax over there is
+   // nothing for the sticky, scroll-driven version to play against.
    return (
       <Container>
-         <div className="text-title text-copy">
+         <div className="text-title text-title--static text-copy">
             <span data-testid="person-info-title">{person.name}</span>
          </div>
-
-         <div className="mx-auto w-full max-w-4xl px-4 py-6 text-copy">
-            <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+         <div className="container-bg">
+            <div>
                {person.profile_path ? (
                   <img
                      loading="lazy"
                      src={`${baseImagePath}${person.profile_path}`}
                      alt=""
-                     className="w-48 flex-none rounded-lg object-cover"
                   />
                ) : (
                   <div
                      aria-hidden="true"
-                     className="flex h-72 w-48 flex-none items-center justify-center rounded-lg bg-gray-400/40 text-6xl"
+                     className="flex h-72 w-48 items-center justify-center rounded-[25px] bg-subtle text-6xl"
                   >
                      👤
                   </div>
                )}
+            </div>
 
-               <div className="min-w-0 flex-1 text-center sm:text-left">
-                  <h1 className="text-display-lg">{person.name}</h1>
-                  {person.known_for_department && (
-                     <p className="mt-1 text-sm uppercase tracking-wider text-copy/70">
-                        {person.known_for_department}
-                     </p>
-                  )}
+            <div className="text-content rounded-lg p-4 text-copy">
+               <h1 className="mb-2 text-display-lg">{person.name}</h1>
+               {person.known_for_department && (
+                  <p className="font-sans text-lg font-normal tracking-normal text-copy/75 sm:text-xl">
+                     {person.known_for_department}
+                  </p>
+               )}
 
-                  <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
-                     {born && (
-                        <>
-                           <dt className="font-semibold">Born</dt>
-                           <dd className="tabular-nums">
-                              {born}
-                              {age !== null && !died ? ` (age ${age})` : ''}
-                              {person.place_of_birth
-                                 ? ` · ${person.place_of_birth}`
-                                 : ''}
-                           </dd>
-                        </>
-                     )}
-                     {died && (
-                        <>
-                           <dt className="font-semibold">Died</dt>
-                           <dd className="tabular-nums">
-                              {died}
-                              {age !== null ? ` (aged ${age})` : ''}
-                           </dd>
-                        </>
-                     )}
-                     {person.also_known_as &&
-                        person.also_known_as.length > 0 && (
-                           <>
-                              <dt className="font-semibold">Also known as</dt>
-                              <dd>
-                                 {person.also_known_as.slice(0, 4).join(', ')}
-                              </dd>
-                           </>
-                        )}
-                  </dl>
+               <hr className="my-3 border-bold" />
 
-                  {(person.homepage || imdbId) && (
-                     <div className="mt-3 flex flex-wrap justify-center gap-4 sm:justify-start">
+               {born && (
+                  <div className="tabular-nums">
+                     <strong>Born: </strong>
+                     {born}
+                     {age !== null && !died ? ` (age ${age})` : ''}
+                     {person.place_of_birth
+                        ? ` · ${person.place_of_birth}`
+                        : ''}
+                  </div>
+               )}
+               {died && (
+                  <div className="tabular-nums">
+                     <strong>Died: </strong>
+                     {died}
+                     {age !== null ? ` (aged ${age})` : ''}
+                  </div>
+               )}
+               {person.also_known_as && person.also_known_as.length > 0 && (
+                  <div>
+                     <strong>Also known as: </strong>
+                     {person.also_known_as.slice(0, 4).join(', ')}
+                  </div>
+               )}
+
+               {(person.homepage || imdbId) && (
+                  <>
+                     <hr className="my-3 border-bold" />
+                     <div className="mt-2 flex flex-wrap gap-4">
                         {person.homepage && (
                            <a
                               href={person.homepage}
@@ -193,15 +190,15 @@ const PersonInfo = ({ person }: { person: PersonInfoType }) => {
                            </a>
                         )}
                      </div>
-                  )}
-               </div>
+                  </>
+               )}
             </div>
 
             {person.biography && (
-               <section className="mt-6">
-                  <h2 className="text-display-md">Biography</h2>
+               <div className="text-content mt-4 rounded-lg p-4 text-copy">
+                  <h2 className="mb-3 text-display-md">Biography</h2>
                   <p
-                     className={`mt-2 whitespace-pre-line leading-relaxed ${
+                     className={`whitespace-pre-line leading-relaxed ${
                         longBio && !bioExpanded ? 'line-clamp-6' : ''
                      }`}
                   >
@@ -217,7 +214,7 @@ const PersonInfo = ({ person }: { person: PersonInfoType }) => {
                         {bioExpanded ? 'Read less' : 'Read more'}
                      </button>
                   )}
-               </section>
+               </div>
             )}
 
             <CreditsGrid title="Known for" credits={cast} rolePrefix="as " />

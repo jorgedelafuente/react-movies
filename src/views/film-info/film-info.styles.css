@@ -71,3 +71,12 @@
       letter-spacing: -0.02em;
    }
 }
+
+/*
+ * Pages without a backdrop (people) keep the title bar in its resting state
+ * but drop the sticky positioning and the scroll-driven growth.
+ */
+.text-title--static {
+   position: static;
+   animation: none;
+}

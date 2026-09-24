@@ -60,8 +60,11 @@ describe('Person Info Component', () => {
       expect(screen.getByTestId('person-info-title')).toHaveTextContent(
          'Emilia Clarke'
       );
+      expect(
+         screen.getByRole('heading', { level: 1, name: 'Emilia Clarke' })
+      ).toBeInTheDocument();
       expect(screen.getByText('Acting')).toBeInTheDocument();
-      const born = screen.getByText('Born').nextElementSibling;
+      const born = screen.getByText('Born:').parentElement;
       expect(born).toHaveTextContent('23 October 1986');
       expect(born).toHaveTextContent(/\(age \d+\)/);
       expect(born).toHaveTextContent('London, England, UK');
@@ -122,10 +125,10 @@ describe('Person Info Component', () => {
 
    it('shows a death date and final age when present', async () => {
       await renderView({ ...person, deathday: '2020-06-01' });
-      const died = screen.getByText('Died').nextElementSibling;
+      const died = screen.getByText('Died:').parentElement;
       expect(died).toHaveTextContent('01 June 2020');
       expect(died).toHaveTextContent('(aged 33)');
-      expect(screen.getByText('Born').nextElementSibling).not.toHaveTextContent(
+      expect(screen.getByText('Born:').parentElement).not.toHaveTextContent(
          /age \d+/
       );
    });
