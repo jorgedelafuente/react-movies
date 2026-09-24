@@ -9,8 +9,6 @@
 5. [File Structure](#file-structure)
 6. [Linting & Code Quality](#linting--code-quality)
 7. [Unit Testing with Vitest](#unit-testing-with-vitest)
-8. [End-to-End Testing with Playwright](#end-to-end-testing-with-playwright)
-9. [GitHub Actions Integration](#github-actions-integration)
 
 ---
 
@@ -60,6 +58,7 @@ const theme = useTheme((state) => state.theme);
 --color-grey-80: 0 0% 19%;
 --color-grey-90: 0 0% 9%;
 --color-grey-100: 0 0% 0%; /* Black */
+--color-sky: 199 89% 48%; /* Tailwind sky-500, only referenced by --color-accent */
 ```
 
 **Legacy Background Variables (Hex format):**
@@ -84,6 +83,9 @@ const theme = useTheme((state) => state.theme);
 --color-bg-neutral-inverted: var(--color-grey-100); /* Black */
 --color-border-bold: var(--color-grey-60); /* Medium grey */
 --color-text-copy: var(--color-grey-100); /* Black text */
+--color-accent: var(
+   --color-sky
+); /* Links, hover, focus rings, selected state; same in both themes */
 
 /* Dark Mode (.dark class) */
 --color-bg-neutral: var(--color-grey-100); /* Black background */
@@ -112,6 +114,15 @@ border-bold             → hsl(var(--color-border-bold))
 ```tsx
 text-copy               → hsl(var(--color-text-copy))
 ```
+
+**Accent (interactive colour, all namespaces):**
+
+```tsx
+text-accent  border-accent  bg-accent/10  fill-accent  stroke-accent  outline-accent
+hover:text-accent  hover:border-accent/40  focus-visible:outline-accent
+```
+
+Never use `sky-*` directly. In a component `.css` file write `hsl(var(--color-accent) / 1)`.
 
 **Legacy Colors (use for existing code only):**
 
@@ -781,6 +792,7 @@ src/routeTree.gen.ts
 | Inverted background   | `bg-neutral-inverted`           | `var(--color-bg-neutral-inverted)`  |
 | Primary text          | `text-copy`                     | `var(--color-text-copy)`            |
 | Borders               | `border-bold`                   | `var(--color-border-bold)`          |
+| Accent / interactive  | `text-accent`, `border-accent`  | `var(--color-accent)`               |
 | Legacy bg (primary)   | `bg-primary-background-color`   | `var(--primary-background-color)`   |
 | Legacy bg (secondary) | `bg-secondary-background-color` | `var(--secondary-background-color)` |
 | Legacy bg (tertiary)  | `bg-tertiary-background-color`  | `var(--tertiary-background-color)`  |
@@ -850,7 +862,6 @@ The project uses **Vitest v4.0.18** for unit and integration testing of React co
 -  Vite-native test runner (fast, uses same config as dev server)
 -  Jest-compatible API (easy migration from Jest)
 -  React Testing Library integration
--  MSW (Mock Service Worker) for API mocking
 -  Coverage reports with Istanbul
 -  Interactive UI mode
 
@@ -870,10 +881,7 @@ export default defineConfig({
       coverage: {
          provider: 'istanbul', // Code coverage tool
       },
-      exclude: [
-         ...configDefaults.exclude,
-         'src/tests/e2e/*', // Exclude Playwright tests
-      ],
+      exclude: [...configDefaults.exclude, '.claude/**'],
    },
 });
 ```
@@ -882,8 +890,8 @@ export default defineConfig({
 
 -  **`globals: true`**: No need to import `describe`, `it`, `expect` in every test file
 -  **`environment: 'jsdom'`**: Provides DOM APIs (`document`, `window`) for React testing
--  **`setupFiles`**: Runs before all tests (extends matchers, configures MSW)
--  **`exclude`**: Prevents Playwright E2E tests from running with Vitest
+-  **`setupFiles`**: Runs before all tests (extends matchers, mocks `matchMedia`)
+-  **`exclude`**: Keeps Vitest out of `.claude/` on top of the defaults
 
 ---
 
@@ -893,44 +901,33 @@ export default defineConfig({
 
 ```typescript
 import '@testing-library/jest-dom/vitest';
-import { expect, afterEach } from 'vitest';
-import { cleanup } from '@testing-library/react';
+import 'vitest-axe/extend-expect';
+
 import * as matchers from '@testing-library/jest-dom/matchers';
-import { http, HttpResponse } from 'msw';
-import { setupServer } from 'msw/node';
+import { cleanup } from '@testing-library/react';
+import { afterEach, expect } from 'vitest';
+import * as axeMatchers from 'vitest-axe/matchers';
 
-// Extend Vitest expect with Testing Library matchers
 expect.extend(matchers);
+expect.extend(axeMatchers);
 
-// Cleanup after each test
 afterEach(() => {
    cleanup();
 });
 
-// Mock matchMedia (not available in jsdom)
 Object.defineProperty(globalThis, 'matchMedia', {
    writable: true,
    value: vi.fn().mockImplementation((query) => ({
       matches: false,
       media: query,
       onchange: null,
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
+      addListener: vi.fn(), // deprecated
+      removeListener: vi.fn(), // deprecated
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
       dispatchEvent: vi.fn(),
    })),
 });
-
-// MSW server setup
-export const handlers = [
-   /* API handlers */
-];
-export const server = setupServer(...handlers);
-
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
 ```
 
 **What it does:**
@@ -938,7 +935,7 @@ afterAll(() => server.close());
 -  Adds Testing Library matchers (`.toBeInTheDocument()`, `.toBeVisible()`)
 -  Auto-cleanup after each test (unmount components)
 -  Mocks `matchMedia` for responsive design tests
--  Configures MSW for API mocking
+-  Adds vitest-axe matchers (`.toHaveNoViolations()`)
 
 ---
 
@@ -948,10 +945,7 @@ afterAll(() => server.close());
 # Run all tests (watch mode)
 pnpm test
 
-# Run tests once (CI mode)
-pnpm test:silent
-
-# Run tests silently (less output)
+# Run tests once, quiet output
 pnpm test:silent
 
 # Run with UI (interactive mode)
@@ -996,10 +990,6 @@ The project has **8 test files** covering components, views, and hooks:
 -  `/src/views/about/counter.spec.tsx`
 -  `/src/views/film-info/film-info.spec.tsx`
 -  `/src/views/film-list/film-list.spec.tsx`
-
-#### E2E Tests (Playwright)
-
--  `/src/tests/e2e/routes.e2e.spec.tsx`
 
 ---
 
@@ -1174,59 +1164,53 @@ it('applies correct styles to elements', () => {
 
 ---
 
-### API Mocking with MSW
+### Mocking the Service Layer
 
-MSW (Mock Service Worker) intercepts network requests and returns mock responses.
+Tests never reach the network. Instead of intercepting HTTP, mock the module in `src/services/` that the component or hook imports, so the test controls exactly what the data layer returns.
 
-#### Setup in setupTests.ts
-
-```typescript
-import { http, HttpResponse } from 'msw';
-import { setupServer } from 'msw/node';
-
-export const handlers = [
-   http.get('/user', async () => {
-      return HttpResponse.json({
-         id: '15d42a4d-1948-4de4-ba78-b8a893feaf45',
-         firstName: 'John',
-      });
-   }),
-];
-
-export const server = setupServer(...handlers);
-
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
-```
-
-#### Using in Tests
+#### Supabase example (from `useFavorites.spec.tsx`)
 
 ```tsx
-import { server } from '@/tests/setupTests';
-import { http, HttpResponse } from 'msw';
+vi.mock('@/services/supabase/favorites', () => ({
+   getUserFavorites: vi.fn(),
+   addFavorite: vi.fn(),
+   removeFavorite: vi.fn(),
+}));
+
+import { getUserFavorites } from '@/services/supabase/favorites';
+
+beforeEach(() => {
+   vi.mocked(getUserFavorites).mockResolvedValue({ data: [], error: null });
+});
+```
+
+#### TMDB example
+
+```tsx
+import { MOCK_FILM_LIST } from '@/tests/__mocks__/mocks';
+import { FilmListSchema } from '@/types/films.schemas';
+
+vi.mock('@/services/films/films', () => ({
+   fetchPopularFilms: vi.fn(),
+}));
+
+import { fetchPopularFilms } from '@/services/films/films';
 
 it('handles API error', async () => {
-   // Override handler for this test
-   server.use(
-      http.get('/user', () => {
-         return HttpResponse.json({ error: 'Not found' }, { status: 404 });
-      })
-   );
-
-   render(<UserProfile />);
-
+   vi.mocked(fetchPopularFilms).mockRejectedValue(new Error('Network'));
+   renderWithQueryContext(<PopularPage />);
    await waitFor(() => {
-      expect(screen.getByText('Error loading user')).toBeVisible();
+      expect(screen.getByText(/something went wrong/i)).toBeVisible();
    });
 });
 ```
 
 **Pattern:**
 
--  Define default handlers in `setupTests.ts`
--  Override handlers in individual tests with `server.use()`
--  Handlers reset automatically after each test
+-  `vi.mock` the service module at the top of the spec; import the mocked functions after the mock call
+-  Use `vi.mocked(fn).mockResolvedValue(...)` per test to shape the response
+-  Parse shared mock data through the Zod schema (`FilmListSchema.parse(MOCK_FILM_LIST)`) so it matches what the real fetcher returns
+-  Prefer passing data as props when the component does not fetch (see `film-list.spec.tsx`)
 
 ---
 
@@ -1478,39 +1462,11 @@ src/
 │       └── counter.spec.tsx
 └── tests/
     ├── setupTests.ts                      # Global test setup
-    ├── e2e/                               # Playwright E2E tests
-    │   └── routes.e2e.spec.tsx
     └── fixtures/                          # Shared test data
         └── mockData.ts
 ```
 
 **Naming convention:** `*.spec.tsx` or `*.test.tsx` (both work)
-
----
-
-### CI/CD Integration
-
-Vitest runs in CI environments automatically. The `process.env.CI` flag enables production mode.
-
-**GitHub Actions Example:**
-
-```yaml
-- name: Install dependencies
-  run: pnpm install
-
-- name: Run unit tests
-  run: pnpm test:silent
-
-- name: Generate coverage
-  run: pnpm coverage
-
-- name: Upload coverage
-  uses: codecov/codecov-action@v3
-  with:
-     files: ./coverage/coverage-final.json
-```
-
-**NOTE:** Currently, unit tests are **not** included in the existing GitHub Actions workflows. Only Playwright E2E tests run in CI. See [GitHub Actions Integration](#github-actions-integration) below.
 
 ---
 
@@ -1655,1004 +1611,3 @@ expect(element).toHaveTextContent('text');
 expect(element).toHaveValue('value');
 expect(mockFn).toHaveBeenCalledTimes(2);
 ```
-
----
-
-## End-to-End Testing with Playwright
-
-### Overview
-
-The project uses **Playwright v1.58.2** for end-to-end testing across multiple browsers.
-
-**Key Features:**
-
--  Multi-browser testing (Chromium, Firefox, WebKit)
--  Automatic dev server startup
--  API mocking capabilities
--  Screenshot and trace collection
--  Parallel test execution
-
-### Configuration
-
-**Location:** `playwright.config.ts`
-
-```typescript
-export default defineConfig({
-   testDir: './src/tests',
-   baseURL: 'http://localhost:5173',
-   fullyParallel: true,
-   forbidOnly: !!process.env.CI,
-   retries: process.env.CI ? 2 : 0,
-   workers: process.env.CI ? 1 : undefined,
-   reporter: 'html',
-   use: {
-      baseURL: 'http://localhost:5173',
-      trace: 'on-first-retry',
-   },
-   projects: [
-      { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-      { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-      { name: 'webkit', use: { ...devices['Desktop Safari'] } },
-   ],
-   webServer: {
-      command: 'pnpm dev',
-      url: 'http://localhost:5173',
-      reuseExistingServer: !process.env.CI,
-   },
-});
-```
-
-#### Key Settings Explained
-
--  **`testDir`**: `./src/tests` - All test files go here
--  **`baseURL`**: Tests use relative URLs (e.g., `page.goto('./')`)
--  **`fullyParallel`**: Tests run concurrently for speed
--  **`webServer`**: Automatically starts dev server before tests
--  **`reuseExistingServer`**: Reuses running server locally (CI starts fresh)
-
----
-
-### Running Tests
-
-```bash
-# Run all tests (headless mode)
-pnpm playwright
-
-# Run tests with UI (interactive mode)
-pnpm playwright:ui
-
-# Run tests in debug mode
-pnpm playwright:debug
-
-# Run specific test file
-pnpm playwright routes.e2e.spec.tsx
-
-# Run tests in specific browser
-pnpm playwright --project=chromium
-pnpm playwright --project=firefox
-pnpm playwright --project=webkit
-
-# Show test report
-pnpm exec playwright show-report
-```
-
-#### Available Scripts
-
-```json
-{
-   "playwright": "playwright test",
-   "playwright:ui": "playwright test --ui",
-   "playwright:debug": "playwright test --debug"
-}
-```
-
----
-
-### Existing Tests
-
-**Location:** `/src/tests/e2e/routes.e2e.spec.tsx`
-
-#### Test 1: Homepage Title
-
-```tsx
-test('Homepage has application title', async ({ page }) => {
-   await page.goto('./');
-   await page.screenshot({ path: 'screenshot0.png' });
-   await expect(page).toHaveTitle(/React Movies - Vite & Typescript/);
-});
-```
-
-**What it tests:**
-
--  Navigates to homepage
--  Takes screenshot (saved as `screenshot0.png`)
--  Verifies page title matches regex
-
-#### Test 2: Content Rendering with API Mocking
-
-```tsx
-test('Homepage Renders Content Correct', async ({ page }) => {
-   await page.route('*/**/movie/*', async (route) => {
-      await route.fulfill({ json: mockFilmsList });
-   });
-   await page.goto('./');
-   await expect(page.getByText('The Substance')).toBeVisible();
-});
-```
-
-**What it tests:**
-
--  Intercepts API calls matching `*/**/movie/*` pattern
--  Returns mock data (`mockFilmsList`) instead of real API response
--  Verifies specific movie title is visible on page
-
-**Why mock APIs:**
-
--  Faster tests (no network requests)
--  Predictable data (no flakiness from API changes)
--  Works offline
--  Avoids rate limits
-
----
-
-### Writing New Tests
-
-#### Test File Structure
-
-```tsx
-import { test, expect } from '@playwright/test';
-
-test.describe('Feature Name', () => {
-   test('should do something', async ({ page }) => {
-      // Test logic
-   });
-
-   test('should handle error case', async ({ page }) => {
-      // Error test logic
-   });
-});
-```
-
-#### Common Patterns
-
-**1. Navigation**
-
-```tsx
-// Relative URL (uses baseURL from config)
-await page.goto('./');
-await page.goto('./film/123');
-
-// Absolute URL
-await page.goto('http://localhost:5173/');
-```
-
-**2. Interacting with Elements**
-
-```tsx
-// Click button
-await page.getByRole('button', { name: 'Login' }).click();
-
-// Type in input
-await page.getByLabel('Email').fill('test@example.com');
-
-// Select from dropdown
-await page.selectOption('select#genre', 'Action');
-
-// Check checkbox
-await page.getByRole('checkbox', { name: 'Remember me' }).check();
-```
-
-**3. Assertions**
-
-```tsx
-// Element visibility
-await expect(page.getByText('Welcome')).toBeVisible();
-await expect(page.getByRole('button', { name: 'Submit' })).toBeHidden();
-
-// Text content
-await expect(page.locator('.title')).toHaveText('Movie Title');
-await expect(page.locator('.count')).toContainText('10 results');
-
-// URL
-await expect(page).toHaveURL(/.*dashboard/);
-
-// Attribute
-await expect(page.locator('img')).toHaveAttribute('alt', 'Movie poster');
-
-// Count
-await expect(page.locator('.card')).toHaveCount(20);
-```
-
-**4. API Mocking**
-
-```tsx
-// Mock specific endpoint
-await page.route('*/**/api/movies', async (route) => {
-  await route.fulfill({
-    status: 200,
-    body: JSON.stringify({ results: [...] }),
-  });
-});
-
-// Mock with error
-await page.route('*/**/api/movies', async (route) => {
-  await route.fulfill({ status: 500 });
-});
-
-// Continue request normally (no mock)
-await page.route('*/**/api/movies', (route) => route.continue());
-```
-
-**5. Waiting for Elements**
-
-```tsx
-// Wait for element to be visible
-await page.waitForSelector('.movie-card');
-
-// Wait for navigation
-await Promise.all([page.waitForNavigation(), page.click('a[href="/login"]')]);
-
-// Wait for API response
-await page.waitForResponse('*/**/api/movies');
-```
-
-**6. Screenshots and Debugging**
-
-```tsx
-// Full page screenshot
-await page.screenshot({ path: 'screenshot.png', fullPage: true });
-
-// Element screenshot
-await page.locator('.movie-card').screenshot({ path: 'card.png' });
-
-// Pause execution (debug mode only)
-await page.pause();
-```
-
----
-
-### Best Practices
-
-#### 1. Use Semantic Selectors
-
-**DO:**
-
-```tsx
-// ✅ GOOD - Uses accessible roles
-await page.getByRole('button', { name: 'Login' });
-await page.getByLabel('Email');
-await page.getByText('Welcome back');
-```
-
-**DON'T:**
-
-```tsx
-// ❌ BAD - Brittle CSS selectors
-await page.locator('.btn-primary');
-await page.locator('#email-input');
-await page.locator('div > span > p');
-```
-
-#### 2. Mock External APIs
-
-```tsx
-// ✅ GOOD - Tests are fast and predictable
-test('displays movie list', async ({ page }) => {
-   await page.route('*/**/api/movies', async (route) => {
-      await route.fulfill({ json: mockData });
-   });
-   await page.goto('./');
-   await expect(page.getByText('Movie Title')).toBeVisible();
-});
-```
-
-#### 3. Avoid Hard-Coded Waits
-
-**DON'T:**
-
-```tsx
-// ❌ BAD - Arbitrary wait times
-await page.waitForTimeout(5000);
-```
-
-**DO:**
-
-```tsx
-// ✅ GOOD - Wait for specific condition
-await page.waitForSelector('.movie-card');
-await expect(page.getByText('Loading...')).toBeHidden();
-```
-
-#### 4. Clean Up After Tests
-
-```tsx
-test.afterEach(async ({ page }) => {
-   // Clear localStorage
-   await page.evaluate(() => localStorage.clear());
-
-   // Clear cookies
-   await page.context().clearCookies();
-});
-```
-
-#### 5. Group Related Tests
-
-```tsx
-test.describe('Authentication', () => {
-  test('should log in successfully', async ({ page }) => { ... });
-  test('should show error for invalid credentials', async ({ page }) => { ... });
-  test('should log out', async ({ page }) => { ... });
-});
-```
-
----
-
-### Testing Authentication
-
-When testing features that require authentication:
-
-**Option 1: Mock Auth State**
-
-```tsx
-test('user can access profile', async ({ page }) => {
-   // Set auth state in localStorage before navigating
-   await page.addInitScript(() => {
-      localStorage.setItem(
-         'auth',
-         JSON.stringify({
-            user: { id: '123', email: 'test@example.com' },
-            session: { access_token: 'mock-token' },
-         })
-      );
-   });
-
-   await page.goto('./profile');
-   await expect(page.getByText('test@example.com')).toBeVisible();
-});
-```
-
-**Option 2: Reuse Authenticated Session**
-
-```tsx
-import { test as setup } from '@playwright/test';
-
-setup('authenticate', async ({ page }) => {
-   await page.goto('./login');
-   await page.fill('[name="email"]', 'test@example.com');
-   await page.fill('[name="password"]', 'password123');
-   await page.click('button[type="submit"]');
-
-   // Save storage state
-   await page.context().storageState({ path: 'auth.json' });
-});
-
-// Use in other tests
-test.use({ storageState: 'auth.json' });
-```
-
----
-
-### CI/CD Integration
-
-The configuration automatically adapts for CI:
-
-```typescript
-forbidOnly: !!process.env.CI,    // Fail if test.only is used
-retries: process.env.CI ? 2 : 0,  // Retry flaky tests in CI
-workers: process.env.CI ? 1 : undefined, // Sequential in CI
-```
-
-**GitHub Actions Example:**
-
-```yaml
-- name: Install dependencies
-  run: pnpm install
-
-- name: Install Playwright browsers
-  run: pnpm exec playwright install --with-deps
-
-- name: Run Playwright tests
-  run: pnpm playwright
-
-- name: Upload test results
-  if: always()
-  uses: actions/upload-artifact@v3
-  with:
-     name: playwright-report
-     path: playwright-report/
-```
-
----
-
-### Debugging Tests
-
-#### Interactive Mode
-
-```bash
-pnpm playwright:ui
-```
-
-**Features:**
-
--  See tests run in real-time
--  Pause and step through actions
--  Inspect DOM at each step
--  Time-travel through test execution
-
-#### Debug Mode
-
-```bash
-pnpm playwright:debug
-```
-
-**Features:**
-
--  Opens Playwright Inspector
--  Step through test line by line
--  Pick locators interactively
--  See console logs
-
-#### Headed Mode
-
-```bash
-pnpm playwright --headed
-```
-
-**Features:**
-
--  Watch browser window during test
--  See what the test sees
--  Useful for visual debugging
-
----
-
-### Common Issues & Fixes
-
-#### 1. Dev Server Not Starting
-
-```bash
-# Error: "net::ERR_CONNECTION_REFUSED"
-```
-
-**Fix:** Ensure port 5173 is not in use
-
-```bash
-# Kill process on port 5173
-lsof -ti:5173 | xargs kill -9
-```
-
-#### 2. Element Not Found
-
-```tsx
-// ❌ Element loads after page.goto()
-await page.goto('./');
-await page.click('.movie-card'); // Might fail if not loaded yet
-
-// ✅ Wait for element first
-await page.goto('./');
-await expect(page.locator('.movie-card')).toBeVisible();
-await page.click('.movie-card');
-```
-
-#### 3. Flaky Tests
-
-**Causes:**
-
--  Race conditions (element not loaded yet)
--  Network delays
--  Animation timing
-
-**Fixes:**
-
--  Use `waitForSelector()` or `expect().toBeVisible()`
--  Mock API responses instead of relying on network
--  Use `page.waitForLoadState('networkidle')` if needed
-
-#### 4. Browser Not Installed
-
-```bash
-# Error: "Executable doesn't exist"
-```
-
-**Fix:**
-
-```bash
-pnpm exec playwright install chromium
-# or install all browsers
-pnpm exec playwright install
-```
-
----
-
-### File Organization
-
-```
-src/
-└── tests/
-    ├── e2e/
-    │   ├── routes.e2e.spec.tsx         # Route/navigation tests
-    │   ├── auth.e2e.spec.tsx           # Authentication tests
-    │   └── search.e2e.spec.tsx         # Search feature tests
-    ├── fixtures/
-    │   └── mockData.ts                 # Shared mock data
-    └── utils/
-        └── testHelpers.ts              # Shared test utilities
-```
-
----
-
-### Browser Capabilities
-
-**Playwright can:**
-
--  Run tests across Chromium, Firefox, WebKit
--  Execute in headless or headed mode
--  Take screenshots and videos
--  Intercept and mock network requests
--  Emulate mobile devices
--  Test responsive design
--  Handle file uploads/downloads
--  Test keyboard and mouse interactions
-
-**Playwright cannot:**
-
--  Access your local browser's history/bookmarks
--  Use your browser extensions
--  Access your personal accounts (unless you log in during tests)
-
-**Note:** Claude Code does not have direct visual access to the browser. It can run Playwright commands and analyze results/logs, but cannot "see" the browser window.
-
----
-
-### Quick Reference
-
-**Essential Commands:**
-
-```bash
-pnpm playwright                # Run all tests
-pnpm playwright:ui         # Interactive mode
-pnpm playwright:debug      # Debug mode
-pnpm playwright --headed     # Show browser
-pnpm exec playwright show-report       # View HTML report
-```
-
-**Common Locators:**
-
-```tsx
-page.getByRole('button', { name: 'Click' }); // By ARIA role
-page.getByLabel('Email'); // By label text
-page.getByText('Welcome'); // By text content
-page.getByPlaceholder('Search...'); // By placeholder
-page.locator('.custom-class'); // By CSS selector
-```
-
-**Common Assertions:**
-
-```tsx
-expect(page).toHaveTitle(/Title/); // Page title
-expect(page).toHaveURL(/url/); // Current URL
-expect(element).toBeVisible(); // Element visibility
-expect(element).toHaveText('Text'); // Text content
-expect(element).toHaveCount(5); // Element count
-```
-
----
-
-## GitHub Actions Integration
-
-### Overview
-
-The project has **4 GitHub Actions workflows** configured:
-
-1. **CI** (`.github/workflows/ci.yml`) - Comprehensive quality checks, unit tests, and E2E tests
-2. **Playwright Tests** (`.github/workflows/playwright.yml`) - E2E testing on push/PR (legacy, kept for compatibility)
-3. **GitHub Actions Demo** (`.github/workflows/main.yml`) - Basic demo workflow
-4. **Manual Workflow** (`.github/workflows/manual.yml`) - Manually triggered workflow
-
----
-
-### Playwright Tests Workflow
-
-**Location:** `.github/workflows/playwright.yml`
-
-**Triggers:**
-
--  Push to `main` or `master` branch
--  Pull requests to `main` or `master` branch
-
-**What it does:**
-
-```yaml
-name: Playwright Tests
-on:
-   push:
-      branches: [main, master]
-   pull_request:
-      branches: [main, master]
-jobs:
-   test:
-      timeout-minutes: 60
-      runs-on: ubuntu-latest
-      steps:
-         - uses: actions/checkout@v4
-         - uses: pnpm/action-setup@v4
-         - uses: actions/setup-node@v4
-           with:
-              node-version: lts/*
-              cache: pnpm
-         - name: Install dependencies
-           run: pnpm install
-         - name: Install Playwright Browsers
-           run: pnpm exec playwright install --with-deps
-         - name: Run Playwright tests
-           run: pnpm playwright
-         - uses: actions/upload-artifact@v4
-           if: ${{ !cancelled() }}
-           with:
-              name: playwright-report
-              path: playwright-report/
-              retention-days: 30
-```
-
-**Key steps:**
-
-1. Checkout code
-2. Setup Node.js LTS
-3. Install pnpm and dependencies
-4. Install Playwright browsers with system dependencies
-5. Run Playwright E2E tests
-6. Upload test report (even if tests fail)
-
----
-
-### GitHub Actions Demo Workflow
-
-**Location:** `.github/workflows/main.yml`
-
-**Triggers:**
-
--  Any push to any branch
-
-**What it does:**
-
--  Prints demo messages about GitHub Actions
--  Lists repository files
--  Basic smoke test for CI functionality
-
-**Purpose:** Demo/learning workflow, not critical for project
-
----
-
-### Manual Workflow
-
-**Location:** `.github/workflows/manual.yml`
-
-**Triggers:**
-
--  Manually triggered from GitHub UI
-
-**What it does:**
-
--  Accepts a `name` input parameter
--  Prints a greeting message
-
-**Purpose:** Example of manual workflow dispatch, not critical for project
-
----
-
-### Comprehensive CI Workflow
-
-**Location:** `.github/workflows/ci.yml`
-
-**Triggers:**
-
--  Push to `main` or `master` branch
--  Pull requests to `main` or `master` branch
-
-**What's Running:**
-
-#### ✅ Code Quality Job
-
--  **ESLint** - Lints all TypeScript/React code (`pnpm lint`)
--  **Prettier** - Checks code formatting (`pnpm format --check`)
--  **TypeScript** - Type checking and build (`pnpm build`)
-
-#### ✅ Unit Tests Job
-
--  **Vitest** - Runs all unit tests (`pnpm test:silent`)
--  **Coverage** - Generates coverage report (`pnpm coverage`)
--  **Artifacts** - Uploads coverage report for analysis
-
-#### ✅ E2E Tests Job
-
--  **Playwright** - Runs E2E tests across 3 browsers (`pnpm playwright`)
--  **Artifacts** - Uploads Playwright HTML report
-
-**Workflow structure** (`.github/workflows/ci.yml`):
-
-```yaml
-name: CI
-
-on:
-   push:
-      branches: [main, master]
-   pull_request:
-      branches: [main, master]
-
-jobs:
-   quality:
-      name: Code Quality
-      runs-on: ubuntu-latest
-      steps:
-         - uses: actions/checkout@v4
-
-         - uses: pnpm/action-setup@v4
-
-         - uses: actions/setup-node@v4
-           with:
-              node-version: 22
-              cache: pnpm
-
-         - name: Install dependencies
-           run: pnpm install
-
-         - name: Run ESLint
-           run: pnpm lint
-
-         - name: Check formatting
-           run: pnpm format --check
-
-         - name: Type check
-           run: pnpm build
-
-   unit-tests:
-      name: Unit Tests
-      runs-on: ubuntu-latest
-      steps:
-         - uses: actions/checkout@v4
-
-         - uses: pnpm/action-setup@v4
-
-         - uses: actions/setup-node@v4
-           with:
-              node-version: 22
-              cache: pnpm
-
-         - name: Install dependencies
-           run: pnpm install
-
-         - name: Run Vitest
-           run: pnpm test:silent
-
-         - name: Generate coverage
-           run: pnpm coverage
-
-         - name: Upload coverage to Codecov
-           uses: codecov/codecov-action@v3
-           with:
-              files: ./coverage/coverage-final.json
-
-   e2e-tests:
-      name: E2E Tests
-      runs-on: ubuntu-latest
-      steps:
-         - uses: actions/checkout@v4
-
-         - uses: pnpm/action-setup@v4
-
-         - uses: actions/setup-node@v4
-           with:
-              node-version: 22
-              cache: pnpm
-
-         - name: Install dependencies
-           run: pnpm install
-
-         - name: Install Playwright Browsers
-           run: pnpm exec playwright install --with-deps
-
-         - name: Run Playwright tests
-           run: pnpm playwright
-
-         - uses: actions/upload-artifact@v4
-           if: ${{ !cancelled() }}
-           with:
-              name: playwright-report
-              path: playwright-report/
-              retention-days: 30
-```
-
-This workflow:
-
--  ✅ Runs ESLint, Prettier, TypeScript checks
--  ✅ Runs Vitest unit tests with coverage
--  ✅ Runs Playwright E2E tests
--  ✅ Runs all checks in parallel for speed
--  ✅ Uploads coverage and test reports
-
----
-
-### Viewing CI Results
-
-#### In GitHub UI
-
-1. Go to repository → **Actions** tab
-2. Click on a workflow run
-3. View job status (✅ passed, ❌ failed)
-4. Click job name to see detailed logs
-5. Download artifacts (test reports, coverage)
-
-#### In Pull Requests
-
--  CI status shows at bottom of PR
--  Green checkmark = all checks passed
--  Red X = some checks failed
--  Click "Details" to see logs
-
----
-
-### CI Best Practices
-
-#### 1. Run All Quality Checks
-
-**Current state:** Only Playwright runs in CI
-
-**Recommended:** Add lint, format, type-check, and unit tests
-
-#### 2. Fail Fast
-
-```yaml
-# Add to workflow
-- name: Run ESLint
-  run: pnpm lint
-  # If this fails, workflow stops (don't waste CI time on later steps)
-```
-
-#### 3. Cache Dependencies
-
-```yaml
-- uses: pnpm/action-setup@v4 # reads the version from "packageManager" in package.json
-- uses: actions/setup-node@v4
-  with:
-     node-version: lts/*
-     cache: pnpm # caches the pnpm store between runs
-```
-
-#### 4. Matrix Testing (Optional)
-
-Test across multiple Node versions:
-
-```yaml
-strategy:
-   matrix:
-      node-version: [18, 20, 22]
-steps:
-   - uses: actions/setup-node@v4
-     with:
-        node-version: ${{ matrix.node-version }}
-```
-
-#### 5. Required Status Checks
-
-In GitHub repo settings:
-
--  **Settings** → **Branches** → **Branch protection rules**
--  Require status checks to pass before merging
--  Select: "Playwright Tests", "Unit Tests", "ESLint", etc.
-
----
-
-### Local Pre-commit Checks
-
-To ensure commits pass CI, run checks locally:
-
-```bash
-# Run all checks
-pnpm lint && pnpm format && pnpm test:silent && pnpm build
-```
-
-**Or set up pre-commit hook** (`.git/hooks/pre-commit`):
-
-```bash
-#!/bin/sh
-pnpm lint
-pnpm format
-pnpm test:silent
-```
-
-**Or use Husky + lint-staged:**
-
-```bash
-pnpm add -D husky lint-staged
-```
-
-`.husky/pre-commit`:
-
-```bash
-#!/bin/sh
-pnpm lint-staged
-```
-
-`package.json`:
-
-```json
-{
-   "lint-staged": {
-      "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
-      "*.{css,md,json}": ["prettier --write"]
-   }
-}
-```
-
----
-
-### Troubleshooting CI Failures
-
-#### Playwright Fails in CI But Passes Locally
-
-**Cause:** Race conditions, different screen size, network timing
-
-**Fix:**
-
--  Use `waitFor()` for async elements
--  Mock API responses with MSW
--  Set explicit viewport size in config
-
-#### Out of Memory Errors
-
-**Cause:** Large dependencies, parallel test execution
-
-**Fix:**
-
-```yaml
-- name: Run tests
-  run: pnpm test:silent
-  env:
-     NODE_OPTIONS: '--max_old_space_size=4096'
-```
-
-#### Flaky Tests
-
-**Cause:** Non-deterministic tests, timing issues
-
-**Fix:**
-
--  Add retries in config: `retries: process.env.CI ? 2 : 0`
--  Use deterministic test data
--  Mock time-based functionality
-
----
-
-### Quick Reference
-
-**Current CI workflows:**
-
--  ✅ **Comprehensive CI** (`.github/workflows/ci.yml`) - All quality checks
-   -  ESLint linting
-   -  Prettier format checking
-   -  TypeScript type checking
-   -  Vitest unit tests with coverage
-   -  Playwright E2E tests
--  ✅ Playwright E2E tests (`.github/workflows/playwright.yml`) - Legacy workflow
--  ℹ️ Demo workflow (`.github/workflows/main.yml`) - Basic demo
--  ℹ️ Manual workflow (`.github/workflows/manual.yml`) - Manual trigger
-
-**All quality checks running in CI:**
-
--  ✅ ESLint (`pnpm lint`)
--  ✅ Prettier (`pnpm format --check`)
--  ✅ TypeScript (`pnpm build`)
--  ✅ Vitest (`pnpm test:silent`)
--  ✅ Coverage report (`pnpm coverage`)
--  ✅ Playwright E2E (`pnpm playwright`)
-
-**Recommended next steps:**
-
-1. ✅ ~~Create comprehensive CI workflow with all quality checks~~ (Done!)
-2. Set up branch protection rules in GitHub
-3. Configure pre-commit hooks locally (Husky + lint-staged)
-4. (Optional) Add coverage reporting to external service (Codecov/Coveralls)
-
----
-
-**Last Updated:** 2026-04-12

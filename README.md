@@ -1,15 +1,18 @@
 # React Movies
 
-> A movie browsing app built to explore modern React patterns — type-safe, fully tested, and deployed to production.
+> A movie and TV browsing app built to explore modern React patterns — type-safe, fully tested, and deployed to production.
 
 ---
 
 ## Features
 
 -  Browse popular, top-rated, and upcoming films from TMDB
--  Search with debounced input and sanitised queries
--  Film detail pages with trailers
--  Save favourites (persisted in Supabase, optimistic updates)
+-  Browse popular, top-rated, and on-the-air TV series
+-  Search films with debounced input and sanitised queries
+-  Film detail pages with trailer, cast & crew, recommendations, and IMDb / homepage links
+-  Series detail pages with trailer, cast & crew, seasons and episodes, networks, and recommendations
+-  Favourites for both films and series, persisted in Supabase with optimistic updates
+-  Favourites page with a sortable table linking to each title's detail page
 -  Auth — sign up, log in, reset password
 -  Light / dark mode
 -  Fully responsive layout
@@ -17,6 +20,8 @@
 ---
 
 ## Getting started
+
+Requires **Node 22** and **pnpm 11** (pinned in `package.json`).
 
 ```sh
 cp .env.example .env.local   # add your TMDB + Supabase keys
@@ -41,22 +46,21 @@ See [.env.example](.env.example) for the required variables.
 
 ### Routing & data
 
-|     | Tool                                              | Purpose                             |
-| --- | ------------------------------------------------- | ----------------------------------- |
-| 🗺️  | [TanStack Router](https://tanstack.com/router)    | File-based, type-safe routing       |
-| 🔄  | [TanStack Query](https://tanstack.com/query)      | Server state and data fetching      |
-| 🗄️  | [Zustand](https://zustand.docs.pmnd.rs/)          | Global client state                 |
-| 🔐  | [Supabase](https://supabase.com/)                 | Auth and PostgreSQL database        |
-| 🌐  | [Redaxios](https://github.com/developit/redaxios) | Lightweight fetch-based HTTP client |
+|     | Tool                                              | Purpose                                   |
+| --- | ------------------------------------------------- | ----------------------------------------- |
+| 🗺️  | [TanStack Router](https://tanstack.com/router)    | File-based, type-safe routing             |
+| 🔄  | [TanStack Query](https://tanstack.com/query)      | Server state and data fetching            |
+| 🗄️  | [Zustand](https://zustand.docs.pmnd.rs/)          | Global client state                       |
+| 🔐  | [Supabase](https://supabase.com/)                 | Auth and PostgreSQL database              |
+| 🌐  | [Redaxios](https://github.com/developit/redaxios) | Lightweight fetch-based HTTP client       |
+| 🛡️  | [Zod](https://zod.dev/)                           | Runtime validation of every TMDB response |
 
 ### Testing
 
 |     | Tool                                                                                                    | Purpose                             |
 | --- | ------------------------------------------------------------------------------------------------------- | ----------------------------------- |
 | 🧪  | [Vitest](https://vitest.dev/)                                                                           | Unit and component tests            |
-| 🎭  | [Playwright](https://playwright.dev/)                                                                   | End-to-end tests                    |
 | 📐  | [React Testing Library](https://testing-library.com/react)                                              | Component rendering and interaction |
-| 🔌  | [MSW](https://mswjs.io/)                                                                                | Network mocking for E2E             |
 | ♿  | [axe-core](https://github.com/dequelabs/axe-core) + [vitest-axe](https://github.com/chaance/vitest-axe) | Accessibility assertions            |
 
 ### Tooling
@@ -75,10 +79,17 @@ See [.env.example](.env.example) for the required variables.
 ```sh
 pnpm dev            # start dev server
 pnpm build          # type-check + production build
+pnpm preview        # serve the production build locally
 pnpm test           # unit tests (watch)
-pnpm test:silent    # unit tests (CI)
-pnpm playwright     # E2E tests (headless)
+pnpm test:silent    # unit tests, quiet output
+pnpm coverage       # unit tests with coverage report
 pnpm lint           # ESLint
 pnpm format         # Prettier
-pnpm coverage       # coverage report
 ```
+
+---
+
+## Docs
+
+-  [docs/STYLE_GUIDE.md](docs/STYLE_GUIDE.md) — theming, CSS and Tailwind conventions, component styling, linting, and testing patterns
+-  [CLAUDE.md](CLAUDE.md) — project rules for AI-assisted development
