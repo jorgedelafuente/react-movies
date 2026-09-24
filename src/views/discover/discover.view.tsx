@@ -62,7 +62,7 @@ const DiscoverView = ({
             <h1 className="text-display-lg">Discover</h1>
 
             <form
-               className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end"
+               className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-center"
                onSubmit={(e) => e.preventDefault()}
                aria-label="Discover filters"
             >
@@ -77,7 +77,7 @@ const DiscoverView = ({
                         className={`rounded-full border px-3 py-1 text-sm ${
                            params.type === type
                               ? 'border-accent bg-accent/10 text-accent'
-                              : 'hover:border-accent hover:text-accent border-copy/30'
+                              : 'border-copy/30 hover:border-accent hover:text-accent'
                         }`}
                      >
                         {MEDIA_TYPE_PLURAL_LABELS[type]}
@@ -174,7 +174,7 @@ const DiscoverView = ({
                Nothing matches those filters. Try a different genre or year.
             </p>
          ) : (
-            <FilmList list={page.results} />
+            <FilmList list={page.results} cardLayout="rhythm" />
          )}
 
          {totalPages > 1 && (

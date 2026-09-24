@@ -51,3 +51,77 @@
       }
    }
 }
+
+/*
+ * Discover's row-rhythm grid: a plain multi-column stack below `lg` (same
+ * feel as the masonry fallback), then rows alternating between two card
+ * counts on bigger screens — 3, 4, 3, 4… at `lg`/`xl`, widening to
+ * 4, 5, 4, 5… at `2xl`+.
+ *
+ * This is flexbox, not CSS grid: grid's `1fr` tracks always stretch to fill
+ * 100% of the row, so a trailing partial row still starts flush against the
+ * left edge no matter what `justify-content` says. Flex items keep their
+ * own `flex-basis` width, so any leftover space on an incomplete last line
+ * is real and `justify-content: center` centers it — which is what makes
+ * "always center the last row, however many cards it has" actually work.
+ * Each item's flex-basis is sized so N of them plus their gaps sum to
+ * exactly 100%, which is also what forces the wrap into rows of that size.
+ */
+.film-list__rhythm {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+   gap: 1rem;
+}
+
+.film-list__rhythm > * {
+   flex: 0 0 calc(50% - 0.5rem);
+}
+
+@media (min-width: 640px) {
+   .film-list__rhythm {
+      gap: 1.5rem;
+   }
+
+   .film-list__rhythm > * {
+      flex-basis: calc(33.333% - 1rem);
+   }
+}
+
+@media (min-width: 1024px) and (max-width: 1535px) {
+   .film-list__rhythm {
+      gap: 2rem;
+   }
+
+   /* 3, 4, 3, 4… alternating every 7 cards. */
+   .film-list__rhythm > :nth-child(7n + 1),
+   .film-list__rhythm > :nth-child(7n + 2),
+   .film-list__rhythm > :nth-child(7n + 3) {
+      flex-basis: calc(33.333% - 1.333rem);
+   }
+
+   .film-list__rhythm > :nth-child(7n + 4),
+   .film-list__rhythm > :nth-child(7n + 5),
+   .film-list__rhythm > :nth-child(7n + 6),
+   .film-list__rhythm > :nth-child(7n) {
+      flex-basis: calc(25% - 1.5rem);
+   }
+}
+
+@media (min-width: 1536px) {
+   /* 4, 5, 4, 5… alternating every 9 cards. */
+   .film-list__rhythm > :nth-child(9n + 1),
+   .film-list__rhythm > :nth-child(9n + 2),
+   .film-list__rhythm > :nth-child(9n + 3),
+   .film-list__rhythm > :nth-child(9n + 4) {
+      flex-basis: calc(25% - 1.5rem);
+   }
+
+   .film-list__rhythm > :nth-child(9n + 5),
+   .film-list__rhythm > :nth-child(9n + 6),
+   .film-list__rhythm > :nth-child(9n + 7),
+   .film-list__rhythm > :nth-child(9n + 8),
+   .film-list__rhythm > :nth-child(9n) {
+      flex-basis: calc(20% - 1.6rem);
+   }
+}

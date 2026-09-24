@@ -10,14 +10,23 @@ import { useListView } from '@/utils/hooks/useListView';
 
 type FilmListProps = {
    list: FilmInfoType[];
-   /** Home uses a masonry card grid; other list routes keep the fixed grid. */
-   cardLayout?: 'grid' | 'masonry';
+   /**
+    * Home uses a masonry card grid, Discover uses a 3-4-3 (4-5-4 on very
+    * wide screens) row rhythm; other list routes keep the fixed grid.
+    */
+   cardLayout?: 'grid' | 'masonry' | 'rhythm';
 };
 
 const FilmList = ({ list, cardLayout = 'grid' }: FilmListProps) => {
    const view = useListView((state) => state.view);
    const setView = useListView((state) => state.setView);
-   const isMasonry = cardLayout === 'masonry';
+   const hasNaturalAspect = cardLayout !== 'grid';
+   const gridClassName =
+      cardLayout === 'masonry'
+         ? 'film-list__masonry'
+         : cardLayout === 'rhythm'
+           ? 'film-list__rhythm'
+           : 'grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4 lg:gap-8';
 
    return (
       <FlexContainer>
@@ -28,13 +37,7 @@ const FilmList = ({ list, cardLayout = 'grid' }: FilmListProps) => {
          {view === LIST_VIEWS.TABLE ? (
             <FilmTable list={list} />
          ) : (
-            <div
-               className={
-                  isMasonry
-                     ? 'film-list__masonry'
-                     : 'grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4 lg:gap-8'
-               }
-            >
+            <div className={gridClassName}>
                {list.map((item) => (
                   <div key={`${item.media_type}-${item.id}`}>
                      <FilmCard
@@ -44,7 +47,7 @@ const FilmList = ({ list, cardLayout = 'grid' }: FilmListProps) => {
                         poster_path={item.poster_path}
                         overview={item.overview}
                         release_date={item.release_date}
-                        masonry={isMasonry}
+                        masonry={hasNaturalAspect}
                      />
                   </div>
                ))}
