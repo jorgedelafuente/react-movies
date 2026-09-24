@@ -4,12 +4,12 @@ import {
    createRouter,
    RouterProvider,
 } from '@tanstack/react-router';
-import { act, screen, within } from '@testing-library/react';
+import { act, cleanup, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithQueryContext } from '@/tests/test-utils';
 
-import Navbar from './navbar.component';
+import Navbar, { NAVBAR_HEIGHT_VAR } from './navbar.component';
 
 const rootRoute = createRootRoute();
 const queryClient = new QueryClient();
@@ -66,6 +66,56 @@ describe('Navbar Component', () => {
       expect(
          items.getByRole('menuitem', { name: 'Upcoming' })
       ).toBeInTheDocument();
+   });
+
+   it('publishes its rendered height for the sticky page title', async () => {
+      // jsdom has no ResizeObserver. Stand one in that records what each
+      // instance observes; react-aria's combobox creates one too, so the test
+      // picks the observer watching the navbar rather than assuming it is alone.
+      type FakeObserver = {
+         callback: ResizeObserverCallback;
+         targets: Element[];
+      };
+      const observers: FakeObserver[] = [];
+      vi.stubGlobal(
+         'ResizeObserver',
+         class {
+            targets: Element[] = [];
+            constructor(public callback: ResizeObserverCallback) {
+               observers.push(this);
+            }
+            observe = (target: Element) => {
+               this.targets.push(target);
+            };
+            unobserve = vi.fn();
+            disconnect = vi.fn();
+         }
+      );
+
+      await renderNavbar();
+      const bar = document.querySelector('.navbar');
+      const observer = observers.find((o) => bar && o.targets.includes(bar));
+      expect(observer).toBeDefined();
+
+      act(() => {
+         observer?.callback(
+            [
+               {
+                  borderBoxSize: [{ blockSize: 114, inlineSize: 1280 }],
+               } as unknown as ResizeObserverEntry,
+            ],
+            observer as unknown as ResizeObserver
+         );
+      });
+      expect(
+         document.documentElement.style.getPropertyValue(NAVBAR_HEIGHT_VAR)
+      ).toBe('114px');
+
+      cleanup();
+      expect(
+         document.documentElement.style.getPropertyValue(NAVBAR_HEIGHT_VAR)
+      ).toBe('');
+      vi.unstubAllGlobals();
    });
 
    it('navigates to the selected route when a Films menu item is chosen', async () => {
