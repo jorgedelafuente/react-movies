@@ -251,6 +251,15 @@ Recipes as they exist in code. Copy the class strings; do not approximate them.
 
 The one fixed element on every page. Root: `navbar sticky top-0 z-10 m-auto flex flex-col items-center gap-2 border-b-2 border-solid border-secondary-background-color bg-primary-background-color p-4` plus the theme class; `navbar.styles.css` adds a `0 3px 3px` shadow in the secondary colour and the decorative wave (`.custom-shape-divider-top`, an absolutely positioned 24px SVG filled with the tertiary colour). Inside: a row `flex w-full items-start justify-between sm:items-center` holding `<nav aria-label="Browse" className="flex items-center gap-4 sm:gap-6">` (two `NavMenu` groups and a `NavLink`) on the left and `flex items-center gap-1` of icon buttons (`ThemeToggleIcon`, `LoginIcon`) on the right, then the search combobox on its own row. Nothing else goes in the navbar; add sections through `NavMenu`.
 
+### NavMenu — `layout/navbar/nav-menu`
+
+`react-aria-components` `MenuTrigger` + `Popover` + `Menu`, BEM-styled in `nav-menu.styles.css`; the root `.nav-menu` carries the theme class and is the popover's portal container, so the tokens flip inside it.
+
+-  **Trigger** — `nav-menu__trigger`: borderless, `font-display 1.125rem/500`, `letter-spacing 0.025em`, `text-copy`; `:hover`, `[data-pressed]` and `[aria-expanded='true']` turn it `accent`. The caret is a `0.75em` inline SVG chevron (`stroke: currentColor`) at `opacity 0.7` that rotates 180° and goes fully opaque while the menu is open. Focus: 2px accent outline, `4px` offset.
+-  **Popover** — `placement="bottom start"`, `offset={10}`. Frosted like the detail panels: `min-width 12rem`, `padding 0.375rem`, `border-radius 0.75rem`, `1px` border at `copy/10`, `bg-neutral` at `0.88` over `backdrop-filter: blur(16px) saturate(1.4)`, shadow `0 12px 32px rgb(0 0 0 / .3)` plus a `1px` inset highlight. Enters with a 160ms fade from `translateY(-6px) scale(.98)` and exits in 120ms via `[data-entering]` / `[data-exiting]`.
+-  **Items** — the `Menu` is a column with a `0.125rem` gap; each `MenuItem` is `flex justify-between`, `0.5rem 0.75rem` padding, `border-radius 0.5rem`, `font-display 0.9375rem/500`. `[data-hovered]` and `[data-focused]` set a `neutral-inverted/6` wash and `accent` text and slide in a trailing `→` (`content: '→' / ''`, so it stays out of the accessible name). `[data-focus-visible]` adds a 2px accent outline inset by `2px`.
+-  **Reduced motion** — the enter/exit animation and the caret, row and arrow transitions are disabled under `prefers-reduced-motion: reduce`.
+
 ### Button — `atoms/button`
 
 Outlined, never filled. Two variants, `className` defaults to `w-full`, `type` defaults to `button`.

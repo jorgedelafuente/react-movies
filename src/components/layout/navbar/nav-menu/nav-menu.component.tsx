@@ -41,12 +41,23 @@ const NavMenu = ({ label, links }: NavMenuProps) => {
          <MenuTrigger>
             <Button className="nav-menu__trigger" aria-label={`${label} menu`}>
                {label}
-               <span aria-hidden="true" className="nav-menu__caret">
-                  ▾
-               </span>
+               <svg
+                  aria-hidden="true"
+                  className="nav-menu__caret"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+               >
+                  <path d="M2.5 4.5 6 8l3.5-3.5" />
+               </svg>
             </Button>
             <Popover
                className="nav-menu__popover"
+               placement="bottom start"
+               offset={10}
                UNSTABLE_portalContainer={portalContainer ?? undefined}
             >
                <Menu className="nav-menu__list" onAction={handleAction}>
