@@ -1,11 +1,11 @@
 ---
-description: Implement a single roadmap item from ROADMAP.md in an isolated git worktree
+description: Implement a single roadmap item from docs/ROADMAP.md in an isolated git worktree
 allowed-tools: Read, Edit, Write, Bash(pnpm tsc --noEmit*), Bash(pnpm lint*), Bash(pnpm test:silent*), Bash(pnpm build*), Bash(git *), Bash(find *), Bash(grep *)
 ---
 
 # Implement Roadmap Agent
 
-Pick one item from [ROADMAP.md](ROADMAP.md), implement it fully in an isolated branch, and leave you with a clean commit ready to review.
+Pick one item from [docs/ROADMAP.md](docs/ROADMAP.md), implement it fully in an isolated branch, and leave you with a clean commit ready to review.
 
 ## Usage
 
@@ -21,7 +21,7 @@ Pass any fragment of the roadmap item's title. If `$ARGUMENTS` is empty, list al
 
 ### 1. Identify the item
 
--  Read [ROADMAP.md](ROADMAP.md).
+-  Read [docs/ROADMAP.md](docs/ROADMAP.md).
 -  Find the item matching `$ARGUMENTS` (fuzzy match on title).
 -  If multiple items match, list them and stop — ask the user to clarify.
 -  Read the full item text including any sub-bullets for acceptance criteria.

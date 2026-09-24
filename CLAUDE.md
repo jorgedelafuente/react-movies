@@ -1,121 +1,51 @@
 # CLAUDE.md
 
-Project conventions and tooling reference for AI-assisted development.
+Project rules for AI-assisted development. Config values live in their source files; this file only records what is not derivable from them.
 
 ## Package Manager
 
 Always use **pnpm**. Never use `npm`, `yarn`, or `bun`.
 
+Most-used commands (full list in [package.json](package.json)):
+
 ```sh
-pnpm install            # install deps
 pnpm dev                # dev server (http://localhost:5173)
-pnpm build              # type-check + Vite build
-pnpm preview            # preview production build locally
+pnpm build              # tsc -b + Vite build
 pnpm lint               # ESLint
-pnpm format             # Prettier
-pnpm format:check       # Prettier check (CI)
-pnpm test               # Vitest (unit, watch mode)
-pnpm test:silent        # Vitest (unit, CI-friendly, no watch)
-pnpm test:ui            # Vitest browser UI
-pnpm coverage           # Vitest + Istanbul coverage
-pnpm coverage:open      # open coverage report in browser
-pnpm playwright         # Playwright E2E (headless)
-pnpm playwright:ui      # Playwright with browser UI
-pnpm playwright:debug   # Playwright debug mode
+pnpm test:silent        # Vitest, no watch
+pnpm playwright         # Playwright E2E, headless
+pnpm exec tsc --noEmit  # type-check only
 ```
 
 ## TypeScript
 
-Strict mode is on (`"strict": true` in [tsconfig.app.json](tsconfig.app.json)). All code must compile without errors before committing.
+Strict mode is on ([tsconfig.app.json](tsconfig.app.json)). Code must type-check before committing. Import from `src/` with the `@/` alias:
 
--  Target: ES2020, module resolution: Bundler
--  Path alias: `@/*` → `src/*`
--  JSX transform: `react-jsx` (no React import needed)
--  Vitest globals are typed via `"types": ["vitest/globals"]`
-
-Run type-check standalone:
-
-```sh
-pnpm exec tsc --noEmit
+```ts
+import { Button } from '@/components/atoms/button/button.component';
 ```
 
 ## Testing
 
-### Unit tests — Vitest
+**Vitest** (unit) — config under the `test` key in [vite.config.ts](vite.config.ts). jsdom, globals enabled. E2E files (`**/*.e2e.*`) are excluded.
 
-Config lives in [vite.config.ts](vite.config.ts) under the `test` key.
+-  Setup: [src/tests/setupTests.ts](src/tests/setupTests.ts)
+-  Render helpers: [src/tests/test-utils.tsx](src/tests/test-utils.tsx)
+-  Shared mocks: [src/tests/**mocks**/mocks.ts](src/tests/__mocks__/mocks.ts)
 
--  Environment: `jsdom`
--  Globals enabled (no need to import `describe`, `it`, `expect`)
--  Setup file: [src/tests/setupTests.ts](src/tests/setupTests.ts)
--  Coverage provider: Istanbul (`pnpm coverage`)
--  E2E spec files are excluded from unit runs (`**/*.e2e.*`)
--  Test utilities and custom render helpers live in [src/tests/test-utils.tsx](src/tests/test-utils.tsx)
--  Shared mocks live in [src/tests/**mocks**/mocks.ts](src/tests/__mocks__/mocks.ts)
+**Playwright** (E2E) — config in [playwright.config.ts](playwright.config.ts). Specs live in `src/tests/e2e/`. Chromium only. The dev server starts automatically.
 
-### E2E tests — Playwright
+**Never call the real TMDB API or Supabase in E2E tests.** Every endpoint a test touches must have an MSW handler.
 
-Config: [playwright.config.ts](playwright.config.ts)
+## Pre-commit
 
--  Test directory: `src/tests` (Playwright scans recursively; E2E specs live in `src/tests/e2e/`)
--  Base URL: `http://localhost:5173` (dev server started automatically)
--  Browsers: Chromium only (CI runs Chromium; other browsers removed from config)
--  Retries: 2 on CI, 0 locally
--  Reports: HTML (`playwright-report/`)
+A husky hook runs lint-staged on staged files: ESLint with `--max-warnings=0` (warnings block the commit) and Prettier (3-space tabs, single quotes, ES5 trailing commas, Tailwind class sorting). Do not hand-format; let Prettier do it.
 
-**API mocking — MSW**
-
-Playwright E2E tests use [MSW (Mock Service Worker)](https://mswjs.io/) to intercept network requests. Never call the real TMDB API or Supabase in E2E tests — always provide MSW handlers for any endpoints the test touches.
-
-```sh
-pnpm playwright             # headless
-pnpm playwright:ui          # with browser UI
-pnpm playwright:debug       # debug mode
-```
-
-## Linting & Formatting
-
-Lint and formatting are enforced via a **pre-commit hook** using [lint-staged](https://github.com/lint-staged/lint-staged). On every `git commit`, lint-staged runs ESLint and Prettier only on staged files. Config lives in `package.json` under the `"lint-staged"` key.
-
-### ESLint
-
-Config: [eslint.config.js](eslint.config.js) — flat config format.
-
-Active rule sets:
-
--  `@typescript-eslint` strict
--  `react-hooks` (exhaustive-deps enforced)
--  `react-refresh`
--  `jsx-a11y` (accessibility — all recommended rules)
--  `@tanstack/query` (recommended)
--  `simple-import-sort` (import/export order enforced)
--  `prettier` (last, disables conflicting rules)
-
-Ignored paths: `dist/`, `node_modules/`, `coverage/`, `src/routeTree.gen.ts`, and config files.
-
-### Prettier
-
-Config: [.prettierrc](.prettierrc)
-
--  Semi-colons: yes
--  Single quotes: yes
--  Tab width: **3 spaces**
--  Trailing commas: ES5
--  Plugin: `prettier-plugin-tailwindcss` (class sorting)
-
-### Commit messages — commitlint
-
-Commits must follow [Conventional Commits](https://www.conventionalcommits.org/):
-
-```
-<type>(<scope>): <description>
-```
-
-Common types: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `ci`.
+Commits must follow Conventional Commits, enforced by commitlint: `<type>(<scope>): <description>`.
 
 ## Environment Variables
 
-Copy [.env.example](.env.example) to `.env.local` and fill in the values. All three vars are required at runtime and in CI.
+Copy [.env.example](.env.example) to `.env.local`. All three are required at runtime.
 
 | Variable                        | Description                |
 | ------------------------------- | -------------------------- |
@@ -123,119 +53,46 @@ Copy [.env.example](.env.example) to `.env.local` and fill in the values. All th
 | `VITE_SUPABASE_URL`             | Supabase project URL       |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | Supabase public (anon) key |
 
-Variables are prefixed with `VITE_` and exposed to the browser bundle by Vite. Do not store secrets without this convention check.
+## Layout
 
-## CI — GitHub Actions
+-  `src/components/` — atoms, auth forms, layout (navbar, containers, error boundaries)
+-  `src/routes/` — TanStack Router file-based routes
+-  `src/services/` — TMDB fetchers + query options (`films/` for movies, `series/` for TV), Supabase client/auth/favorites, image config
+-  `src/types/` — TypeScript types and Zod schemas
+-  `src/utils/hooks/` — `useAuth`, `useFavorites`, `useTheme`, `useDebounce`
+-  `src/views/` — page-level components
+-  `src/tests/` — Vitest setup, helpers, mocks, E2E specs
+-  `docs/` — long-form documentation (see [Documentation](#documentation))
 
-No CI workflow is currently configured. The `.github/workflows/` directory exists but is empty.
+## Documentation
 
-## Path Aliases
+-  [docs/STYLE_GUIDE.md](docs/STYLE_GUIDE.md) — theming, CSS and Tailwind guidelines, component styling, linting, and testing patterns in depth. This file holds the rules; the style guide holds the reasoning and examples.
+-  [docs/ROADMAP.md](docs/ROADMAP.md) — planned work and the per-item checklist used by `/implement-roadmap`. Gitignored, so it exists only on the maintainer's machine; do not assume it is present in a fresh clone.
 
-Import from `src/` using the `@/` alias anywhere in the app:
+## Conventions
 
-```ts
-import { Button } from '@/components/atoms/button/button.component';
-```
-
-## Project Structure
-
-```
-src/
-├── components/
-│   ├── atoms/          # Button, Card, FilmCard, Input, Modal, Spinner, FavoriteButton, NavLink
-│   ├── auth/           # auth modal, login/register/reset/logout forms
-│   └── layout/         # Navbar (+ search, theme toggle, login icons), Container, FlexContainer,
-│                       # ErrorBoundary, ErrorComponent, NotFoundComponent
-├── routes/             # TanStack Router file-based routes
-│   ├── __root.tsx      # root layout
-│   ├── index.tsx       # home (/)
-│   ├── popular/        # /popular
-│   ├── top-rated/      # /top-rated
-│   ├── upcoming/       # /upcoming
-│   ├── about/          # /about
-│   ├── favorites/      # /favorites
-│   └── film/           # /film/:filmId — $filmId.tsx (loader) + $filmId.lazy.tsx (component)
-├── services/
-│   ├── config.ts       # TMDB image base URLs
-│   ├── films/          # TMDB fetch functions + TanStack Query options
-│   ├── favorites/      # favorites TanStack Query options
-│   └── supabase/       # Supabase client, auth service, favorites service
-├── types/              # TypeScript types (auth.types.ts, films.types.ts, theme.types.ts) + Zod schemas (films.schemas.ts)
-├── utils/
-│   ├── hooks/          # useAuth, useFavorites, useTheme, useDebounce
-│   └── sanitizeInput.ts
-├── views/              # page-level view components (FilmList, FilmInfo, Favorites, About)
-├── tests/              # Vitest setup, test-utils, mocks, E2E specs
-└── styles/             # global.css, scrollbar styles, index.css (CSS vars)
-```
-
-## State Management — Zustand
-
-Global state is managed with [Zustand](https://zustand.docs.pmnd.rs/). Prefer Zustand stores over React context for shared client state.
-
--  Zustand store access is wrapped in custom hooks, located in [src/utils/hooks/](src/utils/hooks/)
--  Always consume state through these hooks, never import stores directly in components
--  `useAuth` — auth state (user, session, modal open/mode) + actions (signIn, signUp, signOut, resetPassword, initialize, destroy)
--  `useTheme` — light/dark mode toggle
--  `useFavorites` — favorites list with optimistic updates via TanStack Query
-
-## Routing — TanStack Router
-
-File-based routing via the [TanStack Router Vite plugin](https://tanstack.com/router). The route tree at [src/routeTree.gen.ts](src/routeTree.gen.ts) is **auto-generated** — never edit it by hand.
-
--  Define routes as files under `src/routes/`
--  The Vite plugin regenerates `routeTree.gen.ts` on every save
--  `routeTree.gen.ts` is excluded from ESLint and Prettier
-
-## Data Fetching — TanStack Query
-
-All server state is managed with [TanStack Query](https://tanstack.com/query). Query options (keys + fetch functions) are co-located in `src/services/`:
-
--  [src/services/films/filmsQueryOptions.tsx](src/services/films/filmsQueryOptions.tsx) — film list queries
--  [src/services/films/filmQueryOptions.tsx](src/services/films/filmQueryOptions.tsx) — single film + videos query
--  [src/services/favorites/favoritesQueryOptions.ts](src/services/favorites/favoritesQueryOptions.ts) — user favorites query
-
-## Data Source — TMDB
-
-Movie data comes from [The Movie Database (TMDB)](https://www.themoviedb.org/) API. The API key is stored in `VITE_APIKEY`. All TMDB responses are validated with Zod schemas defined in [src/types/films.schemas.ts](src/types/films.schemas.ts). Always go through the data-access layer in `src/services/films/` — never call the API directly from components.
-
-Image base URLs are exported from [src/services/config.ts](src/services/config.ts):
-
--  `baseImagePath` — `w500` (card thumbnails)
--  `baseImagePathPoster` — `w1280` (detail page backdrop)
-
-## Auth — Supabase
-
-Auth is handled via Supabase. The service layer lives in [src/services/supabase/auth.ts](src/services/supabase/auth.ts) and is consumed exclusively through the `useAuth` Zustand store.
-
--  Call `useAuth.getState().initialize()` once on app mount to restore the session and subscribe to auth state changes
--  Call `useAuth.getState().destroy()` on unmount to unsubscribe
--  The auth modal is controlled via `setModalOpen(isOpen, mode)` — modes: `LOGIN`, `REGISTER`, `RESET_PASSWORD`
-
-## Favorites — Supabase
-
-Favorites are persisted in Supabase and managed through [src/utils/hooks/useFavorites.ts](src/utils/hooks/useFavorites.ts).
-
--  Uses TanStack Query with optimistic updates (`onMutate` / `onError` rollback)
--  `useFavorites()` exposes: `favorites`, `isLoading`, `isFavorited(filmId)`, `toggle(filmId)`, `isPending`
--  Favorites are only fetched when a user is logged in (`enabled: Boolean(userId)`)
-
-## Input Sanitization
-
-Use `sanitizeInput` from [src/utils/sanitizeInput.ts](src/utils/sanitizeInput.ts) to strip non-alphanumeric characters from user input before passing to API calls (e.g. search queries).
+-  **Routing:** [src/routeTree.gen.ts](src/routeTree.gen.ts) is auto-generated by the TanStack Router Vite plugin. Never edit it by hand.
+-  **State:** Zustand stores are wrapped in the hooks under `src/utils/hooks/`. Components consume state through those hooks only, never by importing a store directly.
+-  **Server state:** TanStack Query. Query options (keys + fetchers) are co-located in `src/services/`.
+-  **TMDB:** Always go through `src/services/films/` (movies) or `src/services/series/` (TV). Never call the API from a component. Responses are validated with the Zod schemas in [src/types/films.schemas.ts](src/types/films.schemas.ts) and [src/types/series.schemas.ts](src/types/series.schemas.ts). Image base URLs come from [src/services/config.ts](src/services/config.ts).
+-  **Media types:** TMDB movie ids and TV ids are separate namespaces, so every item carries a `media_type` (`'movie' | 'tv'`, constants in [src/types/media.types.ts](src/types/media.types.ts)). TV list and recommendation responses are normalised onto the film shape by `toMediaItem` in `series.schemas.ts` (`name` → `title`, `first_air_date` → `release_date`) so `FilmList`, `FilmCard` and `FilmTable` render both. Never build a detail link from an id alone; use `MediaLink` ([src/components/atoms/link/media-link.component.tsx](src/components/atoms/link/media-link.component.tsx)), which picks `/film/:id` or `/tv/:id`.
+-  **Supabase:** Auth and favorites live in `src/services/supabase/` and are consumed only through `useAuth` and `useFavorites`. Favorites use optimistic updates with rollback. Rows are keyed by `(user_id, film_id, media_type)`; `useFavorites` exposes `isFavorited(filmId, mediaType)` and `toggle(favoriteInput)`. Schema changes live in `supabase/migrations/` and are applied through the Supabase SQL editor (no CLI in this repo).
+-  **User input:** Run search queries and other user input through [src/utils/sanitizeInput.ts](src/utils/sanitizeInput.ts) before passing them to an API.
 
 ## Responsive Design
 
-The app is fully responsive and must work on mobile. Follow these guidelines when adding UI:
+Mobile-first: start with small screens, layer up with `sm:`, `md:`, `lg:`. Do not hard-code pixel widths.
 
--  Design mobile-first: start with small screens, layer up with `sm:`, `md:`, `lg:` breakpoints
--  Playwright E2E runs against Chromium (Desktop Chrome) in CI
--  The Tailwind config extends the default breakpoints; do not hard-code pixel widths
--  **Film detail page (`/film/:filmId`)** does not render well on small screens. On mobile, avoid horizontal scroll layouts — use single-column stacked rows instead. Horizontal scroll is only appropriate at `sm:` and above.
+The film and series detail pages (`/film/:filmId`, `/tv/:seriesId`) must not use horizontal scroll layouts on mobile. Stack rows in a single column; horizontal scroll is only appropriate at `sm:` and above.
 
 ## Styling
 
--  Tailwind CSS v3 with a class-based dark mode (`dark:` prefix)
--  Custom colors defined as HSL CSS variables in [src/styles/index.css](src/styles/index.css) and surfaced through [tailwind.config.ts](tailwind.config.ts)
--  PostCSS handles Tailwind + Autoprefixer
--  Component-scoped CSS files sit alongside their component (e.g. `spinner.styles.css`, `card.styles.css`)
+Tailwind CSS v3 with class-based dark mode (`dark:`). Custom colors are HSL CSS variables in [src/styles/index.css](src/styles/index.css), surfaced through [tailwind.config.ts](tailwind.config.ts). Component-scoped CSS files sit alongside their component.
+
+## Typography
+
+Two self-hosted variable fonts from `@fontsource-variable`, loaded in [src/styles/index.css](src/styles/index.css): Inter for body/UI (`font-sans`) and Outfit for headings and navigation (`font-display`). Family names live in the `--font-sans` / `--font-display` variables in [src/styles/global.css](src/styles/global.css); change them there to re-skin the app.
+
+-  Headings get the display face and a fluid size by default (`h1` → `text-display-lg`, `h2` → `text-display-md`, `h3` → `text-display-sm`). Use `text-display-*` utilities to size any element like a heading.
+-  Use `tabular-nums` on ratings, years, dates and money so columns align.
+-  `font-synthesis: none` is on: never use `italic` or a weight the font lacks on `font-display` text (Outfit has no italic). Inter italic is loaded.
