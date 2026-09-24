@@ -18,6 +18,8 @@ export default tseslint.config(
          '*.config.js',
          '*.config.ts',
          'src/routeTree.gen.ts',
+         // Agent worktrees and skill files (mirrors the Vitest exclude)
+         '.claude/**',
       ],
    },
 
