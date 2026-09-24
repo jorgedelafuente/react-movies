@@ -70,7 +70,7 @@ const DiscoverView = ({
 
    return (
       <Container>
-         <div className="mx-auto w-full max-w-6xl px-4 py-6 text-copy">
+         <div className="mx-auto w-full px-4 py-6 text-copy">
             <h1 className="text-display-lg">Discover</h1>
 
             <button
@@ -215,7 +215,7 @@ const DiscoverView = ({
                Nothing matches those filters. Try a different genre or year.
             </p>
          ) : (
-            <FilmList list={page.results} cardLayout="rhythm" />
+            <FilmList list={page.results} />
          )}
 
          {totalPages > 1 && (

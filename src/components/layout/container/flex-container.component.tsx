@@ -11,10 +11,9 @@ import { useTheme } from '@/utils/hooks/useTheme';
  * child (the view toggle) sits exactly halfway between the navbar and the
  * first row of cards.
  *
- * The column stops at `max-w-screen-2xl` (1536px). On a 15" laptop (about
- * 1440px) that is wider than the viewport, so the card grid runs edge to
- * edge inside the page padding with four cards of about 316px; only
- * monitors wider than 1616px gain side margin.
+ * The column has no maximum width: the card grid scales with the page, and
+ * `--card-min-share` (global.css) caps it at four columns, so a wider screen
+ * gets bigger cards rather than more of them.
  */
 const FlexContainer = ({ children }: { children: ReactNode }) => {
    const theme = useTheme((state) => state.theme);
@@ -22,9 +21,7 @@ const FlexContainer = ({ children }: { children: ReactNode }) => {
       <div
          className={`${theme === THEME_OPTIONS.DARK ? THEME_OPTIONS.DARK : ''} flex min-h-screen justify-center bg-neutral bg-primary-background-color p-4 sm:p-6 lg:px-10 lg:py-6`}
       >
-         <div className="flex w-full max-w-screen-2xl flex-col gap-4 sm:gap-6">
-            {children}
-         </div>
+         <div className="flex w-full flex-col gap-4 sm:gap-6">{children}</div>
       </div>
    );
 };

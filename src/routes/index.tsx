@@ -16,13 +16,5 @@ function Index() {
       filmsPopularQueryOptions
    );
 
-   return (
-      <>
-         {isLoading ? (
-            <Spinner />
-         ) : (
-            <FilmList list={popularFilms} cardLayout="masonry" />
-         )}
-      </>
-   );
+   return <>{isLoading ? <Spinner /> : <FilmList list={popularFilms} />}</>;
 }

@@ -62,27 +62,35 @@
       --font-display: 'Outfit Variable', 'Inter Variable';
 
       /*
-        Layout — shared by every card layout (`.card-grid`, the home masonry,
-        the discover rhythm). Stepped per tier below, through Tailwind's own
-        breakpoints (`screen()`), so the CSS files and the `sm:` / `lg:`
-        utilities can never disagree on a pixel value.
+        Layout — the card grid (`.card-grid`), which every list of cards
+        renders. Stepped per tier below, through Tailwind's own breakpoints
+        (`screen()`), so the CSS files and the `sm:` / `lg:` utilities can
+        never disagree on a pixel value.
 
-        `--card-min`     the narrowest a card column may get. Phones keep two
-                         columns down to a 336px viewport; tablets and desktops
-                         sit 25% above the old fixed columns (220px, 250px) so
-                         cards read large and the grid fills the width.
-        `--card-gap`     the gutter between cards, also used as the masonry
-                         item spacing and inside the rhythm's row maths.
-        `--card-columns` the auto-fill track list: as many columns of at least
-                         `--card-min` as fit, stretched to fill the row. The
-                         `min(100%, …)` guard keeps a card inside a column
-                         narrower than the floor.
+        `--card-min`       the narrowest a card column may get. Phones keep
+                           two columns down to a 336px viewport; tablets and
+                           desktops sit 25% above the old fixed columns
+                           (220px, 250px) so cards read large.
+        `--card-min-share` the least share of the row a card may take. Above
+                           20% a fifth column can never fit, so wide screens
+                           grow the four cards instead of adding a column and
+                           cards stay big and prominent; the 2% of slack is
+                           what keeps four fitting once gaps are counted. It
+                           only bites once the row is wide enough for the
+                           share to exceed `--card-min`, about 1140px.
+        `--card-gap`       the gutter between cards.
+        `--card-columns`   the auto-fill track list: as many columns of at
+                           least the larger of the two floors as fit,
+                           stretched to fill the row. The `min(100%, …)`
+                           guard keeps a card inside a column narrower than
+                           the floor.
       */
       --card-min: 9rem;
+      --card-min-share: 22%;
       --card-gap: 1rem;
       --card-columns: repeat(
          auto-fill,
-         minmax(min(100%, var(--card-min)), 1fr)
+         minmax(min(100%, max(var(--card-min), var(--card-min-share))), 1fr)
       );
 
       /*
