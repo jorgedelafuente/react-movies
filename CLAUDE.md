@@ -64,7 +64,8 @@ Copy [.env.example](.env.example) to `.env.local`. All three are required at run
 
 ## Documentation
 
--  [docs/STYLE_GUIDE.md](docs/STYLE_GUIDE.md) — theming, CSS and Tailwind guidelines, component styling, linting, and testing patterns in depth. This file holds the rules; the style guide holds the reasoning and examples.
+-  [docs/STYLE_GUIDE.md](docs/STYLE_GUIDE.md) — the look and feel already in the app: tokens, typography, spacing, page roots and anatomy, and the exact class recipes of every component. New pages and components copy from it; its last section lists where the code still diverges.
+-  [docs/TESTING.md](docs/TESTING.md) — how specs are written here (bare-router pattern, service mocks, store resets, axe) plus the linting and formatting that gate commits.
 -  [docs/ROADMAP.md](docs/ROADMAP.md) — planned work and the per-item checklist used by `/implement-roadmap`. Gitignored, so it exists only on the maintainer's machine; do not assume it is present in a fresh clone.
 
 ## Conventions

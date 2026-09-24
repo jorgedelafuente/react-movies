@@ -1,1613 +1,316 @@
-# React Movies - Style Guide
+# React Movies Style Guide
 
-## Table of Contents
+This is the look and feel the app already has, written down so new pages and components adopt it instead of inventing their own. Every value here is lifted from the code; if the two disagree, fix one of them. Hard rules for tooling live in [CLAUDE.md](../CLAUDE.md); testing patterns live in [TESTING.md](TESTING.md).
 
-1. [Theming System](#theming-system)
-2. [CSS Guidelines](#css-guidelines)
-3. [Tailwind Guidelines](#tailwind-guidelines)
-4. [Component Styling](#component-styling)
-5. [File Structure](#file-structure)
-6. [Linting & Code Quality](#linting--code-quality)
-7. [Unit Testing with Vitest](#unit-testing-with-vitest)
+1. [Foundations](#1-foundations) — colour, dark mode, typography, spacing, motion, states
+2. [Layout](#2-layout) — page roots, page anatomy, the card grid, responsive rules
+3. [Components](#3-components) — the recipes actually in use
+4. [Patterns](#4-patterns) — Tailwind vs CSS files, react-aria, accessibility, media
+5. [Known divergences](#5-known-divergences) — places the code does not follow this guide yet
 
 ---
 
-## Theming System
+## 1. Foundations
 
-### Overview
+### Colour
 
-The project uses a **dual-layer theming system**:
+Colours are HSL triplets in CSS variables in [src/styles/global.css](../src/styles/global.css). A raw greyscale (`--color-grey-0` white … `--color-grey-100` black, plus `--color-sky`) feeds a small set of semantic tokens. The `.dark` class re-points the semantic tokens, so components never branch on theme. [tailwind.config.ts](../tailwind.config.ts) exposes each token as `hsl(var(--token) / <alpha-value>)`, which is why the `/70`-style alpha modifiers work everywhere.
 
--  **CSS Custom Properties** for semantic tokens
--  **Tailwind utility classes** that reference these tokens
+| Token                         | Light   | Dark    | Tailwind utilities                                        | Use for                                                       |
+| ----------------------------- | ------- | ------- | --------------------------------------------------------- | ------------------------------------------------------------- |
+| `--color-bg-neutral`          | white   | black   | `bg-neutral`, `from/to-neutral`                           | Page and panel backgrounds, inputs, table body                |
+| `--color-bg-neutral-inverted` | black   | white   | `bg-neutral-inverted`                                     | Selected segment in ViewToggle; row hover at `/5`             |
+| `--color-bg-subtle`           | grey-10 | grey-80 | `bg-subtle`                                               | Zebra rows, hovered or focused list items                     |
+| `--color-text-copy`           | black   | white   | `text-copy`, `border-copy`, `fill-copy`                   | Body text; outlined button borders; icon fills                |
+| `--color-border-bold`         | grey-60 | grey-40 | `border-bold`, `outline-bold`, `ring-bold`, `stroke-bold` | Dividers (`<hr>`), table header rule, ViewToggle frame        |
+| `--color-accent`              | sky-500 | sky-500 | `text/border/bg/fill/stroke/outline-accent`               | Links, hover colour, focus ring, selected chips, icon strokes |
 
-### Dark Mode Implementation
+**Alpha carries hierarchy.** Do not reach for a lighter grey; lower the alpha of the token that is already there.
 
-#### How It Works
+| Need                   | Class                         | Seen in                                 |
+| ---------------------- | ----------------------------- | --------------------------------------- |
+| Secondary text         | `text-copy/70`                | Result counts, cast roles, empty states |
+| Tertiary text          | `text-copy/60`                | Secondary button label                  |
+| Quiet outline          | `border-copy/30`              | Idle chips                              |
+| Quiet outline (button) | `border-copy/20`              | Secondary button                        |
+| Row divider            | `border-bold/30`              | Favourites table rows                   |
+| Selected fill          | `bg-accent/10`                | Active chip                             |
+| Icon tint              | `fill-accent/20`              | Unfilled heart, navbar icons            |
+| Hover wash             | `hover:bg-neutral-inverted/5` | Favourites table rows                   |
 
-1. Zustand store (`useTheme`) manages theme state (`DARK` | `LIGHT`)
-2. Components apply the `dark` class to their root element when theme is dark
-3. CSS custom properties automatically switch via `.dark` selector
-4. Tailwind's `dark:` variant respects the class-based dark mode
+**Feedback colour.** Validation uses Tailwind's `red-500` directly: `border-red-500` on the control and `text-xs text-red-500` for the message. It is the only raw palette colour with a sanctioned role.
 
-#### Example Pattern
+**Legacy variables.** Three hex variables predate the token system: `--primary-background-color`, `--secondary-background-color`, `--tertiary-background-color` (light `#dedede / #a6a6a6 / #737373`, dark `#141414 / #282828 / #323232`), exposed as `bg-*-background-color` and `border-*-background-color`. They are not going away this week, and today they own specific roles. Match the role; do not give them new ones.
 
-```tsx
-const theme = useTheme((state) => state.theme);
+| Variable  | Current role                                                                      |
+| --------- | --------------------------------------------------------------------------------- |
+| primary   | List-page background (FlexContainer), navbar background, spinner bars, badge fill |
+| secondary | Form-control and panel borders (Input, Modal, selects), navbar border and shadow  |
+| tertiary  | Detail-page section panels (`.text-content`), navbar wave fill                    |
 
-<div className={`${theme === THEME_OPTIONS.DARK ? 'dark' : ''} ...`}>
-   {/* content */}
-</div>;
-```
+### Dark mode
 
-### Color Token System
+`darkMode: 'class'`. The `dark` class is applied by the components that own a screen region, reading `useTheme`: the two page roots (Container, FlexContainer), the Navbar, and the search combobox root so its portalled popover is themed too. Nothing else toggles it, and nothing uses the `dark:` variant. If you render into a portal, apply the class yourself the way the search combobox does.
 
-#### CSS Custom Properties (`/src/styles/global.css`)
+### Typography
 
-**Raw Color Palette (HSL format):**
+Two self-hosted variable fonts, loaded in [src/styles/index.css](../src/styles/index.css) and named in `--font-sans` / `--font-display`:
 
-```css
---color-grey-0: 0 0% 100%; /* White */
---color-grey-10: 0 0% 85%;
---color-grey-20: 0 0% 76%;
---color-grey-30: 0 0% 67%;
---color-grey-40: 0 0% 57%;
---color-grey-50: 0 0% 47%;
---color-grey-60: 0 0% 38%;
---color-grey-70: 0 0% 29%;
---color-grey-80: 0 0% 19%;
---color-grey-90: 0 0% 9%;
---color-grey-100: 0 0% 0%; /* Black */
---color-sky: 199 89% 48%; /* Tailwind sky-500, only referenced by --color-accent */
-```
+-  **Inter Variable** — `font-sans`, the default on `<html>`. Body, controls, tables. Italic file is loaded.
+-  **Outfit Variable** — `font-display`. Headings, navigation, card titles. No italic exists and `font-synthesis: none` is set, so never write `italic` on display text.
 
-**Legacy Background Variables (Hex format):**
+Headings get the display face automatically (`text-balance font-display font-semibold`) with a fluid size:
 
-```css
-/* Light Mode */
---primary-background-color: #dedede;
---secondary-background-color: #a6a6a6;
---tertiary-background-color: #737373;
+| Element   | Class             | Size                                      |
+| --------- | ----------------- | ----------------------------------------- |
+| `h1`      | `text-display-lg` | clamp(1.875rem, 1.5rem + 1.25vw, 2.5rem)  |
+| `h2`      | `text-display-md` | clamp(1.5rem, 1.25rem + 0.75vw, 1.875rem) |
+| `h3`      | `text-display-sm` | clamp(1.25rem, 1.125rem + 0.5vw, 1.5rem)  |
+| `h4`–`h6` | `text-display-xs` | 1.125rem                                  |
+| hero only | `text-display-xl` | clamp(2.25rem, 1.75rem + 2vw, 3.5rem)     |
 
-/* Dark Mode (.dark class) */
---primary-background-color: #141414;
---secondary-background-color: #282828;
---tertiary-background-color: #323232;
-```
+Use the `text-display-*` utilities to size any element like a heading, and a plain `text-*` utility to make a heading smaller (card titles are `h2` at `text-base sm:text-lg`).
 
-**Semantic Tokens (Theme-aware):**
+Text roles in use:
 
-```css
-/* Light Mode */
---color-bg-neutral: var(--color-grey-0); /* White background */
---color-bg-neutral-inverted: var(--color-grey-100); /* Black */
---color-border-bold: var(--color-grey-60); /* Medium grey */
---color-text-copy: var(--color-grey-100); /* Black text */
---color-accent: var(
-   --color-sky
-); /* Links, hover, focus rings, selected state; same in both themes */
+| Role            | Classes                                                              |
+| --------------- | -------------------------------------------------------------------- |
+| Body            | `text-base`, `leading-relaxed` for paragraphs, `max-w-prose`         |
+| Secondary       | `text-sm text-copy/70`                                               |
+| Meta / captions | `text-xs text-copy/70` or `text-xs opacity-70`                       |
+| Form label      | `text-sm font-medium text-copy`                                      |
+| Nav link        | `font-display text-lg font-medium tracking-wide`                     |
+| Button label    | `font-medium tracking-wide`                                          |
+| Badge           | `text-xs font-semibold uppercase tracking-wider`                     |
+| Tagline         | `font-sans text-lg italic text-copy/75 sm:text-xl`                   |
+| Emphasis        | `<strong>` renders `font-semibold` (Inter's 700 is too heavy inline) |
 
-/* Dark Mode (.dark class) */
---color-bg-neutral: var(--color-grey-100); /* Black background */
---color-bg-neutral-inverted: var(--color-grey-0); /* White */
---color-border-bold: var(--color-grey-40); /* Light grey */
---color-text-copy: var(--color-grey-0); /* White text */
-```
+Anything numeric — ratings, years, dates, counts, money — gets `tabular-nums` so columns align. FilmTable sets `font-variant-numeric: tabular-nums` on the whole table.
 
-#### Tailwind Token Mapping
+### Spacing, width, radius
 
-**Background Colors:**
+| Concern                 | Value                                                                                 |
+| ----------------------- | ------------------------------------------------------------------------------------- |
+| Page padding            | `p-4 sm:p-6 lg:p-10` (list root) · `px-4 py-6` (detail column)                        |
+| Page column width       | `max-w-4xl`                                                                           |
+| Stack gaps              | `gap-4 sm:gap-6 lg:gap-8` for page columns and the card grid                          |
+| Form row gap            | `gap-3`; label-to-control `gap-1`; chip rows `gap-2`                                  |
+| Between sections        | `mt-4`; under a section heading `mb-3` or `mb-4`; `<hr className="my-3 border-bold">` |
+| Modal panel             | `max-w-md p-6`                                                                        |
+| Pagination              | `max-w-xs gap-3`                                                                      |
+| Controls, posters       | `rounded-md`                                                                          |
+| Panels, sections, modal | `rounded-lg` (cards use `10px` in CSS)                                                |
+| Chips, badges, avatars  | `rounded-full`                                                                        |
+| Control borders         | `border-2 border-solid`; secondary button and chips use 1px `border`                  |
 
-```tsx
-bg-neutral              → hsl(var(--color-bg-neutral))
-bg-neutral-inverted     → hsl(var(--color-bg-neutral-inverted))
-```
+### Motion
 
-**Border Colors:**
+A global rule in `global.css` transitions `background-color`, `color`, `border-color` and `fill` on every element over 0.25s. Theme switches and hover colour changes animate without any per-component class. Add `transition-all` or `transition-colors` only when you animate something else (Button transitions its gradient).
 
-```tsx
-border-bold             → hsl(var(--color-border-bold))
-```
+-  Cards: 250ms `cubic-bezier(0.1, 0.1, 0.6, 0.9)`, `scale(1.15)` plus a 5px poster blur, on hover and `focus-within`.
+-  Detail titles: `position: sticky; top: 90px` with a scroll-driven `animation-timeline: scroll()` over the first 200px that grows the type and adds a background.
+-  There is no `prefers-reduced-motion` handling yet (see divergences).
 
-**Text Colors:**
+### Interactive states
 
-```tsx
-text-copy               → hsl(var(--color-text-copy))
-```
-
-**Accent (interactive colour, all namespaces):**
-
-```tsx
-text-accent  border-accent  bg-accent/10  fill-accent  stroke-accent  outline-accent
-hover:text-accent  hover:border-accent/40  focus-visible:outline-accent
-```
-
-Never use `sky-*` directly. In a component `.css` file write `hsl(var(--color-accent) / 1)`.
-
-**Legacy Colors (use for existing code only):**
-
-```tsx
-bg - primary - background - color;
-bg - secondary - background - color;
-bg - tertiary - background - color;
-border - secondary - background - color;
-```
+| State    | Recipe                                                                                                                                                                                                     |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hover    | Text or border to `accent`. Rows and list items: `bg-subtle` (CSS `[data-hovered]`) or `hover:bg-neutral-inverted/5`                                                                                       |
+| Focus    | `focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent`; in CSS `outline: 2px solid hsl(var(--color-accent) / 1)`, offset `-2px` inside a framed group |
+| Selected | Chips: `border-accent bg-accent/10 text-accent` with `aria-pressed` or `aria-current`. ViewToggle: inverted (`bg-neutral-inverted`, text in `bg-neutral`)                                                  |
+| Disabled | `disabled:opacity-50`                                                                                                                                                                                      |
+| Loading  | `Spinner` (see components)                                                                                                                                                                                 |
 
 ---
 
-## CSS Guidelines
+## 2. Layout
 
-### When to Use CSS Files
+### Page roots
 
-Create a `.css` file when:
+Every route renders `Navbar` (sticky, `top-0 z-10`) then an `Outlet`. The view chooses one of two roots, both of which apply the theme class:
 
--  ✅ Component needs complex animations (keyframes)
--  ✅ Component needs pseudo-elements (`:before`, `:after`)
--  ✅ Component needs deeply nested selectors
--  ✅ Component styling is complex and would clutter JSX
+-  **`Container`** — detail and utility pages (film, series, season, person, favourites, discover). `flex min-h-screen flex-col bg-neutral text-center`. Put content in a column: `mx-auto w-full max-w-4xl px-4 py-6 text-copy`, and reset alignment inside it (`text-left`) where you need it.
+-  **`FlexContainer`** — list pages (`FilmList`). Adds the responsive page padding and an inner `flex w-full max-w-4xl flex-col gap-4 sm:gap-6 lg:gap-8` column.
 
-### Naming Conventions
+### Page anatomy
 
-**CSS Classes:**
+**Detail pages** (film, series, season, person) share one skeleton:
 
--  Use kebab-case: `.custom-card`, `.text-title`
--  Prefix component-specific classes: `.navbar-icon`, `.card-content`
--  Keep names descriptive and semantic
+1. `<div className="text-title text-copy">` — the sticky, scroll-animated title with a `data-testid="…-info-title"`.
+2. `.container-bg` — hero with the backdrop as a fixed cover background and the poster centred, `rounded-lg`.
+3. Stacked panels: `<div className="text-content mt-4 rounded-lg p-4 text-copy">`. The first holds the `h2 text-display-lg` title and tagline, genre badges, `<hr>` dividers, and fact rows with `<strong>` labels in a `tabular-nums` block. Later panels are titled with `h2 text-display-md mb-3` ("Cast & Crew", via `CastList`) and `mb-4` ("Recommendations", the card grid).
 
-**CSS Files:**
+**List pages**: a centred `ViewToggle`, then either the card grid or `FilmTable`.
 
--  Name after component: `component-name.styles.css`
--  Place in same directory as component
+**Filter pages** (discover): `h1 text-display-lg`, then a `<form aria-label="…">` laid out `mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end`, each field a `flex flex-col gap-1 sm:w-*` with label above control, a status line `mt-4 text-sm tabular-nums text-copy/70` with `role="status"`, the results, and a `<nav aria-label="Pagination">` of a secondary "Previous" and a primary "Next" button.
 
-### CSS Variable Usage
-
-**DO:**
-
-```css
-.my-component {
-   background-color: var(--primary-background-color);
-   color: var(--color-text-copy);
-   border-color: var(--color-border-bold);
-}
-```
-
-**DON'T:**
-
-```css
-.my-component {
-   background-color: #dedede; /* ❌ Hard-coded color */
-   color: black; /* ❌ Won't adapt to dark mode */
-}
-```
-
-### Responsive Design
-
--  Use media queries for complex responsive logic
--  Prefer Tailwind responsive utilities for simple cases
-
-```css
-@media only screen and (max-width: 600px) {
-   .text-content {
-      width: 90%;
-      margin: 0 auto;
-   }
-}
-```
-
----
-
-## Tailwind Guidelines
-
-### Class Order Convention
-
-Follow this order for consistency:
-
-1. **Layout**: `flex`, `grid`, `block`, `inline`, `hidden`
-2. **Positioning**: `relative`, `absolute`, `fixed`, `sticky`
-3. **Display & Sizing**: `w-*`, `h-*`, `max-w-*`, `min-h-*`
-4. **Spacing**: `m-*`, `p-*`, `gap-*`, `space-*`
-5. **Typography**: `text-*`, `font-*`, `leading-*`
-6. **Borders**: `border-*`, `rounded-*`
-7. **Colors**: `bg-*`, `text-*`, `border-*`
-8. **Effects**: `shadow-*`, `opacity-*`, `transition-*`
-9. **Interactivity**: `hover:*`, `focus:*`, `active:*`
-10.   **Responsive**: `md:*`, `lg:*`
-11.   **Dark mode**: `dark:*`
-
-**Example:**
+### Card grid
 
 ```tsx
-<div className="
-  flex items-center justify-center
-  relative z-10
-  w-full max-w-sm
-  p-6 gap-3
-  text-copy text-sm font-medium
-  border-2 border-solid border-secondary-background-color rounded-lg
-  bg-neutral
-  shadow-2xl
-  hover:bg-neutral-inverted
-  md:w-1/2
-">
-```
-
-### Required Tailwind Utilities
-
-**Always use these semantic tokens:**
-
-**Backgrounds:**
-
-```tsx
-bg - neutral; // Primary background
-bg - neutral - inverted; // Inverted background (for hover states)
-```
-
-**Text:**
-
-```tsx
-text - copy; // Primary text color
-```
-
-**Borders:**
-
-```tsx
-border - bold; // Standard border color
-```
-
-**Legacy (for existing code):**
-
-```tsx
-bg - primary - background - color;
-bg - secondary - background - color;
-bg - tertiary - background - color;
-border - secondary - background - color;
-```
-
-### Dark Mode with Tailwind
-
-**DON'T use `dark:` variant for colors:**
-
-```tsx
-// ❌ BAD - Requires manual dark mode handling
-<div className="bg-white dark:bg-black text-black dark:text-white">
-```
-
-**DO use semantic tokens that adapt automatically:**
-
-```tsx
-// ✅ GOOD - Automatically adapts via CSS variables
-<div className="bg-neutral text-copy">
-```
-
-**Exception:** Use `dark:` for non-color properties
-
-```tsx
-// ✅ OK - Structural changes in dark mode
-<div className="opacity-80 dark:opacity-100">
-```
-
-### Responsive Breakpoints
-
-```tsx
-sm:   640px   // Mobile landscape
-md:   768px   // Tablet
-lg:   1024px  // Desktop
-xl:   1280px  // Large desktop
-2xl:  1536px  // Extra large
-```
-
-**Example:**
-
-```tsx
-<div className="w-full md:w-1/2 lg:w-1/3">
-```
-
----
-
-## Component Styling
-
-### Styling Decision Tree
-
-```
-Does the component need complex CSS?
-├── YES → Create .css file
-│   ├── Animations/keyframes
-│   ├── Pseudo-elements
-│   ├── Complex selectors
-│   └── Nested hover states
-│
-└── NO → Use Tailwind classes
-    ├── Simple layouts
-    ├── Spacing
-    ├── Colors (via tokens)
-    └── Basic responsive design
-```
-
-### Component Examples
-
-#### Tailwind Only (Simple Component)
-
-```tsx
-const Button = ({ children }) => (
-   <button className="rounded-md bg-sky-500 px-4 py-2 font-medium text-white hover:bg-sky-600 disabled:opacity-50">
-      {children}
-   </button>
-);
-```
-
-#### CSS + Tailwind (Complex Component)
-
-```tsx
-// card.component.tsx
-import './card.styles.css';
-
-const Card = ({ children }) => (
-   <div className="custom-card">
-      <div className="content">{children}</div>
-   </div>
-);
-```
-
-```css
-/* card.styles.css */
-.custom-card {
-   transition: all 250ms ease-in-out;
-   transition-timing-function: cubic-bezier(0.1, 0.1, 0.6, 0.9);
-}
-
-.custom-card:hover {
-   transform: scale(1.15);
-}
-
-.custom-card:hover .content {
-   opacity: 1;
-}
-```
-
-#### Theme-Aware Component
-
-```tsx
-const Navbar = () => {
-   const theme = useTheme((state) => state.theme);
-
-   return (
-      <div
-         className={` ${theme === THEME_OPTIONS.DARK ? 'dark' : ''} navbar sticky top-0 z-10 border-b-2 border-solid border-secondary-background-color bg-primary-background-color text-copy`}
-      >
-         {/* content */}
-      </div>
-   );
-};
-```
-
-### Input Styling Pattern
-
-All inputs should follow this pattern for consistency:
-
-```tsx
-<input className="w-full rounded-md border-2 border-solid border-secondary-background-color bg-neutral px-2 py-2 text-copy focus:border-sky-500 focus:outline-none" />
-```
-
-### Modal/Dialog Styling
-
-Native `<dialog>` elements should use:
-
-```tsx
-<dialog className="
-  m-auto                    // Centers vertically + horizontally
-  w-full max-w-sm
-  rounded-lg
-  border-2 border-solid border-secondary-background-color
-  bg-neutral
-  p-6
-  shadow-2xl
-  backdrop:bg-black/50      // Styles native ::backdrop
-">
-```
-
----
-
-## File Structure
-
-### Component File Organization
-
-```
-component-name/
-├── component-name.component.tsx    // Component logic
-├── component-name.styles.css       // Custom styles (if needed)
-└── component-name.spec.tsx         // Tests (if present)
-```
-
-### Style File Locations
-
-```
-src/
-├── styles/
-│   ├── global.css          // CSS custom properties & theming
-│   ├── scrollbar.css       // Global scrollbar styles
-│   └── index.css           // Tailwind imports
-├── components/
-│   └── atoms/
-│       └── card/
-│           ├── card.component.tsx
-│           └── card.styles.css
-└── views/
-    └── film-info/
-        ├── film-info.view.tsx
-        └── film-info.styles.css
-```
-
----
-
-## Migration Guidelines
-
-### Updating Legacy Code
-
-When touching existing code:
-
-**Replace hard-coded colors:**
-
-```tsx
-// ❌ BEFORE
-<div className="bg-white text-black border-gray-500">
-
-// ✅ AFTER
-<div className="bg-neutral text-copy border-bold">
-```
-
-**Replace inline styles with CSS variables:**
-
-```tsx
-// ❌ BEFORE
-<div style={{ backgroundColor: '#dedede' }}>
-
-// ✅ AFTER
-<div className="bg-neutral">
-// OR if inline style is necessary:
-<div style={{ backgroundColor: 'var(--primary-background-color)' }}>
-```
-
-### Adding New Components
-
-1. **Start with Tailwind** - Use utility classes first
-2. **Extract to CSS if needed** - Only when complexity warrants it
-3. **Use semantic tokens** - Never hard-code colors
-4. **Test dark mode** - Verify component in both themes
-
----
-
-## Linting & Code Quality
-
-### Overview
-
-The project uses a **comprehensive toolchain** for code quality:
-
--  **ESLint v9** - Linting (TypeScript, React, Accessibility)
--  **Prettier v3** - Code formatting
--  **PostCSS v8** - CSS processing (required for Tailwind)
--  **TypeScript v6** - Type checking
-
-### Running Tools
-
-```bash
-# ESLint - Find code issues
-pnpm lint
-
-# Prettier - Format all files
-pnpm format
-
-# TypeScript - Type check
-tsc --noEmit
-
-# Build (includes type check)
-pnpm build
-```
-
----
-
-### ESLint Configuration
-
-**Location:** `eslint.config.js` (Flat Config format)
-**Version:** ESLint v9.39.4
-
-#### Plugins Enabled
-
-1. **TypeScript ESLint** - Type-aware linting
-2. **React Hooks** - Hooks rules
-3. **React Refresh** - Fast refresh validation
-4. **jsx-a11y** - Accessibility (axe-core style)
-5. **TanStack Query** - Query hooks best practices
-
-#### Key Rules
-
-**TypeScript:**
-
--  `@typescript-eslint/no-unused-vars`: Warn (allow `_` prefix)
--  `@typescript-eslint/no-explicit-any`: Warn (prefer specific types)
--  `@typescript-eslint/no-unused-expressions`: Error (except short-circuit/ternary)
-
-**React Hooks:**
-
--  `react-hooks/rules-of-hooks`: Error (hooks must be called consistently)
--  `react-hooks/exhaustive-deps`: Warn (useEffect dependencies)
-
-**Accessibility (30+ rules):**
-
--  ✅ `alt-text`: Error - Images must have alt text
--  ✅ `aria-props`: Error - Valid ARIA attributes
--  ✅ `label-has-associated-control`: Error - Form labels required
--  ✅ `click-events-have-key-events`: Warn - Keyboard accessibility
--  ✅ `interactive-supports-focus`: Warn - Focusable interactive elements
--  ⚠️ `no-autofocus`: Warn (allowed but discouraged)
--  ⚠️ `tabindex-no-positive`: Warn (use 0 or -1)
-
-**See `eslint.config.js` for complete rule list**
-
----
-
-### Common Linting Issues & Fixes
-
-#### 1. Missing Dependencies in useEffect
-
-```tsx
-// ❌ BAD - Missing dependency warning
-useEffect(() => {
-  fetchData();
-}, []); // 'fetchData' is missing
-
-// ✅ GOOD - Include all dependencies
-useEffect(() => {
-  fetchData();
-}, [fetchData]);
-
-// ✅ GOOD - Or wrap in useCallback
-const fetchData = useCallback(() => { ... }, []);
-useEffect(() => {
-  fetchData();
-}, [fetchData]);
-```
-
-#### 2. Accessibility - Click Without Keyboard
-
-```tsx
-// ❌ BAD - Click without keyboard event
-<div onClick={handleClick}>Click me</div>
-
-// ✅ GOOD - Use button
-<button onClick={handleClick}>Click me</button>
-
-// ✅ GOOD - Add keyboard handler + ARIA
-<div
-  onClick={handleClick}
-  onKeyDown={(e) => e.key === 'Enter' && handleClick()}
-  role="button"
-  tabIndex={0}
->
-  Click me
+<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4 lg:gap-8">
+   {items.map((item) => (
+      <FilmCard key={`${item.media_type}-${item.id}`} {...item} />
+   ))}
 </div>
 ```
 
-#### 3. Positive tabIndex Values
+Two columns on phones, three from `sm`, four from `lg`, and the gap grows with the columns. Keys combine media type and id because TMDB movie and TV ids overlap.
 
-```tsx
-// ❌ BAD - Positive tabindex disrupts natural tab order
-<button tabIndex={1}>First</button>
-<button tabIndex={2}>Second</button>
+### Responsive rules
 
-// ✅ GOOD - Let natural tab order work
-<button>First</button>
-<button>Second</button>
-
-// ✅ GOOD - Use 0 to include in natural order
-<div role="button" tabIndex={0}>Interactive</div>
-
-// ✅ GOOD - Use -1 to exclude from tab order
-<div tabIndex={-1}>Not tabbable</div>
-```
-
-#### 4. Redundant ARIA Roles
-
-```tsx
-// ❌ BAD - Button already has implicit role="button"
-<button role="button">Click</button>
-
-// ✅ GOOD - Remove redundant role
-<button>Click</button>
-
-// ✅ GOOD - Only add role when changing semantics
-<div role="button" tabIndex={0}>Click</div>
-```
-
-#### 5. React Hooks Called Conditionally
-
-```tsx
-// ❌ BAD - Hook called after early return
-function Component({ data }) {
-  if (!data) return null; // Early return
-
-  const [state, setState] = useState(); // ❌ Called conditionally
-  useEffect(() => { ... });             // ❌ Called conditionally
-}
-
-// ✅ GOOD - Hooks before any returns
-function Component({ data }) {
-  const [state, setState] = useState();
-
-  useEffect(() => {
-    if (data) { ... }
-  }, [data]);
-
-  if (!data) return null;
-
-  return <div>{state}</div>;
-}
-```
+Mobile first; the breakpoints in use are `sm` and `lg`, with `md` appearing rarely. Detail pages must stack on phones and never scroll horizontally. Tables are the exception: `FilmTable` wraps in a `.film-table__scroll` overflow container and tightens type and padding under 640px so four columns fit.
 
 ---
 
-### Prettier Configuration
+## 3. Components
 
-**Location:** `.prettierrc`
-**Version:** prettier@3.3.3
+Recipes as they exist in code. Copy the class strings; do not approximate them.
 
-```json
-{
-   "semi": true,
-   "singleQuote": true,
-   "tabWidth": 3,
-   "trailingComma": "es5",
-   "plugins": ["prettier-plugin-tailwindcss"]
-}
+### Button — `atoms/button`
+
+Outlined, never filled. Two variants, `className` defaults to `w-full`, `type` defaults to `button`.
+
+```
+primary:   border-2 border-solid border-copy bg-gradient-to-b from-transparent to-transparent py-1
+           font-medium tracking-wide text-copy transition-all
+           hover:border-accent hover:from-copy/5 hover:to-copy/20 hover:text-accent disabled:opacity-50
+secondary: border border-solid border-copy/20 … text-copy/60
+           hover:border-accent/40 hover:from-copy/0 hover:to-copy/10 hover:text-accent/80 disabled:opacity-50
 ```
 
-#### Rules Explained
+Primary for the main action of a view, secondary beside it (pagination uses one of each).
 
--  **`semi: true`** - Always add semicolons
--  **`singleQuote: true`** - Use single quotes for strings
--  **`tabWidth: 3`** - 3 spaces per indentation level
--  **`trailingComma: "es5"`** - Trailing commas where valid in ES5
--  **`prettier-plugin-tailwindcss`** - Auto-sorts Tailwind classes
+### Input — `atoms/input`
 
-#### How Tailwind Sorting Works
+A labelled block, not a bare input: `flex w-full flex-col gap-1` → `<label className="text-sm font-medium text-copy">` → the control → optional `<span className="text-xs text-red-500">`.
 
-**Before formatting:**
-
-```tsx
-<div className="text-white p-4 bg-sky-500 flex rounded-md hover:bg-sky-600">
+```
+w-full border-2 border-solid bg-neutral px-2 py-1 text-copy placeholder-text-copy
+border-secondary-background-color   (or border-red-500 when `error` is set)
 ```
 
-**After `pnpm format`:**
+No border radius. Always pass `id` so the label associates.
 
-```tsx
-<div className="flex rounded-md bg-sky-500 p-4 text-white hover:bg-sky-600">
+### Select
+
+There is no Select atom yet. Discover styles native selects with the Input recipe plus a radius:
+
+```
+w-full rounded-md border-2 border-solid border-secondary-background-color bg-neutral px-2 py-1 text-copy
 ```
 
-Classes are sorted according to Tailwind's recommended order.
+Reuse that string until the atom exists (see divergences).
+
+### Chip — segmented choice
+
+Used for season pickers (links with `aria-current="page"`) and the discover type switch (buttons with `aria-pressed`).
+
+```
+base:     rounded-full border px-3 py-1 text-sm
+selected: border-accent bg-accent/10 text-accent
+idle:     border-copy/30 hover:border-accent hover:text-accent
+```
+
+For a two-way layout switch use `ViewToggle` instead; it is a proper radiogroup.
+
+### Badge
+
+Static labels such as genres or a status: `rounded-full px-2 py-1 text-xs font-semibold uppercase tracking-wider text-copy/70` on `bg-primary-background-color`. Rows of badges are `flex flex-wrap items-center justify-center gap-2`.
+
+### Modal — `atoms/modal`
+
+A native `<dialog>` stretched to the viewport and made transparent, with the visible panel inside:
+
+```
+dialog: m-0 h-screen max-h-none w-screen max-w-none overflow-hidden bg-transparent p-0 backdrop:bg-black/60
+frame:  flex min-h-screen items-center justify-center p-4
+panel:  relative w-full max-w-md rounded-lg border-2 border-solid border-secondary-background-color
+        bg-neutral p-6 text-copy shadow-2xl
+close:  absolute right-3 top-3 rounded p-1 text-copy transition-colors hover:text-accent
+        focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent
+title:  h2#modal-title  mb-4 text-display-sm
+```
+
+Open and close through the `isOpen` prop; the component calls `showModal()` and wires `cancel` (Escape) and backdrop clicks to `onClose`.
+
+### Card and FilmCard — `atoms/card`, `atoms/film-card`
+
+`Card` is the hover shell (`custom-card w-full`, CSS in `card.styles.css`): relative, hidden overflow, `10px` radius, and on hover or `focus-within` it scales to 1.15, blurs the image and fades in `.content`, a `rgba(0,0,0,.72)` overlay with white text.
+
+`FilmCard` fills it: a poster `aspect-[1/1.5] w-full rounded-md object-cover object-center` with `loading="lazy"` and `alt={title}` (the `masonry` prop drops the fixed aspect), then `.content` holding a `MediaLink` with the `h2` title (`mb-2 text-center text-base font-semibold leading-tight sm:text-lg`) and the overview (`line-clamp-4 text-center text-xs leading-snug text-white/85 sm:line-clamp-6 sm:text-sm`), and a `FavoriteButton` **beside** the link, not inside it. The link covers the whole card through a stretched `::after`; the button sits above it with `z-index: 1`. Never nest a control inside an `<a>`.
+
+### FilmTable — `film-table`
+
+TanStack Table, styled in `film-table.styles.css` with BEM classes: `.film-table__scroll` (horizontal overflow), `.film-table__table` (`bg-neutral`, tabular numerals), `.film-table__header` (left aligned, `nowrap`, 2px `border-bold` bottom rule, `0.5rem` padding), `.film-table__row:nth-child(even)` on `bg-subtle`, and `.film-table__cell` with only the title column allowed to wrap. Titles are underlined `text-copy` and turn `accent` on row-link hover. Under 640px the type drops to `0.875rem` and padding to `0.375rem`.
+
+### SortableHeader — `atoms/sortable-header`
+
+A `<th aria-sort="…">` whose whole content is a reset `<button>` (`.sortable-header__button`: inherits font and colour, no border, full width) followed by an `aria-hidden` glyph at `opacity: 0.6; font-size: 0.75em`. Focus ring: 2px accent, offset 2px, `border-radius: 2px`.
+
+### ViewToggle — `atoms/view-toggle`
+
+`react-aria-components` `ToggleButtonGroup` in single-selection mode, so it renders as a radiogroup with arrow-key navigation. Frame: `inline-flex`, 2px `border-bold`, `0.375rem` radius, hidden overflow. Buttons: `bg-neutral text-copy`, `font-weight: 500`, `0.25rem 0.75rem` padding, 2px `border-bold` separator; `[data-hovered]` → `bg-subtle`; `[data-selected]` → `bg-neutral-inverted` with text in `bg-neutral`; `[data-focus-visible]` → 2px accent outline, offset `-2px`.
+
+### Search combobox — `layout/navbar/search-input`
+
+`react-aria-components` `ComboBox`, BEM-styled in `search-input.styles.css`. Visually hidden label, `max-width: 16rem`, input `2px border-bold` on `bg-neutral` with room on the right for a scaled-down spinner and a clear button, and a popover `width: var(--trigger-width); max-height: 16rem` with a 1px `border-bold`, `bg-neutral`, and `0 6px 16px rgb(0 0 0 / .25)` shadow. Items are `flex … justify-between gap-2` rows (`0.5rem 0.75rem` padding) with a `0.875rem/500` title and a `0.75rem` year at `opacity: 0.7`; `[data-focused]` and `[data-hovered]` → `bg-subtle`. Empty state text is `0.875rem` at `opacity: 0.7`.
+
+### NavLink and inline links — `atoms/link`
+
+`NavLink` puts colour on a `<span>` inside the router `Link` — `font-display text-lg font-medium tracking-wide text-copy hover:text-accent` — because `index.css` forces `a, a:visited { color: black }` and a colour on the anchor itself would not survive `:visited` in dark mode. `MediaLink` chooses `/film/:id` or `/tv/:id` by media type; always use it for detail links.
+
+Inline text links are `text-accent hover:underline`; back links are `text-sm text-accent hover:underline` prefixed with `←`.
+
+### FavoriteButton — `atoms/favorite-button`
+
+Icon-only `<button>` with `aria-label` "Add to favorites" / "Remove from favorites", `cursor-pointer disabled:opacity-50` plus whatever `className` the parent passes. The heart is a `h-7 w-7` SVG: `fill-accent stroke-accent` when favourited, `fill-accent/20 stroke-accent` when not. The navbar icons use the same fill and stroke pairing.
+
+### CastList — `cast-list`
+
+`flex flex-wrap justify-center gap-4` of `w-20` columns (`flex flex-col items-center gap-1 text-center text-inherit hover:text-accent`), each an avatar `h-16 w-16 rounded-full object-cover object-top`, a `font-display text-sm font-semibold leading-tight` name and a `text-xs leading-tight text-copy/70` role.
+
+### Spinner — `atoms/spinner`
+
+Five bouncing bars in `spinner.styles.css`, coloured with `--primary-background-color`, centred with `margin: 300px auto`. Rendered wherever a view waits on data.
+
+### Empty and error states
+
+Empty results: `<p className="px-4 text-copy/70">` with a sentence that suggests the next step ("Nothing matches those filters. Try a different genre or year."). Error and not-found views: a `p mb-8 p-4 font-display text-display-md font-semibold text-copy` message followed by a single outlined action.
 
 ---
 
-### PostCSS Configuration
+## 4. Patterns
 
-**Location:** `vite.config.ts`
-**Version:** postcss@^8.5.8
+### Tailwind first, CSS file when it earns it
 
-```ts
-css: {
-   postcss: {
-      plugins: [tailwindcss(), autoprefixer()],
-   },
-},
-```
+Write utilities in `className`. Create a co-located `<name>.styles.css`, imported as the first line of the component, when you need any of: pseudo-elements, keyframes or scroll-driven animation, react-aria data-attribute states, or a selector tree that would make the JSX unreadable. Name classes `block__element` with the component name as the block (`film-table__cell`, `search-combobox__item`). Reference tokens as `hsl(var(--color-x) / 1)`; the alpha slot is there so `/ 0.5` works too. Never write hex in a component stylesheet.
 
-#### Why PostCSS is Required
+### Complex widgets use react-aria-components
 
-1. **Tailwind CSS dependency** - Tailwind requires PostCSS to work
-2. **Processes directives** - Converts `@tailwind base` to actual CSS
-3. **Autoprefixer** - Adds vendor prefixes for browser compatibility
+Anything with selection, keyboard or popover semantics — comboboxes, toggle groups, and future menus or dialogs — is built on `react-aria-components` and styled through its data attributes: `[data-hovered]`, `[data-focused]`, `[data-focus-visible]`, `[data-selected]`, `[data-pressed]`. This is what gives ViewToggle its radiogroup role and the search box its listbox for free.
 
-**Cannot be removed** unless you remove Tailwind CSS.
+### Class strings
 
----
+Prettier's Tailwind plugin sorts classes on commit; do not hand-order them. Build conditional classes with a template literal whose static part comes first and a ternary for the variant, as the chips do. Components accept an optional `className` and append it: `` `${base} ${className}`.trim() ``.
 
-### TypeScript Configuration
+### Accessibility baseline
 
-**Location:** `tsconfig.json`
-**Version:** typescript@6.0.2
+The jsx-a11y rules in `eslint.config.js` are mostly errors and block commits. Beyond them, the conventions in use: `role="group"` with `aria-label` on navigation groups; `aria-pressed` on toggle buttons and `aria-current="page"` on the active link in a set; `aria-sort` on sortable headers; `role="status"` on live result counts; visually hidden labels via the `.search-combobox__label` clip pattern; `alt` equal to the title on posters; interactive controls never inside an anchor.
 
-```bash
-# Type check without building
-tsc --noEmit
+### Media and numbers
 
-# Type check + build
-pnpm build
-```
-
-#### Integration with ESLint
-
-TypeScript and ESLint work together via `@typescript-eslint`:
-
--  ESLint catches **logical errors** (unused vars, bad patterns)
--  TypeScript catches **type errors** (wrong types, missing properties)
-
-Both should pass before committing.
+Posters: `aspect-[1/1.5] w-full rounded-md object-cover object-center`, always `loading="lazy"`; use the `masonry` prop when a natural aspect ratio is wanted. Avatars: `h-16 w-16 rounded-full object-cover object-top`. Counts go through `toLocaleString()` and sit in `tabular-nums`.
 
 ---
 
-### Workflow Recommendations
-
-#### Before Committing
-
-```bash
-# 1. Format code
-pnpm format
-
-# 2. Check linting
-pnpm lint
-
-# 3. Check types (happens during build)
-pnpm build
-```
-
-#### Git Pre-commit Hook (Optional)
-
-Consider adding to `.git/hooks/pre-commit`:
-
-```bash
-#!/bin/sh
-pnpm format
-pnpm lint
-```
-
-Or use **husky** + **lint-staged** for automatic enforcement.
-
----
-
-### Ignored Files
-
-**ESLint ignores** (`.eslintignore`):
-
-```
-dist/
-node_modules/
-coverage/
-*.config.js
-*.config.ts
-src/routeTree.gen.ts
-```
-
-**Prettier ignores** (automatic):
-
--  Same as ESLint
--  Plus: `pnpm-lock.yaml`, `package-lock.json`
-
----
-
-## Quick Reference
-
-### Color Token Cheatsheet
-
-| Usage                 | Tailwind Class                  | CSS Variable                        |
-| --------------------- | ------------------------------- | ----------------------------------- |
-| Primary background    | `bg-neutral`                    | `var(--color-bg-neutral)`           |
-| Inverted background   | `bg-neutral-inverted`           | `var(--color-bg-neutral-inverted)`  |
-| Primary text          | `text-copy`                     | `var(--color-text-copy)`            |
-| Borders               | `border-bold`                   | `var(--color-border-bold)`          |
-| Accent / interactive  | `text-accent`, `border-accent`  | `var(--color-accent)`               |
-| Legacy bg (primary)   | `bg-primary-background-color`   | `var(--primary-background-color)`   |
-| Legacy bg (secondary) | `bg-secondary-background-color` | `var(--secondary-background-color)` |
-| Legacy bg (tertiary)  | `bg-tertiary-background-color`  | `var(--tertiary-background-color)`  |
-
-### Common Patterns
-
-**Button:**
-
-```tsx
-className = 'px-4 py-2 rounded-md bg-sky-500 text-white hover:bg-sky-600';
-```
-
-**Input:**
-
-```tsx
-className =
-   'bg-neutral text-copy border-2 border-solid border-secondary-background-color px-2 py-2 rounded-md focus:border-sky-500 focus:outline-none';
-```
-
-**Card Container:**
-
-```tsx
-className = 'bg-neutral border-2 border-solid border-bold rounded-lg p-4';
-```
-
-**Text:**
-
-```tsx
-className = 'text-copy text-sm';
-```
-
----
-
-## Rationale
-
-### Why This System?
-
-**CSS Variables + Tailwind:**
-
--  ✅ Single source of truth for colors
--  ✅ Automatic dark mode switching
--  ✅ No duplicate dark mode classes
--  ✅ Easy to maintain and update
-
-**Class-based Dark Mode:**
-
--  ✅ Full control over when dark mode is applied
--  ✅ Works with component-level theme state
--  ✅ No media query restrictions
-
-**Semantic Tokens:**
-
--  ✅ Intent is clear (`bg-neutral` vs `bg-white`)
--  ✅ Adapts automatically to theme changes
--  ✅ Easier to refactor and maintain
-
----
-
-## Unit Testing with Vitest
-
-### Overview
-
-The project uses **Vitest v4.0.18** for unit and integration testing of React components and utilities.
-
-**Key Features:**
-
--  Vite-native test runner (fast, uses same config as dev server)
--  Jest-compatible API (easy migration from Jest)
--  React Testing Library integration
--  Coverage reports with Istanbul
--  Interactive UI mode
-
-### Configuration
-
-**Location:** `vite.config.ts` (shared with Vite config)
-
-```typescript
-/// <reference types="vitest/config" />
-
-export default defineConfig({
-   test: {
-      globals: true, // Use global test APIs (describe, it, expect)
-      environment: 'jsdom', // Simulate browser environment
-      setupFiles: './src/tests/setupTests.ts',
-      css: true, // Process CSS imports
-      coverage: {
-         provider: 'istanbul', // Code coverage tool
-      },
-      exclude: [...configDefaults.exclude, '.claude/**'],
-   },
-});
-```
-
-#### Key Settings Explained
-
--  **`globals: true`**: No need to import `describe`, `it`, `expect` in every test file
--  **`environment: 'jsdom'`**: Provides DOM APIs (`document`, `window`) for React testing
--  **`setupFiles`**: Runs before all tests (extends matchers, mocks `matchMedia`)
--  **`exclude`**: Keeps Vitest out of `.claude/` on top of the defaults
-
----
-
-### Setup File
-
-**Location:** `/src/tests/setupTests.ts`
-
-```typescript
-import '@testing-library/jest-dom/vitest';
-import 'vitest-axe/extend-expect';
-
-import * as matchers from '@testing-library/jest-dom/matchers';
-import { cleanup } from '@testing-library/react';
-import { afterEach, expect } from 'vitest';
-import * as axeMatchers from 'vitest-axe/matchers';
-
-expect.extend(matchers);
-expect.extend(axeMatchers);
-
-afterEach(() => {
-   cleanup();
-});
-
-Object.defineProperty(globalThis, 'matchMedia', {
-   writable: true,
-   value: vi.fn().mockImplementation((query) => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: vi.fn(), // deprecated
-      removeListener: vi.fn(), // deprecated
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-   })),
-});
-```
-
-**What it does:**
-
--  Adds Testing Library matchers (`.toBeInTheDocument()`, `.toBeVisible()`)
--  Auto-cleanup after each test (unmount components)
--  Mocks `matchMedia` for responsive design tests
--  Adds vitest-axe matchers (`.toHaveNoViolations()`)
-
----
-
-### Running Tests
-
-```bash
-# Run all tests (watch mode)
-pnpm test
-
-# Run tests once, quiet output
-pnpm test:silent
-
-# Run with UI (interactive mode)
-pnpm test:ui
-
-# Run with coverage report
-pnpm coverage
-
-# Run specific test file
-pnpm test counter.spec.tsx
-
-# Run tests matching pattern
-pnpm test --grep "Counter"
-```
-
-#### Available Scripts
-
-```json
-{
-   "test": "vitest",
-   "test:silent": "vitest --silent",
-   "test:ui": "vitest --ui",
-   "coverage": "vitest run --coverage"
-}
-```
-
----
-
-### Existing Tests
-
-The project has **8 test files** covering components, views, and hooks:
-
-#### Component Tests
-
--  `/src/components/atoms/card/card.component.spec.tsx`
--  `/src/components/atoms/link/navlink.spec.tsx`
--  `/src/components/layout/navbar/search-input/search-input.spec.tsx`
-
-#### View Tests
-
--  `/src/views/about/about.spec.tsx`
--  `/src/views/about/counter.spec.tsx`
--  `/src/views/film-info/film-info.spec.tsx`
--  `/src/views/film-list/film-list.spec.tsx`
-
----
-
-### Test Patterns
-
-#### 1. Basic Component Test
-
-```tsx
-import { render, screen } from '@testing-library/react';
-import Counter from './counter.component';
-
-describe('Counter Component', () => {
-   it('renders counter title', () => {
-      render(<Counter />);
-      const title = screen.getByText(/current count:/i);
-      expect(title).toBeInTheDocument();
-   });
-
-   it('renders increment button', () => {
-      render(<Counter />);
-      const button = screen.getByRole('button', { name: '👍 Increment' });
-      expect(button).toBeInTheDocument();
-   });
-});
-```
-
-**Pattern:**
-
--  Use `render()` to mount component
--  Use `screen.getByRole()` or `screen.getByText()` to find elements
--  Use Testing Library matchers (`.toBeInTheDocument()`, `.toBeVisible()`)
-
----
-
-#### 2. User Interaction Test
-
-```tsx
-import { render, screen, fireEvent } from '@testing-library/react';
-import Counter from './counter.component';
-
-it('increments counter when button is clicked', () => {
-   const { container } = render(<Counter />);
-   const button = screen.getByText('👍 Increment');
-
-   fireEvent.click(button);
-
-   const countValue = container.querySelector('span');
-   expect(countValue?.textContent).toBe('1');
-});
-```
-
-**Pattern:**
-
--  Use `fireEvent.click()`, `fireEvent.change()`, etc. for interactions
--  Query updated DOM to verify changes
--  Use `.toHaveTextContent()` for text assertions
-
----
-
-#### 3. Testing Custom Hooks
-
-```tsx
-import { renderHook, waitFor } from '@testing-library/react';
-import { useCounterHook } from './counter.component';
-
-describe('useCounterHook', () => {
-   it('renders initial count', () => {
-      const { result } = renderHook(() => useCounterHook(1));
-      expect(result.current.count).toBe(1);
-   });
-
-   it('increments count', async () => {
-      const { result } = renderHook(() => useCounterHook(1));
-
-      await waitFor(() => {
-         result.current.increment();
-      });
-
-      expect(result.current.count).toBe(2);
-   });
-});
-```
-
-**Pattern:**
-
--  Use `renderHook()` to test hooks in isolation
--  Use `waitFor()` for async updates
--  Access hook values via `result.current`
-
----
-
-#### 4. Testing with Props
-
-```tsx
-it('decrements counter when decrement is clicked', () => {
-   render(<Counter countValue={0} />);
-
-   const incrementButton = screen.getByRole('button', { name: '👍 Increment' });
-   const decrementButton = screen.getByRole('button', { name: '👎 Decrement' });
-
-   fireEvent.click(incrementButton);
-   fireEvent.click(incrementButton);
-   fireEvent.click(decrementButton);
-
-   const counterValue = screen.container.querySelector('span');
-   expect(counterValue).toHaveTextContent('1');
-});
-```
-
-**Pattern:**
-
--  Pass props to `render()` like normal React usage
--  Test different prop combinations
-
----
-
-#### 5. Mocking Functions
-
-```tsx
-import { vi } from 'vitest';
-import { render, fireEvent } from '@testing-library/react';
-import Card from './card.component';
-
-const mockHandler = vi.fn();
-
-it('calls onClick when button is clicked', () => {
-   const { getByText } = render(
-      <Card>
-         <button onClick={mockHandler}>Click me!</button>
-      </Card>
-   );
-
-   const button = getByText('click me!');
-   fireEvent.click(button);
-   fireEvent.click(button);
-
-   expect(mockHandler).toHaveBeenCalledTimes(2);
-   expect(mockHandler.mock.calls).toHaveLength(2);
-});
-```
-
-**Pattern:**
-
--  Use `vi.fn()` to create mock functions
--  Use `.toHaveBeenCalledTimes()`, `.toHaveBeenCalledWith()` to verify calls
--  Access call history via `.mock.calls`
-
----
-
-#### 6. Testing Styles
-
-```tsx
-it('applies correct styles to elements', () => {
-   const { getByText } = render(
-      <Card>
-         <div style={{ color: 'rgb(255,0,0)' }}>
-            <button style={{ color: 'rgb(22, 22, 22)' }}>click me!</button>
-         </div>
-      </Card>
-   );
-
-   const button = getByText('click me!');
-   expect(button).toHaveStyle('color: rgb(22,22,22)');
-   expect(button.parentNode).toHaveStyle('color: rgb(255,0,0)');
-});
-```
-
-**Pattern:**
-
--  Use `.toHaveStyle()` to verify inline styles
--  Pass CSS property strings to matcher
-
----
-
-### Mocking the Service Layer
-
-Tests never reach the network. Instead of intercepting HTTP, mock the module in `src/services/` that the component or hook imports, so the test controls exactly what the data layer returns.
-
-#### Supabase example (from `useFavorites.spec.tsx`)
-
-```tsx
-vi.mock('@/services/supabase/favorites', () => ({
-   getUserFavorites: vi.fn(),
-   addFavorite: vi.fn(),
-   removeFavorite: vi.fn(),
-}));
-
-import { getUserFavorites } from '@/services/supabase/favorites';
-
-beforeEach(() => {
-   vi.mocked(getUserFavorites).mockResolvedValue({ data: [], error: null });
-});
-```
-
-#### TMDB example
-
-```tsx
-import { MOCK_FILM_LIST } from '@/tests/__mocks__/mocks';
-import { FilmListSchema } from '@/types/films.schemas';
-
-vi.mock('@/services/films/films', () => ({
-   fetchPopularFilms: vi.fn(),
-}));
-
-import { fetchPopularFilms } from '@/services/films/films';
-
-it('handles API error', async () => {
-   vi.mocked(fetchPopularFilms).mockRejectedValue(new Error('Network'));
-   renderWithQueryContext(<PopularPage />);
-   await waitFor(() => {
-      expect(screen.getByText(/something went wrong/i)).toBeVisible();
-   });
-});
-```
-
-**Pattern:**
-
--  `vi.mock` the service module at the top of the spec; import the mocked functions after the mock call
--  Use `vi.mocked(fn).mockResolvedValue(...)` per test to shape the response
--  Parse shared mock data through the Zod schema (`FilmListSchema.parse(MOCK_FILM_LIST)`) so it matches what the real fetcher returns
--  Prefer passing data as props when the component does not fetch (see `film-list.spec.tsx`)
-
----
-
-### Testing Library Queries
-
-#### Query Priority (Best to Worst)
-
-1. **`getByRole()`** - Best for accessibility (queries by ARIA role)
-
-   ```tsx
-   screen.getByRole('button', { name: 'Submit' });
-   screen.getByRole('heading', { level: 1 });
-   ```
-
-2. **`getByLabelText()`** - Good for form inputs
-
-   ```tsx
-   screen.getByLabelText('Email');
-   ```
-
-3. **`getByPlaceholderText()`** - OK for inputs without labels
-
-   ```tsx
-   screen.getByPlaceholderText('Search...');
-   ```
-
-4. **`getByText()`** - Good for non-interactive content
-
-   ```tsx
-   screen.getByText('Welcome back');
-   screen.getByText(/welcome/i); // Case-insensitive regex
-   ```
-
-5. **`getByTestId()`** - Last resort (requires adding test IDs to code)
-   ```tsx
-   screen.getByTestId('submit-button');
-   ```
-
-#### Query Variants
-
--  **`getBy`**: Throws error if not found (use for assertions)
--  **`queryBy`**: Returns `null` if not found (use to check absence)
--  **`findBy`**: Async, waits for element (use for delayed appearance)
-
-```tsx
-// Element must exist
-const button = screen.getByRole('button');
-
-// Element might not exist
-const error = screen.queryByText('Error');
-expect(error).not.toBeInTheDocument();
-
-// Wait for async element
-const data = await screen.findByText('Loaded data');
-```
-
----
-
-### Common Matchers
-
-#### Existence & Visibility
-
-```tsx
-expect(element).toBeInTheDocument();
-expect(element).toBeVisible();
-expect(element).not.toBeInTheDocument();
-```
-
-#### Text Content
-
-```tsx
-expect(element).toHaveTextContent('Hello');
-expect(element).toContainHTML('<span>Hello</span>');
-```
-
-#### Attributes
-
-```tsx
-expect(input).toHaveValue('test@example.com');
-expect(input).toHaveAttribute('type', 'email');
-expect(checkbox).toBeChecked();
-expect(button).toBeDisabled();
-```
-
-#### Styles
-
-```tsx
-expect(element).toHaveStyle('color: red');
-expect(element).toHaveClass('active');
-```
-
-#### Form Interactions
-
-```tsx
-expect(input).toHaveFocus();
-expect(form).toHaveFormValues({ email: 'test@test.com' });
-```
-
----
-
-### Best Practices
-
-#### 1. Test User Behavior, Not Implementation
-
-**DON'T:**
-
-```tsx
-// ❌ Testing internal state
-expect(component.state.count).toBe(1);
-
-// ❌ Testing CSS classes
-expect(button).toHaveClass('btn-primary');
-```
-
-**DO:**
-
-```tsx
-// ✅ Test what user sees
-expect(screen.getByText('Count: 1')).toBeVisible();
-
-// ✅ Test visual result
-expect(button).toHaveStyle('background-color: blue');
-```
-
-#### 2. Use Semantic Queries
-
-**DON'T:**
-
-```tsx
-// ❌ Fragile CSS selectors
-container.querySelector('.btn-submit');
-
-// ❌ Test IDs everywhere
-screen.getByTestId('submit-button');
-```
-
-**DO:**
-
-```tsx
-// ✅ Accessible queries
-screen.getByRole('button', { name: 'Submit' });
-screen.getByLabelText('Email');
-```
-
-#### 3. Avoid Implementation Details
-
-**DON'T:**
-
-```tsx
-// ❌ Testing component internals
-expect(wrapper.find('InternalComponent')).toExist();
-
-// ❌ Checking function calls
-expect(handleClick).toHaveBeenCalled(); // Unless testing callbacks
-```
-
-**DO:**
-
-```tsx
-// ✅ Test observable behavior
-expect(screen.getByText('Success!')).toBeVisible();
-```
-
-#### 4. Keep Tests Simple
-
-**DON'T:**
-
-```tsx
-// ❌ Too much setup, testing too many things
-it('does everything', () => {
-   // 50 lines of setup
-   // Tests 10 different behaviors
-});
-```
-
-**DO:**
-
-```tsx
-// ✅ One behavior per test
-it('shows success message after submit', () => {
-   // Focused setup
-   // Single assertion
-});
-```
-
-#### 5. Use `waitFor` for Async Updates
-
-**DON'T:**
-
-```tsx
-// ❌ Race condition
-fireEvent.click(button);
-expect(screen.getByText('Loaded')).toBeVisible(); // Might fail
-```
-
-**DO:**
-
-```tsx
-// ✅ Wait for async update
-fireEvent.click(button);
-await waitFor(() => {
-   expect(screen.getByText('Loaded')).toBeVisible();
-});
-```
-
----
-
-### Coverage Reports
-
-```bash
-# Generate coverage report
-pnpm coverage
-
-# View HTML report
-open coverage/index.html
-```
-
-**Coverage thresholds** (configure in `vite.config.ts`):
-
-```typescript
-test: {
-  coverage: {
-    provider: 'istanbul',
-    reporter: ['text', 'html', 'json'],
-    statements: 80,
-    branches: 80,
-    functions: 80,
-    lines: 80,
-  },
-},
-```
-
----
-
-### File Organization
-
-```
-src/
-├── components/
-│   └── atoms/
-│       └── card/
-│           ├── card.component.tsx
-│           └── card.component.spec.tsx    # Co-located tests
-├── views/
-│   └── about/
-│       ├── about.view.tsx
-│       ├── about.spec.tsx
-│       ├── counter.component.tsx
-│       └── counter.spec.tsx
-└── tests/
-    ├── setupTests.ts                      # Global test setup
-    └── fixtures/                          # Shared test data
-        └── mockData.ts
-```
-
-**Naming convention:** `*.spec.tsx` or `*.test.tsx` (both work)
-
----
-
-### Interactive UI Mode
-
-```bash
-pnpm test:ui
-```
-
-**Features:**
-
--  Visual test runner in browser
--  Filter and search tests
--  See pass/fail status in real-time
--  View console logs and errors
--  Re-run individual tests
--  Code coverage visualization
-
----
-
-### Debugging Tests
-
-#### 1. Console Logs
-
-```tsx
-it('debugs component output', () => {
-   const { container } = render(<Counter />);
-
-   // Print rendered HTML
-   screen.debug();
-
-   // Print specific element
-   screen.debug(screen.getByRole('button'));
-
-   // Print entire DOM
-   console.log(container.innerHTML);
-});
-```
-
-#### 2. VS Code Debugging
-
-Add to `.vscode/launch.json`:
-
-```json
-{
-   "type": "node",
-   "request": "launch",
-   "name": "Debug Vitest",
-   "runtimeExecutable": "node",
-   "runtimeArgs": [
-      "test",
-      "--run",
-      "--inspect-brk",
-      "--no-file-parallelization"
-   ],
-   "console": "integratedTerminal"
-}
-```
-
-#### 3. Vitest UI
-
-Use `pnpm test:ui` for visual debugging with hot reload.
-
----
-
-### Common Issues & Fixes
-
-#### 1. `document is not defined`
-
-```bash
-# Error: ReferenceError: document is not defined
-```
-
-**Fix:** Ensure `environment: 'jsdom'` is set in `vite.config.ts`
-
-#### 2. CSS Import Errors
-
-```bash
-# Error: Failed to parse CSS
-```
-
-**Fix:** Ensure `css: true` is set in test config
-
-#### 3. Module Not Found
-
-```bash
-# Error: Cannot find module '@/components/...'
-```
-
-**Fix:** Ensure `vite-tsconfig-paths` plugin is installed and path aliases are configured
-
-#### 4. Async Updates Not Working
-
-```tsx
-// ❌ Fails intermittently
-fireEvent.click(button);
-expect(screen.getByText('Updated')).toBeVisible();
-
-// ✅ Waits for update
-fireEvent.click(button);
-await waitFor(() => {
-   expect(screen.getByText('Updated')).toBeVisible();
-});
-```
-
----
-
-### Quick Reference
-
-**Essential Commands:**
-
-```bash
-pnpm test           # Watch mode
-pnpm test:silent          # Run once
-pnpm test:ui           # Interactive UI
-pnpm coverage          # Coverage report
-```
-
-**Common Queries:**
-
-```tsx
-screen.getByRole('button', { name: 'Submit' });
-screen.getByLabelText('Email');
-screen.getByText(/welcome/i);
-screen.getByPlaceholderText('Search...');
-```
-
-**Common Actions:**
-
-```tsx
-fireEvent.click(button);
-fireEvent.change(input, { target: { value: 'text' } });
-fireEvent.submit(form);
-```
-
-**Common Matchers:**
-
-```tsx
-expect(element).toBeInTheDocument();
-expect(element).toBeVisible();
-expect(element).toHaveTextContent('text');
-expect(element).toHaveValue('value');
-expect(mockFn).toHaveBeenCalledTimes(2);
-```
+## 5. Known divergences
+
+Places where the code does not yet follow this guide. Fixing them is tracked in the roadmap.
+
+-  **Discover** uses a `max-w-6xl` column where every other page uses `max-w-4xl`, inlines the Select recipe as a local string, and hand-rolls its type switch instead of a Chip atom.
+-  **Error and not-found views** style their action with `border-blue-700 hover:bg-blue-900` instead of the Button primary recipe or the accent token.
+-  **CastList** falls back to `bg-gray-400 text-white` for a missing avatar; it should be `bg-subtle text-copy`.
+-  **Film detail** genre badges carry `bg-primary`, which is not a utility in this config and does nothing; they should use `bg-primary-background-color` like the badge recipe.
+-  **Spinner** uses the legacy primary variable and a fixed `300px` margin rather than a token and flex centring.
+-  **Legacy hex variables** still define control borders and panel backgrounds. They need semantic tokens (a `border-subtle` and a panel background) before they can be retired.
+-  **Reduced motion** is not honoured anywhere; the card scale and the scroll-driven title need a `prefers-reduced-motion` guard.

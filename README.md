@@ -94,5 +94,6 @@ pnpm format         # Prettier
 
 ## Docs
 
--  [docs/STYLE_GUIDE.md](docs/STYLE_GUIDE.md) — theming, CSS and Tailwind conventions, component styling, linting, and testing patterns
+-  [docs/STYLE_GUIDE.md](docs/STYLE_GUIDE.md) — design tokens, typography, layout and the component recipes in use
+-  [docs/TESTING.md](docs/TESTING.md) — testing patterns, linting and formatting
 -  [CLAUDE.md](CLAUDE.md) — project rules for AI-assisted development
