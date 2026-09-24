@@ -101,6 +101,15 @@ describe('Film Lists Component', () => {
       expect(screen.queryByRole('table')).not.toBeInTheDocument();
    });
 
+   it('lays the cards out in the shared centred grid by default', async () => {
+      await renderFilmList();
+
+      const grid = document.querySelector('.card-grid');
+      expect(grid).not.toBeNull();
+      expect(grid?.children).toHaveLength(films.length);
+      expect(document.querySelector('.film-list__rhythm')).toBeNull();
+   });
+
    it('switches to the table view when the user picks "Table"', async () => {
       await renderFilmList();
 

@@ -2,6 +2,7 @@ import '@/views/film-info/film-info.styles.css';
 
 import { Link } from '@tanstack/react-router';
 
+import CardGrid from '@/components/atoms/card-grid/card-grid.component';
 import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
 import FilmCard from '@/components/atoms/film-card/film-card.component';
 import MediaImage from '@/components/atoms/media-image/media-image.component';
@@ -270,7 +271,7 @@ const SeriesInfo = ({
             {recommendations && recommendations.length > 0 && (
                <div className="text-content mt-4 rounded-lg p-4 text-copy">
                   <h2 className="mb-4 text-display-md">Recommendations</h2>
-                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4 lg:gap-8">
+                  <CardGrid>
                      {recommendations.map((series) => (
                         <FilmCard
                            key={series.id}
@@ -282,7 +283,7 @@ const SeriesInfo = ({
                            showFavorite={false}
                         />
                      ))}
-                  </div>
+                  </CardGrid>
                </div>
             )}
          </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import CardGrid from '@/components/atoms/card-grid/card-grid.component';
 import FilmCard from '@/components/atoms/film-card/film-card.component';
 import { ExternalLink } from '@/components/atoms/link/external-link.component';
 import MediaImage from '@/components/atoms/media-image/media-image.component';
@@ -66,7 +67,7 @@ const CreditsGrid = ({
                ({credits.length})
             </span>
          </h2>
-         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4 lg:gap-8">
+         <CardGrid className="mt-6">
             {visible.map((credit) => (
                <FilmCard
                   key={`${credit.media_type}-${credit.id}`}
@@ -83,7 +84,7 @@ const CreditsGrid = ({
                   showFavorite={false}
                />
             ))}
-         </div>
+         </CardGrid>
          {credits.length > CREDITS_PREVIEW && (
             <button
                type="button"

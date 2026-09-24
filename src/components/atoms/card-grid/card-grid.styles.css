@@ -1,0 +1,43 @@
+/*
+ * The fixed card grid used by the list pages, the recommendation panels and
+ * the credits sections: 2 columns on phones, 3 from `sm`, 4 from `lg`, with
+ * the gap growing with the column count.
+ *
+ * This is flexbox, not CSS grid: grid's `1fr` tracks always stretch to fill
+ * 100% of the row, so a trailing partial row starts flush against the left
+ * edge no matter what `justify-content` says. Flex items keep their own
+ * `flex-basis` width, so the leftover space on a short last row is real and
+ * `justify-content: center` splits it evenly around the cards. Each item's
+ * flex-basis is sized so N of them plus their gaps sum to exactly 100%,
+ * which is what pins the row to N cards.
+ */
+.card-grid {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+   gap: 1rem;
+}
+
+.card-grid > * {
+   flex: 0 0 calc(50% - 0.5rem);
+}
+
+@media (min-width: 640px) {
+   .card-grid {
+      gap: 1.5rem;
+   }
+
+   .card-grid > * {
+      flex-basis: calc(33.333% - 1rem);
+   }
+}
+
+@media (min-width: 1024px) {
+   .card-grid {
+      gap: 2rem;
+   }
+
+   .card-grid > * {
+      flex-basis: calc(25% - 1.5rem);
+   }
+}

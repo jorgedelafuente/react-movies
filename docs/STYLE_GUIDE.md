@@ -221,21 +221,17 @@ Every route renders `Navbar` (sticky, `top-0 z-10`) then an `Outlet`. The view c
 
 **Filter pages** (discover): `h1 text-display-lg`, then a phone-only disclosure button and the form. The button is the Chip idle recipe plus `mt-4 inline-flex items-center gap-2 font-medium sm:hidden`, carries `aria-expanded` and `aria-controls` pointing at the form, reads "Show filters" / "Hide filters", shows the number of non-default filters in a `rounded-full bg-accent/10 px-1.5 text-xs tabular-nums text-accent` pill (with `sr-only` " active" for screen readers) and ends with a `h-3 w-3` chevron that gets `rotate-180` when open. The form is `<form id="…" aria-label="…" className="mt-4 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-center">` plus `flex` when open or `hidden sm:flex` when closed, so from `sm` up it is always visible and the state is irrelevant. Inside, a `<fieldset className="flex gap-2">` with `<legend className="mb-1 text-sm font-medium">` holds the chip switch; each select field is `flex flex-col gap-1 sm:w-*` with the label above the control. Then a status line `mt-4 text-sm tabular-nums text-copy/70` with `role="status"`, the results, and `<nav aria-label="Pagination" className="mx-auto mt-6 flex w-full max-w-xs gap-3 px-4 pb-8">` with a secondary "Previous" and a primary "Next" button.
 
-### Card grid
+### Card grid — `atoms/card-grid`
 
 ```tsx
-<div className="film-list__grid">
+<CardGrid className="mt-6">
    {items.map((item) => (
-      <div key={`${item.media_type}-${item.id}`}>
-         <FilmCard {...item} />
-      </div>
+      <FilmCard key={`${item.media_type}-${item.id}`} {...item} />
    ))}
-</div>
+</CardGrid>
 ```
 
-Two columns on phones, three from `sm`, four from `lg`, and the gap grows with the columns (`1rem`, `1.5rem`, `2rem`). The class lives in `film-list.styles.css` and is flexbox, not CSS grid: every item gets a `flex-basis` of `calc(100% / N - gap)` so N of them fill a row exactly, and `justify-content: center` centres whatever is left on the last row (two cards under a three-column grid sit in the middle, never flush left). Grid's `1fr` tracks cannot do that. Keys combine media type and id because TMDB movie and TV ids overlap.
-
-The recommendation and credit grids on the detail pages still use the utility version, `grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4 lg:gap-8`, which leaves a short last row on the left (see divergences).
+Two columns on phones, three from `sm`, four from `lg`, and the gap grows with the columns (`1rem`, `1.5rem`, `2rem`). `CardGrid` is used everywhere cards sit in a fixed grid: the plain list pages, the recommendation panels on the film and series pages, and the person credits. Do not write `grid grid-cols-*` for cards. The `.card-grid` class is flexbox, not CSS grid: every item gets a `flex-basis` of `calc(100% / N - gap)` so N of them fill a row exactly, and `justify-content: center` centres whatever is left on the last row (two cards under a three-column grid sit in the middle, never flush left). Grid's `1fr` tracks cannot do that. `className` is for spacing around the grid only. Keys combine media type and id because TMDB movie and TV ids overlap.
 
 ### Responsive rules
 
@@ -461,7 +457,6 @@ Places where the code does not yet follow this guide. Fixing them is tracked in 
 -  **Discover** uses a `max-w-6xl` column where every other page uses `max-w-4xl`, inlines the Select recipe as a local string, and hand-rolls its type switch instead of a Chip atom.
 -  **Favourites** hand-rolls a `<table>` (`py-8` column, `text-copy/80 py-0.5` badges, `border-bold/30` rows) instead of rendering `FilmTable`.
 -  **Error and not-found views** style their action with `border-blue-700 hover:bg-blue-900 text-slate-300` instead of the Button primary recipe or the accent token.
--  **Detail-page card grids** (film and series recommendations, person credits) still use the `grid grid-cols-*` utilities and so leave a short last row flush left instead of centred like the list pages.
 -  **Film detail** genre and age-rating badges carry `bg-primary`, which is not a utility in this config and does nothing; they should use `bg-primary-background-color` like the badge recipe.
 -  **FlexContainer** sets both `bg-neutral` and `bg-primary-background-color` on the same element; one must go.
 -  **Detail panel CSS** (`.text-content`) fixes `width: 80%`, `margin: 10px`, `height: 90%` and a `600px` media query, none of which is mobile-first or on the `sm` breakpoint. The column classes should own the width.

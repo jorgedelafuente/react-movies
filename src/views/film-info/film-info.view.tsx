@@ -1,5 +1,6 @@
 import './film-info.styles.css';
 
+import CardGrid from '@/components/atoms/card-grid/card-grid.component';
 import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
 import FilmCard from '@/components/atoms/film-card/film-card.component';
 import { ExternalLink } from '@/components/atoms/link/external-link.component';
@@ -287,7 +288,7 @@ const FilmInfo = ({
             {recommendations && recommendations.length > 0 && (
                <div className="text-content mt-4 gap-4 rounded-lg p-5 text-copy sm:p-8">
                   <h2 className="text-display-md">Recommendations</h2>
-                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4 lg:gap-8">
+                  <CardGrid>
                      {recommendations.map((film) => (
                         <FilmCard
                            key={film.id}
@@ -299,7 +300,7 @@ const FilmInfo = ({
                            showFavorite={false}
                         />
                      ))}
-                  </div>
+                  </CardGrid>
                </div>
             )}
          </div>
