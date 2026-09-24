@@ -74,6 +74,26 @@ describe('Film Lists Component', () => {
       links.forEach((link) => expect(link).toHaveAttribute('href', '/tv/1399'));
    });
 
+   it('renders a skeleton instead of a broken image for items without a poster', async () => {
+      const [first, ...rest] = films;
+      const element = () => (
+         <FilmList list={[{ ...first, poster_path: null }, ...rest]} />
+      );
+      await act(async () => {
+         renderWithQueryContext(
+            <RouterProvider router={router} defaultComponent={element} />
+         );
+      });
+
+      const skeleton = screen.getByTestId('media-image-skeleton');
+      expect(skeleton).toHaveAttribute('role', 'img');
+      expect(skeleton).toHaveAttribute('aria-label', first.title);
+      expect(
+         document.querySelector('img[src$="/null"]')
+      ).not.toBeInTheDocument();
+      expect(document.querySelectorAll('img')).toHaveLength(rest.length);
+   });
+
    it('shows cards by default and no table', async () => {
       await renderFilmList();
 

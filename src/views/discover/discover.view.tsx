@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import Button from '@/components/atoms/button/button.component';
 import Container from '@/components/layout/container/container.component';
 import {
@@ -27,6 +29,8 @@ const YEARS = Array.from(
 const selectClass =
    'w-full rounded-md border-2 border-solid border-secondary-background-color bg-neutral px-2 py-1 text-copy';
 const labelClass = 'text-sm font-medium';
+const formClass =
+   'mt-4 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-center';
 
 type DiscoverViewProps = {
    params: DiscoverParams;
@@ -42,6 +46,14 @@ const DiscoverView = ({
    page,
    onChange,
 }: DiscoverViewProps) => {
+   // Phones start with the filters collapsed behind a disclosure button; from
+   // `sm` up the form is always visible and this state has no effect.
+   const [filtersOpen, setFiltersOpen] = useState(false);
+   const activeFilters =
+      Number(params.genre !== undefined) +
+      Number(params.year !== undefined) +
+      Number(params.sort !== DISCOVER_SORTS.POPULAR);
+
    const totalPages = Math.min(page.total_pages, DISCOVER_MAX_PAGE);
    const sorts = (Object.values(DISCOVER_SORTS) as DiscoverSort[]).filter(
       (sort) => params.type === MEDIA_TYPES.MOVIE || !MOVIE_ONLY_SORTS.has(sort)
@@ -61,8 +73,37 @@ const DiscoverView = ({
          <div className="mx-auto w-full max-w-6xl px-4 py-6 text-copy">
             <h1 className="text-display-lg">Discover</h1>
 
+            <button
+               type="button"
+               className="mt-4 inline-flex items-center gap-2 rounded-full border border-copy/30 px-3 py-1 text-sm font-medium hover:border-accent hover:text-accent sm:hidden"
+               aria-expanded={filtersOpen}
+               aria-controls="discover-filters"
+               onClick={() => setFiltersOpen((open) => !open)}
+            >
+               {filtersOpen ? 'Hide filters' : 'Show filters'}
+               {activeFilters > 0 && (
+                  <span className="rounded-full bg-accent/10 px-1.5 text-xs tabular-nums text-accent">
+                     {activeFilters}
+                     <span className="sr-only"> active</span>
+                  </span>
+               )}
+               <svg
+                  viewBox="0 0 16 16"
+                  aria-hidden="true"
+                  className={`h-3 w-3 fill-none stroke-current transition-transform ${
+                     filtersOpen ? 'rotate-180' : ''
+                  }`}
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+               >
+                  <path d="m3 6 5 5 5-5" />
+               </svg>
+            </button>
+
             <form
-               className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-center"
+               id="discover-filters"
+               className={`${formClass} ${filtersOpen ? 'flex' : 'hidden sm:flex'}`}
                onSubmit={(e) => e.preventDefault()}
                aria-label="Discover filters"
             >

@@ -3,9 +3,9 @@ import { useState } from 'react';
 
 import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
 import MediaLink from '@/components/atoms/link/media-link.component';
+import MediaImage from '@/components/atoms/media-image/media-image.component';
 import SortableHeader from '@/components/atoms/sortable-header/sortable-header.component';
 import Container from '@/components/layout/container/container.component';
-import { baseImagePath } from '@/services/config';
 import type { FavoriteRow } from '@/services/supabase/favorites';
 import { MEDIA_TYPE_LABELS } from '@/types/media.types';
 import { useFavorites } from '@/utils/hooks/useFavorites';
@@ -129,15 +129,11 @@ const FavoritesView = () => {
                               className="border-b border-bold/30 hover:bg-neutral-inverted/5"
                            >
                               <td className="py-2 pr-4">
-                                 {fav.film_poster_path ? (
-                                    <img
-                                       src={`${baseImagePath}${fav.film_poster_path}`}
-                                       alt={fav.film_title || 'Poster'}
-                                       className="h-16 w-10 rounded object-cover"
-                                    />
-                                 ) : (
-                                    <div className="bg-copy/10 h-16 w-10 rounded" />
-                                 )}
+                                 <MediaImage
+                                    path={fav.film_poster_path}
+                                    alt={fav.film_title || 'Poster'}
+                                    className="h-16 w-10 rounded object-cover"
+                                 />
                               </td>
                               <td className="max-w-xs py-2 pr-4">
                                  <MediaLink

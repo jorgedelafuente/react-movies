@@ -4,9 +4,10 @@ import { Link } from '@tanstack/react-router';
 
 import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
 import FilmCard from '@/components/atoms/film-card/film-card.component';
+import MediaImage from '@/components/atoms/media-image/media-image.component';
 import CastList from '@/components/cast-list/cast-list.component';
 import Container from '@/components/layout/container/container.component';
-import { baseImagePath, baseImagePathPoster } from '@/services/config';
+import { baseImagePathPoster } from '@/services/config';
 import type {
    FilmCreditsType,
    FilmRecommendationType,
@@ -53,10 +54,10 @@ const SeriesInfo = ({
             }}
          >
             <div>
-               <img
-                  loading="lazy"
-                  src={`${baseImagePath}${seriesInfo.poster_path}`}
+               <MediaImage
+                  path={seriesInfo.poster_path}
                   alt=""
+                  fallbackClassName="mx-auto aspect-[2/3] w-full max-w-[500px] rounded-[25px]"
                />
             </div>
 
@@ -236,16 +237,11 @@ const SeriesInfo = ({
                               }}
                               className="bg-primary-background-color/40 hover:bg-primary-background-color/70 flex items-center gap-3 rounded-md p-2 text-inherit hover:text-accent"
                            >
-                              {season.poster_path ? (
-                                 <img
-                                    loading="lazy"
-                                    src={`${baseImagePath}${season.poster_path}`}
-                                    alt=""
-                                    className="h-16 w-11 flex-none rounded object-cover"
-                                 />
-                              ) : (
-                                 <div className="h-16 w-11 flex-none rounded bg-gray-400/40" />
-                              )}
+                              <MediaImage
+                                 path={season.poster_path}
+                                 alt=""
+                                 className="h-16 w-11 flex-none rounded object-cover"
+                              />
                               <div className="min-w-0 flex-1">
                                  <div className="font-display text-sm font-semibold leading-tight">
                                     {season.name}

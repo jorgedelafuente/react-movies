@@ -66,6 +66,43 @@ describe('Discover view', () => {
       expect(screen.getByRole('status')).toHaveTextContent('page 2 of 500');
    });
 
+   it('collapses the filters behind a disclosure button on small screens', async () => {
+      await renderView();
+      const toggle = screen.getByRole('button', { name: /show filters/i });
+      const form = screen.getByRole('form', { name: 'Discover filters' });
+
+      // Closed by default: hidden on phones, always shown from `sm` up.
+      expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      expect(toggle).toHaveAttribute('aria-controls', form.id);
+      expect(form).toHaveClass('hidden', 'sm:flex');
+
+      fireEvent.click(toggle);
+      expect(toggle).toHaveAttribute('aria-expanded', 'true');
+      expect(toggle).toHaveTextContent(/hide filters/i);
+      expect(form).toHaveClass('flex');
+      expect(form).not.toHaveClass('hidden');
+
+      fireEvent.click(toggle);
+      expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      expect(form).toHaveClass('hidden');
+   });
+
+   it('counts the active filters on the disclosure button', async () => {
+      await renderView({
+         params: { ...defaultParams, genre: 28, year: 1999 },
+      });
+      expect(
+         screen.getByRole('button', { name: /show filters 2 active/i })
+      ).toBeInTheDocument();
+   });
+
+   it('shows no count when only the defaults are selected', async () => {
+      await renderView();
+      expect(
+         screen.getByRole('button', { name: /show filters/i })
+      ).not.toHaveTextContent(/\d/);
+   });
+
    it('renders the results as cards', async () => {
       await renderView();
       expect(

@@ -213,25 +213,29 @@ Every route renders `Navbar` (sticky, `top-0 z-10`) then an `Outlet`. The view c
 
 1. **Header** — `flex flex-col items-center gap-6 text-center sm:flex-row sm:items-start sm:gap-10 sm:text-left`: the portrait (recipe under Media and numbers) beside a `flex min-w-0 flex-1 flex-col items-center gap-6 sm:items-start` block. Everything in that block is centred on phones and left-aligned from `sm`.
 2. **Name** — an eyebrow `p` (`EYEBROW`, the department) over `h1 text-display-xl`.
-3. **Facts** — `dl grid w-full grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3` of `Stat` cells with `className="sm:items-start"` (Born with an `(age N)` `StatNote`, Died with `(aged N)`, Birthplace). Aliases are an eyebrow `span` over `p text-sm text-copy/80` joined with `·`.
+3. **Facts** — `dl flex flex-wrap justify-center gap-x-10 gap-y-5 sm:justify-start` of `Stat` cells with `className="sm:items-start"` (Born with an `(age N)` `StatNote`, Died with `(aged N)`, Birthplace). Aliases are an eyebrow `span` over `p text-sm text-copy/80` joined with `·`.
 4. **External links** — `ExternalLink` pills in `flex flex-wrap justify-center gap-3 sm:justify-start`.
 5. **Sections** (Biography, Known for, Crew) — each a `section border-t border-copy/10 pt-8` with `h2 text-display-md`; counts sit inside the heading as `ml-2 font-sans text-base font-normal tabular-nums text-copy/60`. Biography is `mt-4 max-w-prose whitespace-pre-line text-pretty leading-relaxed sm:text-lg`, clamped with `line-clamp-6` past 600 characters behind a `Read more` button; credit grids use the card grid with `mt-6`. Toggle buttons are `text-sm font-medium text-accent hover:underline`.
 
 **List pages**: a centred `ViewToggle`, then either the card grid or `FilmTable`.
 
-**Filter pages** (discover): `h1 text-display-lg`, then `<form aria-label="…" className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-center">`. A `<fieldset className="flex gap-2">` with `<legend className="mb-1 text-sm font-medium">` holds the chip switch; each select field is `flex flex-col gap-1 sm:w-*` with the label above the control. Then a status line `mt-4 text-sm tabular-nums text-copy/70` with `role="status"`, the results, and `<nav aria-label="Pagination" className="mx-auto mt-6 flex w-full max-w-xs gap-3 px-4 pb-8">` with a secondary "Previous" and a primary "Next" button.
+**Filter pages** (discover): `h1 text-display-lg`, then a phone-only disclosure button and the form. The button is the Chip idle recipe plus `mt-4 inline-flex items-center gap-2 font-medium sm:hidden`, carries `aria-expanded` and `aria-controls` pointing at the form, reads "Show filters" / "Hide filters", shows the number of non-default filters in a `rounded-full bg-accent/10 px-1.5 text-xs tabular-nums text-accent` pill (with `sr-only` " active" for screen readers) and ends with a `h-3 w-3` chevron that gets `rotate-180` when open. The form is `<form id="…" aria-label="…" className="mt-4 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-center">` plus `flex` when open or `hidden sm:flex` when closed, so from `sm` up it is always visible and the state is irrelevant. Inside, a `<fieldset className="flex gap-2">` with `<legend className="mb-1 text-sm font-medium">` holds the chip switch; each select field is `flex flex-col gap-1 sm:w-*` with the label above the control. Then a status line `mt-4 text-sm tabular-nums text-copy/70` with `role="status"`, the results, and `<nav aria-label="Pagination" className="mx-auto mt-6 flex w-full max-w-xs gap-3 px-4 pb-8">` with a secondary "Previous" and a primary "Next" button.
 
 ### Card grid
 
 ```tsx
-<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4 lg:gap-8">
+<div className="film-list__grid">
    {items.map((item) => (
-      <FilmCard key={`${item.media_type}-${item.id}`} {...item} />
+      <div key={`${item.media_type}-${item.id}`}>
+         <FilmCard {...item} />
+      </div>
    ))}
 </div>
 ```
 
-Two columns on phones, three from `sm`, four from `lg`, and the gap grows with the columns. Keys combine media type and id because TMDB movie and TV ids overlap.
+Two columns on phones, three from `sm`, four from `lg`, and the gap grows with the columns (`1rem`, `1.5rem`, `2rem`). The class lives in `film-list.styles.css` and is flexbox, not CSS grid: every item gets a `flex-basis` of `calc(100% / N - gap)` so N of them fill a row exactly, and `justify-content: center` centres whatever is left on the last row (two cards under a three-column grid sit in the middle, never flush left). Grid's `1fr` tracks cannot do that. Keys combine media type and id because TMDB movie and TV ids overlap.
+
+The recommendation and credit grids on the detail pages still use the utility version, `grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4 lg:gap-8`, which leaves a short last row on the left (see divergences).
 
 ### Responsive rules
 
@@ -314,6 +318,18 @@ The label-over-value pattern used by the film and person pages instead of `Label
 -  **`EYEBROW`** (exported class string): `text-xs font-semibold uppercase tracking-wider text-copy/60`. Use it for facts labels, crew roles, a department, and small section captions; add `font-sans` when it sits on an `h3`, which otherwise inherits the display face.
 -  **`Stat`** — one cell of a facts `<dl>`: `div flex flex-col items-center gap-1` holding an eyebrow `dt` and `dd font-display text-lg font-semibold tabular-nums`. Lay the `dl` out as `grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3` (film: `border-y border-copy/10 py-5`) or as a wrapping row `flex flex-wrap justify-center gap-x-10 gap-y-4` (crew). Pass `className="sm:items-start"` for a left-aligned column.
 -  **`StatNote`** — a secondary line under the value: `block font-sans text-xs font-normal text-copy/60` (vote count, age).
+
+### MediaImage — `atoms/media-image`
+
+Every TMDB picture (posters, stills, season thumbnails) renders through `MediaImage`, never a bare `<img>`. It takes the TMDB `path`, an `alt` (empty when a caption already names the item) and the same `className` you would put on the image. When the path is null or the request fails, a skeleton takes the image's place:
+
+```
+skeleton: flex items-center justify-center bg-subtle text-copy/30  + className + fallbackClassName
+glyph:    h-auto w-1/3 max-w-12 fill-none stroke-current  (a framed-picture outline)
+a11y:     role="img" aria-label={alt} when alt is set; aria-hidden when it is empty
+```
+
+`bg-subtle` and `text-copy` swap under `.dark`, so the block matches the page in both themes. Pass `fallbackClassName` for an aspect ratio (`aspect-[1/1.5]` posters, `aspect-video` stills) whenever the image itself sizes from its natural dimensions, otherwise the skeleton collapses to zero height.
 
 ### Disclosure — `release-dates`
 
@@ -441,9 +457,10 @@ Places where the code does not yet follow this guide. Fixing them is tracked in 
 
 -  **Input placeholder** — `placeholder-text-copy` compiles to nothing because no map feeds `placeholderColor`. Wire `placeholderColor: textColors` in the config and use `placeholder-copy/50`.
 -  **Discover** uses a `max-w-6xl` column where every other page uses `max-w-4xl`, inlines the Select recipe as a local string, and hand-rolls its type switch instead of a Chip atom.
--  **Favourites** hand-rolls a `<table>` (`py-8` column, `text-copy/80 py-0.5` badges, `border-bold/30` rows) instead of rendering `FilmTable`, and its poster placeholder is `bg-copy/10`, which is not a utility.
+-  **Favourites** hand-rolls a `<table>` (`py-8` column, `text-copy/80 py-0.5` badges, `border-bold/30` rows) instead of rendering `FilmTable`.
 -  **Error and not-found views** style their action with `border-blue-700 hover:bg-blue-900 text-slate-300` instead of the Button primary recipe or the accent token.
--  **Image placeholders** — CastList's `bg-gray-400 text-white` fallback (already `bg-subtle` in the in-flight redesign), season stills `bg-gray-400/30` and series season thumbnails `bg-gray-400/40` should all be `bg-subtle`.
+-  **Bare `<img>` tags** remain on the film detail hero poster, the person portrait and CastList avatars (all part of the in-flight detail redesign), so a null path or a failed request there still shows the browser's broken-image icon. Swap each for `MediaImage`; the person and cast fallbacks can keep their 👤 glyph via `fallbackClassName` or stay as they are.
+-  **Detail-page card grids** (film and series recommendations, person credits) still use the `grid grid-cols-*` utilities and so leave a short last row flush left instead of centred like the list pages.
 -  **Film detail** genre and age-rating badges carry `bg-primary`, which is not a utility in this config and does nothing; they should use `bg-primary-background-color` like the badge recipe.
 -  **FlexContainer** sets both `bg-neutral` and `bg-primary-background-color` on the same element; one must go.
 -  **Detail panel CSS** (`.text-content`) fixes `width: 80%`, `margin: 10px`, `height: 90%` and a `600px` media query, none of which is mobile-first or on the `sm` breakpoint. The column classes should own the width.

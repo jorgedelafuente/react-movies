@@ -2,8 +2,8 @@ import '@/views/film-info/film-info.styles.css';
 
 import { Link } from '@tanstack/react-router';
 
+import MediaImage from '@/components/atoms/media-image/media-image.component';
 import Container from '@/components/layout/container/container.component';
-import { baseImagePath } from '@/services/config';
 import type { SeasonDetailType, SeriesInfoType } from '@/types/series.types';
 
 const extractYear = (dateStr: string | null | undefined) =>
@@ -49,14 +49,12 @@ const SeasonInfo = ({
             </Link>
 
             <div className="mt-3 flex flex-col gap-4 sm:flex-row">
-               {season.poster_path ? (
-                  <img
-                     loading="lazy"
-                     src={`${baseImagePath}${season.poster_path}`}
-                     alt=""
-                     className="mx-auto w-40 flex-none rounded-lg sm:mx-0"
-                  />
-               ) : null}
+               <MediaImage
+                  path={season.poster_path}
+                  alt=""
+                  className="mx-auto w-40 flex-none rounded-lg sm:mx-0"
+                  fallbackClassName="aspect-[2/3]"
+               />
                <div className="min-w-0 flex-1">
                   <h1 className="text-display-lg">{season.name}</h1>
                   <p className="mt-1 text-sm tabular-nums text-copy/70">
@@ -112,19 +110,11 @@ const SeasonInfo = ({
                         key={ep.id}
                         className="flex flex-col gap-3 rounded-lg bg-tertiary-background-color p-3 sm:flex-row"
                      >
-                        {ep.still_path ? (
-                           <img
-                              loading="lazy"
-                              src={`${baseImagePath}${ep.still_path}`}
-                              alt=""
-                              className="aspect-video w-full flex-none rounded-md object-cover sm:w-56"
-                           />
-                        ) : (
-                           <div
-                              aria-hidden="true"
-                              className="aspect-video w-full flex-none rounded-md bg-gray-400/30 sm:w-56"
-                           />
-                        )}
+                        <MediaImage
+                           path={ep.still_path}
+                           alt=""
+                           className="aspect-video w-full flex-none rounded-md object-cover sm:w-56"
+                        />
                         <div className="min-w-0 flex-1">
                            <h3 className="font-display text-base font-semibold leading-tight">
                               <span className="mr-2 tabular-nums opacity-60">

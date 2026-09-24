@@ -12,7 +12,8 @@ type FilmListProps = {
    list: FilmInfoType[];
    /**
     * Home uses a masonry card grid, Discover uses a 3-4-3 (4-5-4 on very
-    * wide screens) row rhythm; other list routes keep the fixed grid.
+    * wide screens) row rhythm; other list routes keep the fixed 2 / 3 / 4
+    * column grid, whose short last row is centred.
     */
    cardLayout?: 'grid' | 'masonry' | 'rhythm';
 };
@@ -26,7 +27,7 @@ const FilmList = ({ list, cardLayout = 'grid' }: FilmListProps) => {
          ? 'film-list__masonry'
          : cardLayout === 'rhythm'
            ? 'film-list__rhythm'
-           : 'grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4 lg:gap-8';
+           : 'film-list__grid';
 
    return (
       <FlexContainer>

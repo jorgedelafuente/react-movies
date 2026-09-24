@@ -3,7 +3,7 @@ import './film-card.styles.css';
 import Card from '@/components/atoms/card/card.component';
 import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
 import MediaLink from '@/components/atoms/link/media-link.component';
-import { baseImagePath } from '@/services/config';
+import MediaImage from '@/components/atoms/media-image/media-image.component';
 import type { MediaType } from '@/types/media.types';
 
 interface FilmCardProps {
@@ -30,15 +30,15 @@ const FilmCard = ({
 }: FilmCardProps) => {
    return (
       <Card>
-         <img
-            loading="lazy"
+         <MediaImage
+            path={poster_path}
+            alt={title}
             className={
                masonry
                   ? 'w-full rounded-md'
                   : 'aspect-[1/1.5] w-full rounded-md object-cover object-center'
             }
-            src={`${baseImagePath}${poster_path}`}
-            alt={title}
+            fallbackClassName="aspect-[1/1.5]"
          />
          <div className="content">
             <MediaLink

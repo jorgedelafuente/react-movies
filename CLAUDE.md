@@ -81,6 +81,7 @@ Copy [.env.example](.env.example) to `.env.local`. All three are required at run
 -  **Seasons:** `/tv/:seriesId/season/:seasonNumber` is defined as `$seriesId_.season.$seasonNumber.tsx` (trailing underscore = not nested under the series detail route). Its loader ensures both the series and the season query so the season page can show the series name and a season switcher without a second round trip.
 -  **Supabase:** Auth and favorites live in `src/services/supabase/` and are consumed only through `useAuth` and `useFavorites`. Favorites use optimistic updates with rollback. Rows are keyed by `(user_id, film_id, media_type)`; `useFavorites` exposes `isFavorited(filmId, mediaType)` and `toggle(favoriteInput)`. Schema changes live in `supabase/migrations/` and are applied through the Supabase SQL editor (no CLI in this repo).
 -  **User input:** Run search queries and other user input through [src/utils/sanitizeInput.ts](src/utils/sanitizeInput.ts) before passing them to an API.
+-  **Images:** Render TMDB artwork through `MediaImage` ([src/components/atoms/media-image/media-image.component.tsx](src/components/atoms/media-image/media-image.component.tsx)), never a bare `<img>`. It swaps in a themed skeleton when the path is null or the request fails, so the broken-image icon never shows. Pass `fallbackClassName` with an aspect ratio when the image sizes itself.
 
 ## Responsive Design
 
