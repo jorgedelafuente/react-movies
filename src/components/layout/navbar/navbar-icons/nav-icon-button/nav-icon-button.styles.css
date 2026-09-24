@@ -1,0 +1,72 @@
+/*
+ * Round icon button for the navbar's utility corner. Same surface language as
+ * the search pill and the ViewToggle track (a 1px `border-bold` edge on the
+ * subtle fill): quiet at rest, lifts onto the page background with an accent
+ * glyph on hover, sinks a little while pressed. Tokens flip with the theme
+ * because the navbar root carries the `dark` class.
+ */
+.nav-icon-button {
+   position: relative;
+   display: grid;
+   place-items: center;
+   width: 2.5rem;
+   height: 2.5rem;
+   border: 1px solid hsl(var(--color-border-bold) / 0.35);
+   border-radius: 9999px;
+   background: hsl(var(--color-bg-subtle) / 0.7);
+   color: hsl(var(--color-text-copy) / 0.75);
+   cursor: pointer;
+   transition:
+      background-color 150ms ease,
+      border-color 150ms ease,
+      color 150ms ease,
+      box-shadow 150ms ease,
+      transform 150ms ease;
+}
+
+.nav-icon-button:hover {
+   background: hsl(var(--color-bg-neutral) / 1);
+   border-color: hsl(var(--color-border-bold) / 0.6);
+   color: hsl(var(--color-accent) / 1);
+   box-shadow: 0 1px 3px rgb(0 0 0 / 0.18);
+}
+
+.nav-icon-button:active {
+   transform: scale(0.94);
+   box-shadow: none;
+}
+
+.nav-icon-button:focus-visible {
+   outline: 2px solid hsl(var(--color-accent) / 1);
+   outline-offset: 2px;
+}
+
+/*
+ * Glyphs: 20px line icons in currentColor. They all share the button's centre
+ * cell so a control can stack two and cross-fade between them.
+ */
+.nav-icon-button__icon {
+   grid-area: 1 / 1;
+   width: 1.25rem;
+   height: 1.25rem;
+   fill: none;
+   stroke: currentColor;
+   stroke-width: 1.75;
+   stroke-linecap: round;
+   stroke-linejoin: round;
+}
+
+/* The soft accent wash that fills a glyph's body (the FavoriteButton's `fill-accent/20`). */
+.nav-icon-button__tint {
+   fill: hsl(var(--color-accent) / 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+   .nav-icon-button {
+      transition: none;
+   }
+
+   .nav-icon-button:active {
+      transform: none;
+   }
+}
