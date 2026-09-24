@@ -68,6 +68,6 @@ const MoonGlyph = () => (
          d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"
          className="nav-icon-button__tint"
       />
-      <path d="M18 2.5v3M16.5 4h3" />
+      <path d="M19 2v3M17.5 3.5h3" />
    </svg>
 );

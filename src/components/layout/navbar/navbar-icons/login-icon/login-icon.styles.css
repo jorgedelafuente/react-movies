@@ -1,0 +1,14 @@
+/*
+ * Presence dot on the signed-in account button: a small accent disc in the
+ * pill's top-right, clear of both the figure and the border, so it reads as a
+ * status light rather than part of the glyph.
+ */
+.login-icon__status {
+   position: absolute;
+   top: 0.5rem;
+   right: 0.5rem;
+   width: 0.375rem;
+   height: 0.375rem;
+   border-radius: 9999px;
+   background: hsl(var(--color-accent) / 1);
+}

@@ -1,7 +1,16 @@
+import './login-icon.styles.css';
+
 import AuthModal from '@/components/auth/auth-modal/auth-modal.component';
 import { AUTH_MODAL_MODE } from '@/types/auth.types';
 import { useAuth } from '@/utils/hooks/useAuth';
 
+import NavIconButton from '../nav-icon-button/nav-icon-button.component';
+
+/**
+ * Account button. Signed out it is an outline figure that opens the sign-in
+ * modal; signed in the figure fills with the accent tint and gains a small
+ * accent presence dot, and the click opens the sign-out modal.
+ */
 const LoginIcon = ({ tabIndex }: { tabIndex?: number }) => {
    const user = useAuth((s) => s.user);
    const setModalOpen = useAuth((s) => s.setModalOpen);
@@ -16,14 +25,15 @@ const LoginIcon = ({ tabIndex }: { tabIndex?: number }) => {
 
    return (
       <>
-         <button
-            className="cursor-pointer"
-            tabIndex={tabIndex}
+         <NavIconButton
+            label={user ? 'Sign out' : 'Sign in'}
             onClick={handleClick}
-            aria-label={user ? 'Sign out' : 'Sign in'}
+            tabIndex={tabIndex}
+            data-signed-in={user ? '' : undefined}
          >
-            {user ? <LoggedInIcon /> : <LoggedOutIcon />}
-         </button>
+            <UserGlyph filled={Boolean(user)} />
+            {user && <span aria-hidden="true" className="login-icon__status" />}
+         </NavIconButton>
          <AuthModal />
       </>
    );
@@ -31,30 +41,16 @@ const LoginIcon = ({ tabIndex }: { tabIndex?: number }) => {
 
 export default LoginIcon;
 
-const LoggedOutIcon = () => (
-   <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="mr-2 h-6 w-6"
-   >
-      <circle cx="12" cy="8" r="3" className="fill-accent/20 stroke-accent" />
-      <path d="M6 20a6 6 0 0 1 12 0" className="stroke-accent" />
-   </svg>
-);
-
-const LoggedInIcon = () => (
-   <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="mr-2 h-6 w-6"
-   >
-      <circle cx="12" cy="8" r="3" className="fill-accent stroke-accent" />
-      <path d="M6 20a6 6 0 0 1 12 0" className="fill-accent stroke-accent" />
-   </svg>
-);
+const UserGlyph = ({ filled }: { filled: boolean }) => {
+   const tint = filled ? 'nav-icon-button__tint' : undefined;
+   return (
+      <svg
+         aria-hidden="true"
+         viewBox="0 0 24 24"
+         className="nav-icon-button__icon"
+      >
+         <circle cx="12" cy="8" r="3.75" className={tint} />
+         <path d="M5 20.5a7 7 0 0 1 14 0Z" className={tint} />
+      </svg>
+   );
+};
