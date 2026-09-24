@@ -16,7 +16,6 @@ import { Route as PopularIndexRouteImport } from './routes/popular/index'
 import { Route as NowPlayingIndexRouteImport } from './routes/now-playing/index'
 import { Route as FavoritesIndexRouteImport } from './routes/favorites/index'
 import { Route as DiscoverIndexRouteImport } from './routes/discover/index'
-import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as TvSeriesIdRouteImport } from './routes/tv/$seriesId'
 import { Route as PersonPersonIdRouteImport } from './routes/person/$personId'
 import { Route as FilmFilmIdRouteImport } from './routes/film/$filmId'
@@ -58,11 +57,6 @@ const FavoritesIndexRoute = FavoritesIndexRouteImport.update({
 const DiscoverIndexRoute = DiscoverIndexRouteImport.update({
   id: '/discover/',
   path: '/discover/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutIndexRoute = AboutIndexRouteImport.update({
-  id: '/about/',
-  path: '/about/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TvSeriesIdRoute = TvSeriesIdRouteImport.update({
@@ -113,7 +107,6 @@ export interface FileRoutesByFullPath {
   '/film/$filmId': typeof FilmFilmIdRoute
   '/person/$personId': typeof PersonPersonIdRoute
   '/tv/$seriesId': typeof TvSeriesIdRoute
-  '/about/': typeof AboutIndexRoute
   '/discover/': typeof DiscoverIndexRoute
   '/favorites/': typeof FavoritesIndexRoute
   '/now-playing/': typeof NowPlayingIndexRoute
@@ -130,7 +123,6 @@ export interface FileRoutesByTo {
   '/film/$filmId': typeof FilmFilmIdRoute
   '/person/$personId': typeof PersonPersonIdRoute
   '/tv/$seriesId': typeof TvSeriesIdRoute
-  '/about': typeof AboutIndexRoute
   '/discover': typeof DiscoverIndexRoute
   '/favorites': typeof FavoritesIndexRoute
   '/now-playing': typeof NowPlayingIndexRoute
@@ -148,7 +140,6 @@ export interface FileRoutesById {
   '/film/$filmId': typeof FilmFilmIdRoute
   '/person/$personId': typeof PersonPersonIdRoute
   '/tv/$seriesId': typeof TvSeriesIdRoute
-  '/about/': typeof AboutIndexRoute
   '/discover/': typeof DiscoverIndexRoute
   '/favorites/': typeof FavoritesIndexRoute
   '/now-playing/': typeof NowPlayingIndexRoute
@@ -167,7 +158,6 @@ export interface FileRouteTypes {
     | '/film/$filmId'
     | '/person/$personId'
     | '/tv/$seriesId'
-    | '/about/'
     | '/discover/'
     | '/favorites/'
     | '/now-playing/'
@@ -184,7 +174,6 @@ export interface FileRouteTypes {
     | '/film/$filmId'
     | '/person/$personId'
     | '/tv/$seriesId'
-    | '/about'
     | '/discover'
     | '/favorites'
     | '/now-playing'
@@ -201,7 +190,6 @@ export interface FileRouteTypes {
     | '/film/$filmId'
     | '/person/$personId'
     | '/tv/$seriesId'
-    | '/about/'
     | '/discover/'
     | '/favorites/'
     | '/now-playing/'
@@ -219,7 +207,6 @@ export interface RootRouteChildren {
   FilmFilmIdRoute: typeof FilmFilmIdRoute
   PersonPersonIdRoute: typeof PersonPersonIdRoute
   TvSeriesIdRoute: typeof TvSeriesIdRoute
-  AboutIndexRoute: typeof AboutIndexRoute
   DiscoverIndexRoute: typeof DiscoverIndexRoute
   FavoritesIndexRoute: typeof FavoritesIndexRoute
   NowPlayingIndexRoute: typeof NowPlayingIndexRoute
@@ -283,13 +270,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiscoverIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/about/': {
-      id: '/about/'
-      path: '/about'
-      fullPath: '/about/'
-      preLoaderRoute: typeof AboutIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/tv/$seriesId': {
       id: '/tv/$seriesId'
       path: '/tv/$seriesId'
@@ -347,7 +327,6 @@ const rootRouteChildren: RootRouteChildren = {
   FilmFilmIdRoute: FilmFilmIdRoute,
   PersonPersonIdRoute: PersonPersonIdRoute,
   TvSeriesIdRoute: TvSeriesIdRoute,
-  AboutIndexRoute: AboutIndexRoute,
   DiscoverIndexRoute: DiscoverIndexRoute,
   FavoritesIndexRoute: FavoritesIndexRoute,
   NowPlayingIndexRoute: NowPlayingIndexRoute,
