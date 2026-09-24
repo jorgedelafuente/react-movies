@@ -72,6 +72,8 @@ Only the utilities in that column exist. `copy` and `bold` have no background ut
 
 `darkMode: 'class'`. The `dark` class is applied by the components that own a screen region, reading `useTheme`: the two page roots (Container, FlexContainer), the Navbar, and the search combobox root so its portalled popover is themed too. Nothing else toggles it, and nothing uses the `dark:` variant. If you render into a portal, apply the class yourself the way the search combobox does.
 
+The one place `.dark` cannot reach is the page's own scrollbar, which belongs to `<html>`, above every themed root. `--color-scrollbar-thumb` and `--color-scrollbar-track` (grey-40 on white in light, grey-60 on black in dark) are therefore re-pointed on `:root:has(.dark)` in global.css rather than on `.dark`. They have no Tailwind utilities; [src/styles/scrollbar.css](../src/styles/scrollbar.css) is their only consumer. It draws a 6px pill in a 10px gutter (a 2px transparent border with `background-clip: padding-box`), widens it to 8px and colours it `accent/75` on hover, full accent while dragging, and keeps the track see-through everywhere except the viewport, whose gutter takes the track token so it melts into the page. Firefox gets the same colours through `scrollbar-color` in an `@supports not selector(::-webkit-scrollbar)` block; the two branches must stay exclusive because Chromium ignores the pseudo-elements once `scrollbar-color` is set.
+
 ### Typography
 
 Two self-hosted variable fonts, loaded in [src/styles/index.css](../src/styles/index.css) and named in `--font-sans` / `--font-display`:

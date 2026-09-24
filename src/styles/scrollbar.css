@@ -1,21 +1,81 @@
+/*
+  Scrollbars. A slim rounded pill in a gutter that matches the page, so the
+  bar reads as part of the layout rather than browser chrome. Colours come
+  from the `--color-scrollbar-*` tokens in global.css, the only tokens the
+  document root re-points for dark mode (see the note there).
+
+  Chromium and Safari take the `::-webkit-scrollbar` pseudo-elements. Firefox
+  ignores them and takes the standard properties in the `@supports` block.
+  The two must stay exclusive: Chromium 121+ drops the pseudo-elements on any
+  element that sets `scrollbar-color` or `scrollbar-width`.
+*/
+
 ::-webkit-scrollbar {
    width: 10px;
+   height: 10px;
 }
 
-/* Track */
-::-webkit-scrollbar-track {
-   box-shadow: inset 0 0 5px var(--tertiary-background-color);
-   border-radius: 10px;
+/*
+  Nested scrollers (the film table, the search and keyword lists) sit on their
+  own panel colour, so their gutter stays see-through.
+*/
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+   background: transparent;
 }
 
-/* Handle */
+/*
+  The page's own gutter would otherwise show the body gradient behind the
+  layout root, so it takes the page colour explicitly. Chromium styles the
+  viewport scrollbar from <body> when <html> has `overflow: visible`, hence
+  both selectors.
+*/
+:root::-webkit-scrollbar-track,
+:root::-webkit-scrollbar-corner,
+body::-webkit-scrollbar-track,
+body::-webkit-scrollbar-corner {
+   background: hsl(var(--color-scrollbar-track) / 1);
+}
+
+/*
+  The transparent border with `background-clip: padding-box` turns the thumb
+  into a 6px pill floating in the 10px gutter; hover thins the border so the
+  pill grows to 8px. Scrollbar parts cannot transition, so the step is instant.
+*/
 ::-webkit-scrollbar-thumb {
-   background: var(--tertiary-background-color);
-   border: 0.25px solid var(--secondary-background-color);
-   border-radius: 10px;
+   background-color: hsl(var(--color-scrollbar-thumb) / 1);
+   background-clip: padding-box;
+   border: 2px solid transparent;
+   border-radius: 9999px;
 }
 
-/* Handle on hover */
+/* Keep the pill grabbable on very long pages and wide tables. */
+::-webkit-scrollbar-thumb:vertical {
+   min-height: 2.5rem;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+   min-width: 2.5rem;
+}
+
 ::-webkit-scrollbar-thumb:hover {
-   background: var(--primary-background-color);
+   background-color: hsl(var(--color-accent) / 0.75);
+   border-width: 1px;
+}
+
+::-webkit-scrollbar-thumb:active {
+   background-color: hsl(var(--color-accent) / 1);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+   :root {
+      scrollbar-width: thin;
+      scrollbar-color: hsl(var(--color-scrollbar-thumb) / 1)
+         hsl(var(--color-scrollbar-track) / 1);
+   }
+
+   /* Inherited by every nested scroller; the viewport keeps the :root value. */
+   body {
+      scrollbar-color: hsl(var(--color-scrollbar-thumb) / 1) transparent;
+   }
 }

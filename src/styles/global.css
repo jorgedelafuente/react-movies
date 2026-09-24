@@ -128,6 +128,15 @@
       --color-text-copy: var(--color-grey-100);
       /* Interactive accent: links, hover, focus rings, selected state. Same in both themes. */
       --color-accent: var(--color-sky);
+
+      /*
+        Scrollbar (styles/scrollbar.css). The page's own scrollbar belongs to
+        <html>, which sits above the layout roots that carry `.dark`, so these
+        two are re-pointed on `:root:has(.dark)` below instead of on `.dark`.
+        The track matches the page background so the gutter disappears.
+      */
+      --color-scrollbar-thumb: var(--color-grey-40);
+      --color-scrollbar-track: var(--color-grey-0);
    }
 
    @media screen(sm) {
@@ -156,5 +165,11 @@
       --color-bg-subtle: var(--color-grey-80);
       --color-border-bold: var(--color-grey-40);
       --color-text-copy: var(--color-grey-0);
+   }
+
+   /* See the scrollbar note in :root above. */
+   :root:has(.dark) {
+      --color-scrollbar-thumb: var(--color-grey-60);
+      --color-scrollbar-track: var(--color-grey-100);
    }
 }
