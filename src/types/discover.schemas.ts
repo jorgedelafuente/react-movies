@@ -30,13 +30,35 @@ export const DISCOVER_MIN_YEAR = 1900;
 export const DISCOVER_MAX_PAGE = 500; // TMDB hard limit
 
 /**
+ * TMDB watch-provider ids (`/watch/providers/{type}`) for the services that
+ * operate in nearly every region. Ids are global; availability is looked up
+ * in the visitor's region, so region-locked services (Hulu, Peacock) are left
+ * out rather than returning empty lists abroad.
+ */
+export const STREAMING_PROVIDERS = [
+   { id: 350, name: 'Apple TV' },
+   { id: 337, name: 'Disney+' },
+   { id: 1899, name: 'HBO Max' },
+   { id: 8, name: 'Netflix' },
+   { id: 9, name: 'Prime Video' },
+] as const;
+
+export type StreamingProviderId = (typeof STREAMING_PROVIDERS)[number]['id'];
+
+const STREAMING_PROVIDER_IDS: StreamingProviderId[] = STREAMING_PROVIDERS.map(
+   (p) => p.id
+);
+
+/**
  * URL search params for `/discover`. Every field is optional and falls back
  * silently on bad input so a hand-edited URL never throws.
  */
 export const DiscoverSearchSchema = z.object({
    type: MediaTypeSchema.optional().catch(undefined),
    genre: z.number().int().positive().optional().catch(undefined),
+   keyword: z.number().int().positive().optional().catch(undefined),
    sort: z.enum(DISCOVER_SORTS).optional().catch(undefined),
+   provider: z.literal(STREAMING_PROVIDER_IDS).optional().catch(undefined),
    year: z
       .number()
       .int()
@@ -58,7 +80,9 @@ export type DiscoverSearch = z.infer<typeof DiscoverSearchSchema>;
 export type DiscoverParams = {
    type: MediaType;
    genre?: number;
+   keyword?: number;
    sort: DiscoverSort;
+   provider?: StreamingProviderId;
    year?: number;
    page: number;
 };
@@ -76,7 +100,9 @@ export const resolveDiscoverSearch = (
    return {
       type,
       genre: search.genre,
+      keyword: search.keyword,
       sort,
+      provider: search.provider,
       year: search.year,
       page: search.page ?? 1,
    };

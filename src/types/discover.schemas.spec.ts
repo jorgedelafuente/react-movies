@@ -19,14 +19,18 @@ describe('discover schemas', () => {
             DiscoverSearchSchema.parse({
                type: 'tv',
                genre: 18,
+               keyword: 4379,
                sort: 'rating',
+               provider: 350,
                year: 2015,
                page: 3,
             })
          ).toEqual({
             type: 'tv',
             genre: 18,
+            keyword: 4379,
             sort: 'rating',
+            provider: 350,
             year: 2015,
             page: 3,
          });
@@ -36,17 +40,28 @@ describe('discover schemas', () => {
          const parsed = DiscoverSearchSchema.parse({
             type: 'podcast',
             genre: -4,
+            keyword: 'heist',
             sort: 'loudest',
+            provider: 'netflix',
             year: 1800,
             page: 9999,
          });
          expect(parsed).toEqual({
             type: undefined,
             genre: undefined,
+            keyword: undefined,
             sort: undefined,
+            provider: undefined,
             year: undefined,
             page: undefined,
          });
+      });
+
+      it('drops a provider id that is not in the curated list', () => {
+         // 15 is Hulu, a real TMDB id, but US-only and not offered here
+         expect(DiscoverSearchSchema.parse({ provider: 15 }).provider).toBe(
+            undefined
+         );
       });
 
       it('parses an empty search', () => {
@@ -59,10 +74,21 @@ describe('discover schemas', () => {
          expect(resolveDiscoverSearch({})).toEqual({
             type: MEDIA_TYPES.MOVIE,
             genre: undefined,
+            keyword: undefined,
             sort: DISCOVER_SORTS.POPULAR,
+            provider: undefined,
             year: undefined,
             page: 1,
          });
+      });
+
+      it('passes the provider through for both media types', () => {
+         expect(
+            resolveDiscoverSearch({ type: 'movie', provider: 8 }).provider
+         ).toBe(8);
+         expect(
+            resolveDiscoverSearch({ type: 'tv', provider: 8 }).provider
+         ).toBe(8);
       });
 
       it('keeps a revenue sort for movies', () => {

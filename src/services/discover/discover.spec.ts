@@ -35,6 +35,30 @@ describe('buildDiscoverQuery', () => {
       expect(q.has('primary_release_year')).toBe(false);
    });
 
+   it('filters by keyword id', () => {
+      const q = params(buildDiscoverQuery({ ...base, keyword: 4379 }));
+      expect(q.get('with_keywords')).toBe('4379');
+      expect(params(buildDiscoverQuery(base)).has('with_keywords')).toBe(false);
+   });
+
+   it('filters by streaming provider in the given region', () => {
+      const q = params(buildDiscoverQuery({ ...base, provider: 350 }, 'ES'));
+      expect(q.get('with_watch_providers')).toBe('350');
+      expect(q.get('watch_region')).toBe('ES');
+   });
+
+   it("defaults the watch region to the visitor's locale", () => {
+      // jsdom reports `en-US`
+      const q = params(buildDiscoverQuery({ ...base, provider: 8 }));
+      expect(q.get('watch_region')).toBe('US');
+   });
+
+   it('sends no provider or region params when no service is chosen', () => {
+      const q = params(buildDiscoverQuery(base, 'ES'));
+      expect(q.has('with_watch_providers')).toBe(false);
+      expect(q.has('watch_region')).toBe(false);
+   });
+
    it('adds a vote floor when sorting by rating', () => {
       const q = params(
          buildDiscoverQuery({ ...base, sort: DISCOVER_SORTS.RATING })
@@ -60,6 +84,18 @@ describe('buildDiscoverQuery', () => {
       );
       expect(tv.get('sort_by')).toBe('first_air_date.desc');
       expect(tv.get('first_air_date.lte')).toBe(today);
+   });
+
+   it('adds a small vote floor when sorting by newest so filler drops out', () => {
+      const q = params(
+         buildDiscoverQuery({ ...base, sort: DISCOVER_SORTS.NEWEST })
+      );
+      expect(Number(q.get('vote_count.gte'))).toBeGreaterThan(0);
+   });
+
+   it('sends no vote floor for the popularity sort', () => {
+      const q = params(buildDiscoverQuery(base));
+      expect(q.has('vote_count.gte')).toBe(false);
    });
 
    it('sorts by revenue when asked', () => {
