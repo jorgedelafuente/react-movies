@@ -5,6 +5,7 @@ import {
    RouterProvider,
 } from '@tanstack/react-router';
 import { act, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { renderWithQueryContext } from '@/tests/test-utils';
 
@@ -28,40 +29,51 @@ const renderNavbar = async () => {
    });
 };
 
-describe('Navbar Component', () => {
-   it('points the Series group at the series list routes', async () => {
-      await renderNavbar();
-      const series = within(screen.getByRole('group', { name: 'Series' }));
+const openMenu = async (label: string) => {
+   const user = userEvent.setup();
+   await user.click(screen.getByRole('button', { name: `${label} menu` }));
+   return user;
+};
 
-      expect(series.getByRole('link', { name: 'Popular' })).toHaveAttribute(
-         'href',
-         '/series/popular'
-      );
-      expect(series.getByRole('link', { name: 'Top Rated' })).toHaveAttribute(
-         'href',
-         '/series/top-rated'
-      );
-      expect(series.getByRole('link', { name: 'On The Air' })).toHaveAttribute(
-         'href',
-         '/series/on-the-air'
-      );
+describe('Navbar Component', () => {
+   it('opens the Series menu with links to the series list routes', async () => {
+      await renderNavbar();
+      await openMenu('Series');
+
+      const items = within(screen.getByRole('menu'));
+      expect(
+         items.getByRole('menuitem', { name: 'Popular' })
+      ).toBeInTheDocument();
+      expect(
+         items.getByRole('menuitem', { name: 'Top Rated' })
+      ).toBeInTheDocument();
+      expect(
+         items.getByRole('menuitem', { name: 'On The Air' })
+      ).toBeInTheDocument();
    });
 
-   it('points the Films group at the film list routes', async () => {
+   it('opens the Films menu with links to the film list routes', async () => {
       await renderNavbar();
-      const films = within(screen.getByRole('group', { name: 'Films' }));
+      await openMenu('Films');
 
-      expect(films.getByRole('link', { name: 'Popular' })).toHaveAttribute(
-         'href',
-         '/popular'
-      );
-      expect(films.getByRole('link', { name: 'Top Rated' })).toHaveAttribute(
-         'href',
-         '/top-rated'
-      );
-      expect(films.getByRole('link', { name: 'Upcoming' })).toHaveAttribute(
-         'href',
-         '/upcoming'
-      );
+      const items = within(screen.getByRole('menu'));
+      expect(
+         items.getByRole('menuitem', { name: 'Popular' })
+      ).toBeInTheDocument();
+      expect(
+         items.getByRole('menuitem', { name: 'Top Rated' })
+      ).toBeInTheDocument();
+      expect(
+         items.getByRole('menuitem', { name: 'Upcoming' })
+      ).toBeInTheDocument();
+   });
+
+   it('navigates to the selected route when a Films menu item is chosen', async () => {
+      await renderNavbar();
+      const user = await openMenu('Films');
+
+      await user.click(screen.getByRole('menuitem', { name: 'Upcoming' }));
+
+      expect(router.state.location.pathname).toBe('/upcoming');
    });
 });

@@ -4,9 +4,23 @@ import NavLink from '@/components/atoms/link/navlink.component';
 import { THEME_OPTIONS } from '@/types/theme.types';
 import { useTheme } from '@/utils/hooks/useTheme';
 
+import NavMenu from './nav-menu/nav-menu.component';
 import LoginIcon from './navbar-icons/login-icon/login-icon.component';
 import ThemeToggleIcon from './navbar-icons/theme-toggle-icon/theme-toggle-icon.component';
 import SearchInput from './search-input/search-input.component';
+
+const FILM_LINKS = [
+   { path: '/popular', text: 'Popular' },
+   { path: '/top-rated', text: 'Top Rated' },
+   { path: '/upcoming', text: 'Upcoming' },
+   { path: '/now-playing', text: 'Now Playing' },
+];
+
+const SERIES_LINKS = [
+   { path: '/series/popular', text: 'Popular' },
+   { path: '/series/top-rated', text: 'Top Rated' },
+   { path: '/series/on-the-air', text: 'On The Air' },
+];
 
 const Navbar = () => {
    const theme = useTheme((state) => state.theme);
@@ -41,57 +55,11 @@ const Navbar = () => {
          <div className="flex w-full items-start justify-between sm:items-center">
             <nav
                aria-label="Browse"
-               className="flex flex-col gap-1 sm:flex-row sm:gap-6"
+               className="flex items-center gap-4 sm:gap-6"
             >
-               <div
-                  role="group"
-                  aria-label="Films"
-                  className="flex flex-wrap items-center"
-               >
-                  <span
-                     className="mr-2 text-xs font-semibold uppercase tracking-wider text-copy/60"
-                     aria-hidden="true"
-                  >
-                     Films
-                  </span>
-                  <NavLink path="/popular" text="Popular" />
-                  <span className="p-1 text-copy/40" aria-hidden="true">
-                     |
-                  </span>
-                  <NavLink path="/top-rated" text="Top Rated" />
-                  <span className="p-1 text-copy/40" aria-hidden="true">
-                     |
-                  </span>
-                  <NavLink path="/upcoming" text="Upcoming" />
-                  <span className="p-1 text-copy/40" aria-hidden="true">
-                     |
-                  </span>
-                  <NavLink path="/now-playing" text="Now Playing" />
-               </div>
-               <div
-                  role="group"
-                  aria-label="Series"
-                  className="flex flex-wrap items-center"
-               >
-                  <span
-                     className="mr-2 text-xs font-semibold uppercase tracking-wider text-copy/60"
-                     aria-hidden="true"
-                  >
-                     Series
-                  </span>
-                  <NavLink path="/series/popular" text="Popular" />
-                  <span className="p-1 text-copy/40" aria-hidden="true">
-                     |
-                  </span>
-                  <NavLink path="/series/top-rated" text="Top Rated" />
-                  <span className="p-1 text-copy/40" aria-hidden="true">
-                     |
-                  </span>
-                  <NavLink path="/series/on-the-air" text="On The Air" />
-               </div>
-               <div className="flex items-center">
-                  <NavLink path="/discover" text="Discover" />
-               </div>
+               <NavMenu label="Films" links={FILM_LINKS} />
+               <NavMenu label="Series" links={SERIES_LINKS} />
+               <NavLink path="/discover" text="Discover" />
             </nav>
             <div className="flex items-center gap-1">
                <ThemeToggleIcon tabIndex={0} />
