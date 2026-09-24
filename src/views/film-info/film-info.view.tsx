@@ -3,14 +3,13 @@ import './film-info.styles.css';
 import CardGrid from '@/components/atoms/card-grid/card-grid.component';
 import { ExternalLink } from '@/components/atoms/link/external-link.component';
 import MediaImage from '@/components/atoms/media-image/media-image.component';
-import {
-   EYEBROW,
-   Stat,
-   StatNote,
-} from '@/components/atoms/stat/stat.component';
+import ScoreRing from '@/components/atoms/score-ring/score-ring.component';
+import { EYEBROW, Stat } from '@/components/atoms/stat/stat.component';
 import StickyTitle from '@/components/atoms/sticky-title/sticky-title.component';
 import CastList from '@/components/cast-list/cast-list.component';
-import FavoriteButton from '@/components/favorite-button/favorite-button.component';
+import FavoriteButton, {
+   FAVORITE_ROUND,
+} from '@/components/favorite-button/favorite-button.component';
 import FilmCard from '@/components/film-card/film-card.component';
 import ImageGallery from '@/components/image-gallery/image-gallery.component';
 import Container from '@/components/layout/container/container.component';
@@ -27,27 +26,18 @@ import type {
    FilmVideoType,
 } from '@/types/films.schemas';
 import { MEDIA_TYPES } from '@/types/media.types';
+import { formatRuntime } from '@/utils/formatRuntime';
 import { formatReleaseDate } from '@/utils/releaseDates';
 
 const CREW_JOBS = new Set(['Director', 'Screenplay', 'Writer']);
 const CAST_LIMIT = 8;
 
 const formatCurrency = (amount: number) =>
-   amount > 0
-      ? new Intl.NumberFormat('en-US', {
-           style: 'currency',
-           currency: 'USD',
-           maximumFractionDigits: 0,
-        }).format(amount)
-      : 'N/A';
-
-/** TMDB reports runtime in minutes: `128` → `2h 8m`, `45` → `45m`. */
-const formatRuntime = (minutes: number) => {
-   const hours = Math.floor(minutes / 60);
-   const rest = minutes % 60;
-   if (hours === 0) return `${rest}m`;
-   return rest === 0 ? `${hours}h` : `${hours}h ${rest}m`;
-};
+   new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+   }).format(amount);
 
 const extractYear = (dateStr: string) => dateStr.slice(0, 4) || undefined;
 
@@ -96,11 +86,12 @@ const FilmInfo = ({
                <MediaImage
                   path={filmInfo.poster_path}
                   alt=""
-                  fallbackClassName="mx-auto aspect-[2/3] w-full max-w-[500px] rounded-[25px]"
+                  className="mx-auto rounded-[25px] shadow-2xl"
+                  fallbackClassName="aspect-[2/3] w-full max-w-[500px]"
                />
             </div>
 
-            <div className="text-content gap-6 rounded-lg p-5 text-copy sm:p-8">
+            <div className="text-content mt-4 gap-6 rounded-lg p-5 text-copy sm:p-8">
                <header className="flex flex-col items-center gap-2">
                   <h2 className="text-display-lg">{filmInfo.title}</h2>
                   {filmInfo.tagline && (
@@ -126,13 +117,18 @@ const FilmInfo = ({
                   )}
                </header>
 
-               {/* FavoriteButton renders nothing when signed out; collapse the slot so the gap does not double. */}
-               <div className="flex justify-center empty:hidden">
+               {/* FavoriteButton renders nothing when signed out, so the row is just the ring. */}
+               <div className="flex flex-wrap items-center justify-center gap-6">
+                  <ScoreRing
+                     score={filmInfo.vote_average}
+                     votes={filmInfo.vote_count}
+                  />
                   <FavoriteButton
                      filmId={filmInfo.id}
                      filmTitle={filmInfo.title}
                      filmPosterPath={filmInfo.poster_path}
                      filmReleaseDate={filmInfo.release_date}
+                     className={FAVORITE_ROUND}
                   />
                </div>
 
@@ -161,28 +157,8 @@ const FilmInfo = ({
                   </section>
                )}
 
-               <dl className="grid grid-cols-2 gap-x-4 gap-y-5 border-y border-copy/10 py-5 sm:grid-cols-3">
-                  <Stat label="Rating">
-                     {filmInfo.vote_average !== undefined ? (
-                        <>
-                           <span aria-hidden="true" className="mr-1 text-base">
-                              ★
-                           </span>
-                           {filmInfo.vote_average.toFixed(1)}
-                           <span className="text-sm font-normal text-copy/60">
-                              {' '}
-                              / 10
-                           </span>
-                           {filmInfo.vote_count !== undefined && (
-                              <StatNote>
-                                 {filmInfo.vote_count.toLocaleString()} votes
-                              </StatNote>
-                           )}
-                        </>
-                     ) : (
-                        'N/A'
-                     )}
-                  </Stat>
+               {/* Two columns on phones (an odd last cell spans both so it centres); from `sm` a centred strip that wraps evenly whatever the count. */}
+               <dl className="grid grid-cols-2 gap-x-4 gap-y-5 border-y border-copy/10 py-5 sm:flex sm:flex-wrap sm:justify-center sm:gap-x-12 [&>:last-child:nth-child(odd)]:col-span-2">
                   <Stat label="Status">{filmInfo.status ?? 'N/A'}</Stat>
                   <Stat label="Released">
                      {filmInfo.release_date
@@ -190,16 +166,17 @@ const FilmInfo = ({
                         : 'N/A'}
                   </Stat>
                   {language && <Stat label="Language">{language}</Stat>}
-                  {filmInfo.budget !== undefined && (
+                  {/* TMDB reports 0 for unknown money; a row of N/A would only be noise. */}
+                  {filmInfo.budget ? (
                      <Stat label="Budget">
                         {formatCurrency(filmInfo.budget)}
                      </Stat>
-                  )}
-                  {filmInfo.revenue !== undefined && (
+                  ) : null}
+                  {filmInfo.revenue ? (
                      <Stat label="Revenue">
                         {formatCurrency(filmInfo.revenue)}
                      </Stat>
-                  )}
+                  ) : null}
                </dl>
 
                {filmInfo.production_companies &&
@@ -235,14 +212,13 @@ const FilmInfo = ({
             </div>
 
             {filmTrailer && (
-               <div className="mt-4 rounded-lg">
+               <div className="hero-trailer mt-4 overflow-hidden rounded-lg shadow-lg">
                   <iframe
-                     className="m-auto rounded-lg"
-                     id={filmInfo.title}
-                     title={filmInfo.title}
-                     width="100%"
-                     height="800"
+                     className="h-full w-full"
+                     title={`${filmInfo.title} trailer`}
                      src={`https://www.youtube.com/embed/${filmTrailer.key}`}
+                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                     allowFullScreen
                   />
                </div>
             )}
@@ -256,22 +232,14 @@ const FilmInfo = ({
                   {(directors.length > 0 || writers.length > 0) && (
                      <dl className="flex flex-wrap justify-center gap-x-10 gap-y-4">
                         {directors.length > 0 && (
-                           <div className="flex flex-col items-center gap-1">
-                              <dt className={EYEBROW}>
-                                 Director{directors.length > 1 ? 's' : ''}
-                              </dt>
-                              <dd className="font-display text-lg font-semibold">
-                                 {directors.map((d) => d.name).join(', ')}
-                              </dd>
-                           </div>
+                           <Stat
+                              label={`Director${directors.length > 1 ? 's' : ''}`}
+                           >
+                              {directors.map((d) => d.name).join(', ')}
+                           </Stat>
                         )}
                         {writers.length > 0 && (
-                           <div className="flex flex-col items-center gap-1">
-                              <dt className={EYEBROW}>Writers</dt>
-                              <dd className="font-display text-lg font-semibold">
-                                 {writers.join(', ')}
-                              </dd>
-                           </div>
+                           <Stat label="Writers">{writers.join(', ')}</Stat>
                         )}
                      </dl>
                   )}

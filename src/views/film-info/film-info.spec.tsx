@@ -76,6 +76,38 @@ describe('Film Info Component', () => {
       ).toBeInTheDocument();
    });
 
+   it('puts the score in the ring with its vote count', async () => {
+      await renderView();
+
+      const ring = screen.getByTestId('score-ring');
+      expect(within(ring).getByText('7.7')).toBeInTheDocument();
+      expect(within(ring).getByText('3,046 votes')).toBeInTheDocument();
+   });
+
+   it('formats budget and revenue as whole dollars', async () => {
+      await renderView();
+
+      expect(screen.getByText(/^budget$/i).parentElement).toHaveTextContent(
+         '$200,000,000'
+      );
+      expect(screen.getByText(/^revenue$/i).parentElement).toHaveTextContent(
+         '$1,317,173,104'
+      );
+   });
+
+   it('drops the money stats when TMDB reports them as zero', async () => {
+      await renderView({
+         filmInfo: FilmInfoSchema.parse({
+            ...MOCK_FILM_INFO,
+            budget: 0,
+            revenue: 0,
+         }),
+      });
+
+      expect(screen.queryByText(/^budget$/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/^revenue$/i)).not.toBeInTheDocument();
+   });
+
    it('shows the age rating for the preferred region in the title meta strip', async () => {
       // jsdom reports navigator.language as en-US, so the US rating wins.
       await renderView();

@@ -4,7 +4,7 @@ import {
    createRouter,
    RouterProvider,
 } from '@tanstack/react-router';
-import { act, screen } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 
 // The embedded gallery and reviews fetch on mount; keep the view test off the network.
 vi.mock('@/services/images/images', () => ({
@@ -74,30 +74,48 @@ describe('Series Info Component', () => {
       ).toBeInTheDocument();
    });
 
-   it('shows TV specific facts: seasons, episodes, episode length, network', async () => {
+   it('sums up the run in the meta line: years, seasons and episodes', async () => {
       await renderView();
 
-      expect(screen.getByText(/seasons:/i).parentElement).toHaveTextContent(
-         'Seasons: 8'
-      );
-      expect(screen.getByText(/episodes:/i).parentElement).toHaveTextContent(
-         'Episodes: 73'
-      );
+      const heading = screen.getByRole('heading', {
+         level: 2,
+         name: 'Game of Thrones',
+      });
+      const header = heading.closest('header');
+      expect(header).toHaveTextContent('2011–2019');
+      expect(header).toHaveTextContent('8 seasons');
+      expect(header).toHaveTextContent('73 episodes');
+   });
+
+   it('puts the score in the ring with its vote count', async () => {
+      await renderView();
+
+      const ring = screen.getByTestId('score-ring');
+      expect(within(ring).getByText('8.5')).toBeInTheDocument();
+      expect(within(ring).getByText('24,680 votes')).toBeInTheDocument();
+   });
+
+   it('shows TV specific facts as eyebrow stats: episode length and network', async () => {
+      await renderView();
+
       expect(
-         screen.getByText(/episode length:/i).parentElement
-      ).toHaveTextContent('60 minutes');
-      expect(screen.getByText(/network:/i).parentElement).toHaveTextContent(
+         screen.getByText(/^episode length$/i).parentElement
+      ).toHaveTextContent('1h');
+      expect(screen.getByText(/^network$/i).parentElement).toHaveTextContent(
          'HBO'
+      );
+      expect(screen.getByText(/^type$/i).parentElement).toHaveTextContent(
+         'Scripted'
       );
    });
 
-   it('lists creators and the IMDB link from appended external ids', async () => {
+   it('lists creators and the IMDb link from appended external ids', async () => {
       await renderView();
 
-      expect(screen.getByText(/created by:/i).parentElement).toHaveTextContent(
+      expect(screen.getByText(/^created by$/i).parentElement).toHaveTextContent(
          'David Benioff, D. B. Weiss'
       );
-      expect(screen.getByRole('link', { name: 'IMDB' })).toHaveAttribute(
+      expect(screen.getByRole('link', { name: 'IMDb' })).toHaveAttribute(
          'href',
          'https://www.imdb.com/title/tt0944947'
       );

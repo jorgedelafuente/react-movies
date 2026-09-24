@@ -1,32 +1,30 @@
+/*
+ * Detail-page hero: the backdrop as a fixed cover image, edge to edge, with
+ * the poster and the panels stacked over it.
+ *
+ * `--panel-width` is the one column every child shares (the frosted panels
+ * and the trailer). Percentages inside it resolve against this container, so
+ * the panels keep a 1rem gutter on phones and stop growing at 72rem on wide
+ * screens instead of taking a fixed share of whatever the viewport is. The
+ * hero itself is full width so the backdrop bleeds to the viewport edges;
+ * the wrapping column with `align-content: center` is what centres the
+ * children as one block.
+ */
 .container-bg {
+   --panel-width: min(100% - 2rem, 72rem);
+
    display: flex;
    justify-content: center;
    flex-direction: column;
    align-content: center;
    flex-wrap: wrap;
+   width: 100%;
    padding-top: 20px;
    padding-bottom: 20px;
    background-position: center center;
    background-repeat: no-repeat;
    background-attachment: fixed;
    background-size: cover;
-   margin: 0 auto;
-}
-
-/*
- * The hero poster only (the poster sits in a bare wrapper div). Scoped with
- * child combinators so avatars and cards inside the panels keep their own
- * sizing and radius.
- */
-.container-bg > div > img {
-   height: 100%;
-   margin: 0 auto;
-   transition: opacity 0.3s;
-   border-radius: 25px;
-}
-
-.container-bg > div > img:hover {
-   opacity: 10%;
 }
 
 /*
@@ -36,13 +34,14 @@
  * backdrop shows through (blurred) while the copy keeps full contrast.
  * The tint comes from the neutral token, so it flips with the theme:
  * white glass with black text in light mode, black glass with white text
- * in dark mode.
+ * in dark mode. Vertical spacing between panels is the `mt-4` utility on
+ * each one; the stylesheet only owns the width.
  */
 .text-content {
    display: flex;
    flex-direction: column;
-   width: 80%;
-   margin: 10px;
+   width: var(--panel-width);
+   margin-inline: auto;
    background-color: hsl(var(--color-bg-neutral) / 0.9);
    border: 1px solid hsl(var(--color-text-copy) / 0.1);
    box-shadow: 0 8px 32px rgb(0 0 0 / 0.25);
@@ -60,10 +59,9 @@
    box-shadow: 0 16px 48px rgb(0 0 0 / 0.35);
 }
 
-@media only screen and (max-width: 600px) {
-   .text-content {
-      width: 90%;
-      margin: 0 auto;
-      margin-top: 50px;
-   }
+/* The embedded trailer: same column as the panels, always 16:9. */
+.hero-trailer {
+   width: var(--panel-width);
+   aspect-ratio: 16 / 9;
+   margin-inline: auto;
 }

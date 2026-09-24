@@ -1,0 +1,24 @@
+/*
+ * Score ring: the circular meter of the TMDB average on the detail pages.
+ *
+ * The arc is a circle with `pathLength="100"`, so its dash offset is simply
+ * `100 - percent` and is set inline from the score. The keyframe below only
+ * declares `from`; the browser fills `to` with that inline value, so the ring
+ * sweeps from empty to the score once on mount without the stylesheet knowing
+ * the number. A soft accent glow lifts the arc off the frosted panel.
+ */
+.score-ring__arc {
+   filter: drop-shadow(0 0 8px hsl(var(--color-accent) / 0.45));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+   .score-ring__arc {
+      animation: score-ring-fill 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+   }
+}
+
+@keyframes score-ring-fill {
+   from {
+      stroke-dashoffset: 100;
+   }
+}

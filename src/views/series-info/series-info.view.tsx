@@ -3,10 +3,19 @@ import '@/views/film-info/film-info.styles.css';
 import { Link } from '@tanstack/react-router';
 
 import CardGrid from '@/components/atoms/card-grid/card-grid.component';
+import { ExternalLink } from '@/components/atoms/link/external-link.component';
 import MediaImage from '@/components/atoms/media-image/media-image.component';
+import ScoreRing from '@/components/atoms/score-ring/score-ring.component';
+import {
+   EYEBROW,
+   Stat,
+   StatNote,
+} from '@/components/atoms/stat/stat.component';
 import StickyTitle from '@/components/atoms/sticky-title/sticky-title.component';
 import CastList from '@/components/cast-list/cast-list.component';
-import FavoriteButton from '@/components/favorite-button/favorite-button.component';
+import FavoriteButton, {
+   FAVORITE_ROUND,
+} from '@/components/favorite-button/favorite-button.component';
 import FilmCard from '@/components/film-card/film-card.component';
 import ImageGallery from '@/components/image-gallery/image-gallery.component';
 import Container from '@/components/layout/container/container.component';
@@ -19,16 +28,30 @@ import type {
 } from '@/types/films.schemas';
 import { MEDIA_TYPES } from '@/types/media.types';
 import type { SeriesInfoType } from '@/types/series.schemas';
+import { formatRuntime } from '@/utils/formatRuntime';
+import { formatReleaseDate } from '@/utils/releaseDates';
 
 const CAST_LIMIT = 8;
 
-const formatRuntime = (runtimes?: number[]) =>
-   runtimes && runtimes.length > 0
-      ? `${[...new Set(runtimes)].join(' / ')} minutes`
-      : 'N/A';
+/** Distinct episode lengths, e.g. `45m / 1h`. */
+const formatEpisodeLength = (runtimes: number[]) =>
+   [...new Set(runtimes.filter((minutes) => minutes > 0))]
+      .map(formatRuntime)
+      .join(' / ');
 
 const extractYear = (dateStr: string | null | undefined) =>
    dateStr && /^\d{4}/.test(dateStr) ? dateStr.slice(0, 4) : '—';
+
+/** `2011–2019`, or just `2011` when the run is a single year or still open. */
+const yearRange = (first: string | null, last: string | null | undefined) => {
+   const from = extractYear(first);
+   if (from === '—') return null;
+   const to = extractYear(last);
+   return to !== '—' && to !== from ? `${from}–${to}` : from;
+};
+
+const pluralise = (count: number, noun: string) =>
+   `${count.toLocaleString()} ${noun}${count === 1 ? '' : 's'}`;
 
 const SeriesInfo = ({
    seriesInfo,
@@ -42,9 +65,28 @@ const SeriesInfo = ({
    recommendations?: FilmRecommendationType[];
 }) => {
    const creators = seriesInfo.created_by ?? [];
+   const networks = seriesInfo.networks ?? [];
    const topCast = seriesCredits?.cast.slice(0, CAST_LIMIT) ?? [];
    const seasons = seriesInfo.seasons ?? [];
    const imdbId = seriesInfo.external_ids?.imdb_id;
+
+   const meta = [
+      yearRange(seriesInfo.first_air_date, seriesInfo.last_air_date),
+      seriesInfo.number_of_seasons !== undefined
+         ? pluralise(seriesInfo.number_of_seasons, 'season')
+         : null,
+      seriesInfo.number_of_episodes !== undefined
+         ? pluralise(seriesInfo.number_of_episodes, 'episode')
+         : null,
+   ].filter((item): item is string => item !== null);
+   const episodeLength = seriesInfo.episode_run_time
+      ? formatEpisodeLength(seriesInfo.episode_run_time)
+      : '';
+   const language = seriesInfo.original_language
+      ? (seriesInfo.spoken_languages?.find(
+           (l) => l.iso_639_1 === seriesInfo.original_language
+        )?.english_name ?? seriesInfo.original_language.toUpperCase())
+      : undefined;
 
    return (
       <Container>
@@ -59,175 +101,164 @@ const SeriesInfo = ({
                <MediaImage
                   path={seriesInfo.poster_path}
                   alt=""
-                  fallbackClassName="mx-auto aspect-[2/3] w-full max-w-[500px] rounded-[25px]"
+                  className="mx-auto rounded-[25px] shadow-2xl"
+                  fallbackClassName="aspect-[2/3] w-full max-w-[500px]"
                />
             </div>
 
-            <div className="text-content rounded-lg p-4 text-copy">
-               <h2 className="mb-2 text-display-lg">{seriesInfo.name}</h2>
-               {seriesInfo.tagline && (
-                  <h3 className="font-sans text-lg font-normal italic tracking-normal text-copy/75 sm:text-xl">
-                     {seriesInfo.tagline}
-                  </h3>
-               )}
+            <div className="text-content mt-4 gap-6 rounded-lg p-5 text-copy sm:p-8">
+               <header className="flex flex-col items-center gap-2">
+                  <h2 className="text-display-lg">{seriesInfo.name}</h2>
+                  {seriesInfo.tagline && (
+                     <p className="font-sans text-lg italic text-copy/70 sm:text-xl">
+                        {seriesInfo.tagline}
+                     </p>
+                  )}
+                  {meta.length > 0 && (
+                     <div className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm font-medium tabular-nums text-copy/80">
+                        {meta.map((item, index) => (
+                           <span
+                              key={item}
+                              className="flex items-center gap-x-3"
+                           >
+                              {index > 0 && <span aria-hidden="true">·</span>}
+                              {item}
+                           </span>
+                        ))}
+                     </div>
+                  )}
+               </header>
 
-               <div className="my-3 flex justify-center">
+               {/* FavoriteButton renders nothing when signed out, so the row is just the ring. */}
+               <div className="flex flex-wrap items-center justify-center gap-6">
+                  <ScoreRing
+                     score={seriesInfo.vote_average}
+                     votes={seriesInfo.vote_count}
+                  />
                   <FavoriteButton
                      filmId={seriesInfo.id}
                      mediaType={MEDIA_TYPES.TV}
                      filmTitle={seriesInfo.name}
                      filmPosterPath={seriesInfo.poster_path}
                      filmReleaseDate={seriesInfo.first_air_date ?? ''}
+                     className={FAVORITE_ROUND}
                   />
                </div>
 
-               <hr className="my-3 border-bold" />
-
                {seriesInfo.genres && seriesInfo.genres.length > 0 && (
-                  <div className="mt-3 flex flex-wrap justify-center gap-2">
-                     <span className="bg-primary rounded-full px-2 py-1 text-xs font-semibold uppercase tracking-wider text-copy/70">
-                        Genre
-                     </span>
+                  <ul
+                     aria-label="Genres"
+                     className="flex flex-wrap items-center justify-center gap-2"
+                  >
                      {seriesInfo.genres.map((genre) => (
-                        <span
+                        <li
                            key={genre.id}
-                           className="bg-primary rounded-full px-2 py-1 text-sm font-medium"
+                           className="rounded-full border border-copy/15 bg-neutral-inverted/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider"
                         >
                            {genre.name}
-                        </span>
+                        </li>
                      ))}
-                  </div>
+                  </ul>
                )}
-               <hr className="my-3 border-bold" />
 
-               <p className="leading-relaxed">
-                  <strong>Overview: </strong>
-                  {seriesInfo.overview}
-               </p>
+               {seriesInfo.overview && (
+                  <section className="mx-auto flex w-full max-w-prose flex-col gap-2 text-left">
+                     <h3 className={`font-sans ${EYEBROW}`}>Overview</h3>
+                     <p className="text-pretty leading-relaxed sm:text-lg">
+                        {seriesInfo.overview}
+                     </p>
+                  </section>
+               )}
 
-               <hr className="my-3 border-bold" />
-
-               <div className="tabular-nums">
-                  <strong>Rating: </strong>
-                  {seriesInfo.vote_average?.toFixed(1)} / 10
-                  {seriesInfo.vote_count !== undefined && (
-                     <span className="ml-2 text-sm opacity-70">
-                        ({seriesInfo.vote_count.toLocaleString()} votes)
-                     </span>
+               {/* Two columns on phones (an odd last cell spans both so it centres); from `sm` a centred strip that wraps evenly whatever the count. */}
+               <dl className="grid grid-cols-2 gap-x-4 gap-y-5 border-y border-copy/10 py-5 sm:flex sm:flex-wrap sm:justify-center sm:gap-x-12 [&>:last-child:nth-child(odd)]:col-span-2">
+                  <Stat label="Status">
+                     {seriesInfo.status ?? 'N/A'}
+                     {seriesInfo.in_production && (
+                        <StatNote>In production</StatNote>
+                     )}
+                  </Stat>
+                  {seriesInfo.type && (
+                     <Stat label="Type">{seriesInfo.type}</Stat>
                   )}
-               </div>
-               <div>
-                  <strong>Status: </strong>
-                  {seriesInfo.status ?? 'N/A'}
-                  {seriesInfo.in_production && (
-                     <span className="ml-2 text-sm opacity-70">
-                        (in production)
-                     </span>
+                  <Stat label="First aired">
+                     {seriesInfo.first_air_date
+                        ? formatReleaseDate(seriesInfo.first_air_date)
+                        : 'N/A'}
+                  </Stat>
+                  {seriesInfo.last_air_date && (
+                     <Stat label="Last aired">
+                        {formatReleaseDate(seriesInfo.last_air_date)}
+                     </Stat>
                   )}
-               </div>
-               {seriesInfo.type && (
-                  <div>
-                     <strong>Type: </strong>
-                     {seriesInfo.type}
-                  </div>
-               )}
-               <div className="tabular-nums">
-                  <strong>First Aired: </strong>
-                  {seriesInfo.first_air_date || 'N/A'}
-               </div>
-               {seriesInfo.last_air_date && (
-                  <div className="tabular-nums">
-                     <strong>Last Aired: </strong>
-                     {seriesInfo.last_air_date}
-                  </div>
-               )}
-               <div className="tabular-nums">
-                  <strong>Seasons: </strong>
-                  {seriesInfo.number_of_seasons ?? 'N/A'}
-                  <span className="mx-2 opacity-50">·</span>
-                  <strong>Episodes: </strong>
-                  {seriesInfo.number_of_episodes ?? 'N/A'}
-               </div>
-               <div className="tabular-nums">
-                  <strong>Episode Length: </strong>
-                  {formatRuntime(seriesInfo.episode_run_time)}
-               </div>
-               {seriesInfo.original_language && (
-                  <div>
-                     <strong>Original Language: </strong>
-                     {seriesInfo.spoken_languages?.find(
-                        (l) => l.iso_639_1 === seriesInfo.original_language
-                     )?.english_name ??
-                        seriesInfo.original_language.toUpperCase()}
-                  </div>
+                  {episodeLength && (
+                     <Stat label="Episode length">{episodeLength}</Stat>
+                  )}
+                  {language && <Stat label="Language">{language}</Stat>}
+               </dl>
+
+               {(creators.length > 0 || networks.length > 0) && (
+                  <dl className="flex flex-wrap justify-center gap-x-10 gap-y-4">
+                     {creators.length > 0 && (
+                        <Stat label="Created by">
+                           {creators.map((c) => c.name).join(', ')}
+                        </Stat>
+                     )}
+                     {networks.length > 0 && (
+                        <Stat
+                           label={networks.length > 1 ? 'Networks' : 'Network'}
+                        >
+                           {networks.map((n) => n.name).join(', ')}
+                        </Stat>
+                     )}
+                  </dl>
                )}
 
-               <hr className="my-3 border-bold" />
-
-               {creators.length > 0 && (
-                  <div className="mt-2">
-                     <strong>Created by: </strong>
-                     {creators.map((c) => c.name).join(', ')}
-                  </div>
-               )}
-               {seriesInfo.networks && seriesInfo.networks.length > 0 && (
-                  <div className="mt-2">
-                     <strong>Network: </strong>
-                     {seriesInfo.networks.map((n) => n.name).join(', ')}
-                  </div>
-               )}
                {seriesInfo.production_companies &&
                   seriesInfo.production_companies.length > 0 && (
-                     <div className="mt-2">
-                        <strong>Production: </strong>
-                        {seriesInfo.production_companies
-                           .map((c) => c.name)
-                           .join(', ')}
+                     <div className="flex flex-col items-center gap-1">
+                        <span className={EYEBROW}>Production</span>
+                        <p className="text-sm text-copy/80">
+                           {seriesInfo.production_companies
+                              .map((c) => c.name)
+                              .join(' · ')}
+                        </p>
                      </div>
                   )}
 
                {(seriesInfo.homepage || imdbId) && (
-                  <div className="mt-2 flex flex-wrap gap-4">
+                  <div className="flex flex-wrap justify-center gap-3">
                      {seriesInfo.homepage && (
-                        <a
-                           href={seriesInfo.homepage}
-                           target="_blank"
-                           rel="noreferrer"
-                           className="text-copy underline"
-                        >
+                        <ExternalLink href={seriesInfo.homepage}>
                            Homepage
-                        </a>
+                        </ExternalLink>
                      )}
                      {imdbId && (
-                        <a
+                        <ExternalLink
                            href={`https://www.imdb.com/title/${imdbId}`}
-                           target="_blank"
-                           rel="noreferrer"
-                           className="text-copy underline"
                         >
-                           IMDB
-                        </a>
+                           IMDb
+                        </ExternalLink>
                      )}
                   </div>
                )}
             </div>
 
             {seriesTrailer && (
-               <div className="mt-4 rounded-lg">
+               <div className="hero-trailer mt-4 overflow-hidden rounded-lg shadow-lg">
                   <iframe
-                     className="m-auto rounded-lg"
-                     id={seriesInfo.name}
-                     title={seriesInfo.name}
-                     width="100%"
-                     height="800"
+                     className="h-full w-full"
+                     title={`${seriesInfo.name} trailer`}
                      src={`https://www.youtube.com/embed/${seriesTrailer.key}`}
+                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                     allowFullScreen
                   />
                </div>
             )}
 
             {seasons.length > 0 && (
-               <div className="text-content mt-4 rounded-lg p-4 text-copy">
-                  <h2 className="mb-3 text-display-md">Seasons</h2>
+               <div className="text-content mt-4 gap-4 rounded-lg p-5 text-copy sm:p-8">
+                  <h2 className="text-display-md">Seasons</h2>
                   <ul className="mx-auto grid w-full max-w-xl grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5">
                      {seasons.map((season) => (
                         <li key={season.id} className="min-w-0">
@@ -254,8 +285,7 @@ const SeriesInfo = ({
                                  <span className="truncate text-xs tabular-nums text-copy/70">
                                     {extractYear(season.air_date)}
                                     <span className="mx-1 opacity-50">·</span>
-                                    {season.episode_count} episode
-                                    {season.episode_count === 1 ? '' : 's'}
+                                    {pluralise(season.episode_count, 'episode')}
                                  </span>
                               </div>
                            </Link>
@@ -266,8 +296,8 @@ const SeriesInfo = ({
             )}
 
             {topCast.length > 0 && (
-               <div className="text-content mt-4 rounded-lg p-4 text-copy">
-                  <h2 className="mb-3 text-display-md">Cast</h2>
+               <div className="text-content mt-4 gap-5 rounded-lg p-5 text-copy sm:p-8">
+                  <h2 className="text-display-md">Cast</h2>
                   <CastList cast={topCast} />
                </div>
             )}
@@ -281,8 +311,8 @@ const SeriesInfo = ({
             />
 
             {recommendations && recommendations.length > 0 && (
-               <div className="text-content mt-4 rounded-lg p-4 text-copy">
-                  <h2 className="mb-4 text-display-md">Recommendations</h2>
+               <div className="text-content mt-4 gap-4 rounded-lg p-5 text-copy sm:p-8">
+                  <h2 className="text-display-md">Recommendations</h2>
                   <CardGrid>
                      {recommendations.map((series) => (
                         <FilmCard

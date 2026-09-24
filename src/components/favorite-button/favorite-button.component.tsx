@@ -2,6 +2,14 @@ import { MEDIA_TYPES, type MediaType } from '@/types/media.types';
 import { useAuth } from '@/utils/hooks/useAuth';
 import { useFavorites } from '@/utils/hooks/useFavorites';
 
+/**
+ * Round outlined surface for the heart when it sits beside the score ring on
+ * a detail page; the same outline as the genre badges, so the two read as one
+ * family. Pass it through `className`.
+ */
+export const FAVORITE_ROUND =
+   'flex rounded-full border border-copy/15 bg-neutral-inverted/5 p-3 transition-colors hover:border-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent';
+
 type FavoriteButtonProps = {
    filmId: number;
    mediaType?: MediaType;
