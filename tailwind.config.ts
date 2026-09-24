@@ -6,15 +6,18 @@ const backgroundColors = {
       inverted: 'hsl(var(--color-bg-neutral-inverted) / <alpha-value>)',
    },
    subtle: 'hsl(var(--color-bg-subtle) / <alpha-value>)',
+   accent: 'hsl(var(--color-accent) / <alpha-value>)',
 };
 
 const borderColors = {
    bold: 'hsl(var(--color-border-bold) / <alpha-value>)',
    copy: 'hsl(var(--color-text-copy) / <alpha-value>)',
+   accent: 'hsl(var(--color-accent) / <alpha-value>)',
 };
 
 const textColors = {
    copy: 'hsl(var(--color-text-copy) / <alpha-value>)',
+   accent: 'hsl(var(--color-accent) / <alpha-value>)',
 };
 
 export default {

@@ -40,8 +40,8 @@ const LoggedOutIcon = () => (
       strokeLinejoin="round"
       className="mr-2 h-6 w-6"
    >
-      <circle cx="12" cy="8" r="3" className="fill-sky-400/20 stroke-sky-500" />
-      <path d="M6 20a6 6 0 0 1 12 0" className="stroke-sky-500" />
+      <circle cx="12" cy="8" r="3" className="fill-accent/20 stroke-accent" />
+      <path d="M6 20a6 6 0 0 1 12 0" className="stroke-accent" />
    </svg>
 );
 
@@ -54,7 +54,7 @@ const LoggedInIcon = () => (
       strokeLinejoin="round"
       className="mr-2 h-6 w-6"
    >
-      <circle cx="12" cy="8" r="3" className="fill-sky-500 stroke-sky-500" />
-      <path d="M6 20a6 6 0 0 1 12 0" className="fill-sky-500 stroke-sky-500" />
+      <circle cx="12" cy="8" r="3" className="fill-accent stroke-accent" />
+      <path d="M6 20a6 6 0 0 1 12 0" className="fill-accent stroke-accent" />
    </svg>
 );

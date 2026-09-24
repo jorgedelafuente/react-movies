@@ -25,7 +25,7 @@ const ResetPasswordForm = () => {
          <div className="flex flex-col items-center gap-4 text-center">
             <p className="text-copy">
                Check your inbox — a reset link has been sent to{' '}
-               <span className="text-sky-500">{email}</span>.
+               <span className="text-accent">{email}</span>.
             </p>
             <Button
                variant="secondary"

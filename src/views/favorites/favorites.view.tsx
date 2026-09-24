@@ -72,12 +72,12 @@ const FavoritesView = () => {
                      and tap the heart icon to add them to your list.
                   </p>
                   <div className="flex flex-wrap gap-4">
-                     <Link to="/" className="text-sky-500 hover:underline">
+                     <Link to="/" className="text-accent hover:underline">
                         Browse films
                      </Link>
                      <Link
                         to="/series/popular"
-                        className="text-sky-500 hover:underline"
+                        className="text-accent hover:underline"
                      >
                         Browse series
                      </Link>
@@ -93,7 +93,7 @@ const FavoritesView = () => {
                            <th className="py-2 pr-4 font-semibold">Poster</th>
                            <th className="py-2 pr-4 font-semibold">Title</th>
                            <th
-                              className="cursor-pointer whitespace-nowrap py-2 pr-4 font-semibold hover:text-sky-500"
+                              className="cursor-pointer whitespace-nowrap py-2 pr-4 font-semibold hover:text-accent"
                               onClick={() => handleSort('media_type')}
                            >
                               Type
@@ -103,7 +103,7 @@ const FavoritesView = () => {
                               />
                            </th>
                            <th
-                              className="cursor-pointer whitespace-nowrap py-2 pr-4 font-semibold hover:text-sky-500"
+                              className="cursor-pointer whitespace-nowrap py-2 pr-4 font-semibold hover:text-accent"
                               onClick={() => handleSort('film_release_date')}
                            >
                               Year
@@ -113,7 +113,7 @@ const FavoritesView = () => {
                               />
                            </th>
                            <th
-                              className="cursor-pointer whitespace-nowrap py-2 pr-4 font-semibold hover:text-sky-500"
+                              className="cursor-pointer whitespace-nowrap py-2 pr-4 font-semibold hover:text-accent"
                               onClick={() => handleSort('created_at')}
                            >
                               Added
@@ -147,7 +147,7 @@ const FavoritesView = () => {
                                     id={fav.film_id}
                                     mediaType={fav.media_type}
                                  >
-                                    <span className="block truncate text-copy hover:text-sky-500">
+                                    <span className="block truncate text-copy hover:text-accent">
                                        {fav.film_title || 'Unknown title'}
                                     </span>
                                  </MediaLink>

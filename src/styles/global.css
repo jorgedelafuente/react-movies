@@ -14,7 +14,7 @@
    }
 
    a:hover {
-      color: theme('colors.sky.500');
+      color: hsl(var(--color-accent));
    }
 
    :root {
@@ -36,6 +36,7 @@
       --color-grey-80: 0 0% 19%;
       --color-grey-90: 0 0% 9%;
       --color-grey-100: 0 0% 0%;
+      --color-sky: 199 89% 48%; /* Tailwind sky-500 */
 
       /* Semantic tokens */
       --color-bg-neutral: var(--color-grey-0);
@@ -43,6 +44,8 @@
       --color-bg-subtle: var(--color-grey-10);
       --color-border-bold: var(--color-grey-60);
       --color-text-copy: var(--color-grey-100);
+      /* Interactive accent: links, hover, focus rings, selected state. Same in both themes. */
+      --color-accent: var(--color-sky);
    }
 
    .dark {

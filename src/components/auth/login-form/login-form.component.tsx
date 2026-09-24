@@ -50,7 +50,7 @@ const LoginForm = () => {
                onClick={() =>
                   setModalOpen(true, AUTH_MODAL_MODE.RESET_PASSWORD)
                }
-               className="hover:text-sky-500"
+               className="hover:text-accent"
             >
                Forgot password?
             </button>
@@ -59,7 +59,7 @@ const LoginForm = () => {
                <button
                   type="button"
                   onClick={() => setModalOpen(true, AUTH_MODAL_MODE.SIGNUP)}
-                  className="text-sky-500 hover:underline"
+                  className="text-accent hover:underline"
                >
                   Register
                </button>

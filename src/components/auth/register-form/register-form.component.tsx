@@ -67,7 +67,7 @@ const RegisterForm = () => {
             <button
                type="button"
                onClick={() => setModalOpen(true, AUTH_MODAL_MODE.LOGIN)}
-               className="text-sky-500 hover:underline"
+               className="text-accent hover:underline"
             >
                Sign in
             </button>
