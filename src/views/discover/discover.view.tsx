@@ -200,17 +200,6 @@ const DiscoverView = ({
                   </select>
                </div>
             </form>
-
-            <p className="mt-4 text-sm tabular-nums text-copy/70" role="status">
-               {page.total_results.toLocaleString()} result
-               {page.total_results === 1 ? '' : 's'}
-               {totalPages > 0 && (
-                  <>
-                     <span className="mx-1 opacity-50">·</span>
-                     page {params.page} of {totalPages.toLocaleString()}
-                  </>
-               )}
-            </p>
          </div>
 
          {page.results.length === 0 ? (
@@ -222,30 +211,40 @@ const DiscoverView = ({
          )}
 
          {/*
-           `mt-auto` pins the pager to the bottom of the viewport when the
-           results are short (the Container is a min-h-screen flex column).
+           Result count and page position sit with the pager, not under the
+           filters. `mt-auto` pins the footer to the bottom of the viewport when
+           the results are short (the Container is a min-h-screen flex column).
          */}
-         {totalPages > 1 && (
-            <nav
-               aria-label="Pagination"
-               className="mx-auto mt-auto flex w-full max-w-xs gap-3 px-4 pb-10 pt-8"
-            >
-               <Button
-                  variant="secondary"
-                  disabled={params.page <= 1}
-                  onClick={() => onChange({ page: params.page - 1 })}
-               >
-                  Previous
-               </Button>
-               <Button
-                  variant="primary"
-                  disabled={params.page >= totalPages}
-                  onClick={() => onChange({ page: params.page + 1 })}
-               >
-                  Next
-               </Button>
-            </nav>
-         )}
+         <footer className="mx-auto mt-auto flex w-full max-w-xs flex-col items-center gap-3 px-4 pb-10 pt-8">
+            <p className="text-sm tabular-nums text-copy/70" role="status">
+               {page.total_results.toLocaleString()} result
+               {page.total_results === 1 ? '' : 's'}
+               {totalPages > 0 && (
+                  <>
+                     <span className="mx-1 opacity-50">·</span>
+                     page {params.page} of {totalPages.toLocaleString()}
+                  </>
+               )}
+            </p>
+            {totalPages > 1 && (
+               <nav aria-label="Pagination" className="flex w-full gap-3">
+                  <Button
+                     variant="secondary"
+                     disabled={params.page <= 1}
+                     onClick={() => onChange({ page: params.page - 1 })}
+                  >
+                     Previous
+                  </Button>
+                  <Button
+                     variant="primary"
+                     disabled={params.page >= totalPages}
+                     onClick={() => onChange({ page: params.page + 1 })}
+                  >
+                     Next
+                  </Button>
+               </nav>
+            )}
+         </footer>
       </Container>
    );
 };

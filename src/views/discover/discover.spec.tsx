@@ -4,7 +4,7 @@ import {
    createRouter,
    RouterProvider,
 } from '@tanstack/react-router';
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, within } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import { MOCK_DISCOVER_MOVIES, MOCK_GENRES } from '@/tests/__mocks__/mocks';
@@ -64,6 +64,22 @@ describe('Discover view', () => {
       expect(screen.getByLabelText('Year')).toBeInTheDocument();
       expect(screen.getByRole('status')).toHaveTextContent('16,231 results');
       expect(screen.getByRole('status')).toHaveTextContent('page 2 of 500');
+   });
+
+   it('keeps the result count and page position in the footer with the pager', async () => {
+      await renderView();
+      const footer = within(screen.getByRole('contentinfo'));
+      expect(footer.getByRole('status')).toHaveTextContent('page 2 of 500');
+      expect(
+         footer.getByRole('navigation', { name: 'Pagination' })
+      ).toBeInTheDocument();
+      // Nothing about the results sits between the filters and the cards.
+      expect(
+         within(
+            screen.getByRole('form', { name: 'Discover filters' })
+               .parentElement!
+         ).queryByRole('status')
+      ).toBeNull();
    });
 
    it('collapses the filters behind a disclosure button on small screens', async () => {
