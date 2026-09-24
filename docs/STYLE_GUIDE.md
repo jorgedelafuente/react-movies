@@ -45,7 +45,7 @@ Only the utilities in that column exist. `copy` and `bold` have no background ut
 | ------------------------ | ----------------------------- | --------------------------------------------------- |
 | Secondary text           | `text-copy/70`                | Result counts, cast roles, meta lines, empty states |
 | Tertiary text            | `text-copy/60`                | Secondary button label                              |
-| Tagline                  | `text-copy/75`                | Detail-page tagline under the title                 |
+| Tagline                  | `text-copy/70`                | Detail-page tagline under the title                 |
 | Text on the card overlay | `text-white/85`               | Card overview (the overlay is always dark)          |
 | Quiet outline            | `border-copy/30`              | Idle chips, inline certification pill               |
 | Quiet outline (button)   | `border-copy/20`              | Secondary button, disclosure frame                  |
@@ -89,23 +89,24 @@ Headings get the display face automatically (`text-balance font-display font-sem
 | `h4`–`h6` | `text-display-xs` | 1.125rem                                  |
 | hero only | `text-display-xl` | clamp(2.25rem, 1.75rem + 2vw, 3.5rem)     |
 
-Use the `text-display-*` utilities to size any element like a heading, and a plain `text-*` utility to make a heading smaller (card titles are `h2` at `text-base sm:text-lg`). Text placed inside a heading inherits the display face and weight, so reset what you do not want: the tagline is a `<span>` inside the `h2` and carries `font-sans font-normal tracking-normal` to undo all three.
+Use the `text-display-*` utilities to size any element like a heading, and a plain `text-*` utility to make a heading smaller (card titles are `h2` at `text-base sm:text-lg`). Text placed inside a heading inherits the display face and weight, so reset what you do not want: a count inside a section heading carries `font-sans text-base font-normal` for that reason, and an `h3` used as an eyebrow label adds `font-sans`. The film tagline is a `<p>` beside the title, not inside it, so it only needs `font-sans` (series still nests it in an `h3`; see divergences).
 
 Text roles in use:
 
-| Role               | Classes                                                                            |
-| ------------------ | ---------------------------------------------------------------------------------- |
-| Body               | `text-base`, `leading-relaxed` for paragraphs, `max-w-prose`                       |
-| Secondary          | `text-sm text-copy/70`                                                             |
-| Meta / captions    | `text-xs text-copy/70`; `text-xs opacity-70` when the colour is inherited          |
-| Meta separator     | `<span className="mx-1 opacity-50">·</span>`                                       |
-| Count in a heading | `<span className="ml-2 text-base font-normal tabular-nums opacity-70">(12)</span>` |
-| Form label         | `text-sm font-medium text-copy`                                                    |
-| Nav link           | `font-display text-lg font-medium tracking-wide`                                   |
-| Button label       | `font-medium tracking-wide`                                                        |
-| Badge              | `text-xs font-semibold uppercase tracking-wider`                                   |
-| Tagline            | `font-sans text-lg font-normal italic tracking-normal text-copy/75 sm:text-xl`     |
-| Emphasis           | `<strong>` renders `font-semibold` (Inter's 700 is too heavy inline)               |
+| Role               | Classes                                                                                        |
+| ------------------ | ---------------------------------------------------------------------------------------------- |
+| Body               | `text-base`, `leading-relaxed` for paragraphs, `max-w-prose`                                   |
+| Secondary          | `text-sm text-copy/70`                                                                         |
+| Meta / captions    | `text-xs text-copy/70`; `text-xs opacity-70` when the colour is inherited                      |
+| Detail meta line   | `text-sm font-medium tabular-nums text-copy/80`, items joined by `aria-hidden` dots            |
+| Meta separator     | `<span className="mx-1 opacity-50">·</span>`                                                   |
+| Count in a heading | `<span className="ml-2 font-sans text-base font-normal tabular-nums text-copy/60">(12)</span>` |
+| Form label         | `text-sm font-medium text-copy`                                                                |
+| Nav link           | `font-display text-lg font-medium tracking-wide`                                               |
+| Button label       | `font-medium tracking-wide`                                                                    |
+| Badge              | `text-xs font-semibold uppercase tracking-wider`                                               |
+| Tagline            | `p font-sans text-lg italic text-copy/70 sm:text-xl`, a sibling of the title                   |
+| Emphasis           | `<strong>` renders `font-semibold` (Inter's 700 is too heavy inline)                           |
 
 **Weights.** Three, defined as `fontWeight` at the top level of [tailwind.config.ts](../tailwind.config.ts) so Tailwind's defaults are replaced: `font-bold`, `font-light` and the rest compile to nothing.
 
@@ -147,8 +148,9 @@ Never write a bare `<img>` for TMDB artwork. Render it through `MediaImage` (rec
 A global rule in `global.css` transitions `background-color`, `color`, `border-color` and `fill` on every element over 0.25s. Theme switches and hover colour changes animate without any per-component class. Add `transition-all` or `transition-colors` only when you animate something else (Button transitions its gradient).
 
 -  Cards: 250ms `cubic-bezier(0.1, 0.1, 0.6, 0.9)`, `scale(1.15)` plus a 5px poster blur, on hover and `focus-within`.
--  Detail titles: `position: sticky; top: 90px` with a scroll-driven `animation-timeline: scroll()` over the first 200px that grows the type and adds a background. Pages without a backdrop add `text-title--static`, which keeps the resting look and drops the sticky animation.
--  There is no `prefers-reduced-motion` handling yet (see divergences).
+-  Detail titles: `position: sticky; top: 90px` with a scroll-driven `animation-timeline: scroll()` over the first 200px that grows the type and adds a background. Pages without a backdrop (the person page) have no title bar at all.
+-  Detail panels (`.text-content`): on hover only the background alpha, border and shadow change, over 0.3s; the text never fades.
+-  `prefers-reduced-motion` is honoured only by the CastList avatar scale (`motion-reduce:transition-none`); the card scale, the panel hover and the scroll-driven title still ignore it (see divergences).
 
 ### Interactive states
 
@@ -199,13 +201,15 @@ Every route renders `Navbar` (sticky, `top-0 z-10`) then an `Outlet`. The view c
 
 ### Page anatomy
 
-> **In flight (2026-09-24).** The film detail page is being redesigned in the working tree: frosted-glass panels (`bg-neutral` at 0.9 alpha, `backdrop-filter: blur(16px)`, a 1px `copy/10` border, `p-5 sm:p-8`), small-caps eyebrow labels instead of `<strong>` rows, a `grid grid-cols-2 … sm:grid-cols-3` fact grid inside `border-y border-copy/10`, badges as `rounded-full border border-copy/15 bg-neutral-inverted/5 px-3 py-1`, and 2:3 portrait cast avatars (`aspect-[2/3] w-full rounded-2xl` in `w-24` columns). When it lands, rewrite this section and the Badge and CastList recipes from it, then port series-info and person-info to match. Until then the skeleton below is what is committed.
-
-**Detail pages** (film, series) share one skeleton:
+**Detail pages.** The film page is the pattern; the series page still carries the pre-redesign skeleton (see divergences) and should be ported to this:
 
 1. `<div className="text-title text-copy">` — the sticky, scroll-animated title with a `data-testid="…-info-title"`.
-2. `.container-bg` — hero with the backdrop (`baseImagePathPoster`) as a fixed cover background and the poster centred. The CSS file rounds the poster to `25px`; the `rounded-lg` on the `<img>` is overridden.
-3. Stacked panels. The first is `<div className="text-content rounded-lg p-4 text-copy">`; every later one adds `mt-4`. The first holds the `h2 mb-2 text-display-lg` title with the tagline span, `<hr className="my-3 border-bold">` dividers between groups, genre badges in a `mt-3 flex flex-wrap items-center justify-center gap-2` row, fact rows with `<strong>` labels in a `tabular-nums` block, and external links in a `mt-2 flex flex-wrap gap-4` row. Later panels are titled with `h2 text-display-md mb-3` ("Cast & Crew", via `CastList`) and `mb-4` ("Recommendations", the card grid).
+2. `.container-bg` — hero with the backdrop (`baseImagePathPoster`) as a fixed cover background and the poster centred above the panels: a `MediaImage` with no class of its own (the CSS file sizes it and rounds it to `25px`) and `fallbackClassName="mx-auto aspect-[2/3] w-full max-w-[500px] rounded-[25px]"` so the skeleton matches.
+3. **Frosted panels** — `.text-content` in `film-info.styles.css`: `bg-neutral` at 0.9 alpha, a 1px `copy/10` border, a `0 8px 32px` shadow and `backdrop-filter: blur(16px) saturate(1.4)`; hover lowers the background to 0.62 and lifts the shadow, nothing else. Each panel is `text-content rounded-lg p-5 text-copy sm:p-8` plus the gap of its stack (`gap-6` header, `gap-5` cast, `gap-4` recommendations); every panel after the first adds `mt-4`. Group content with eyebrow labels and hairline rules (`border-t border-copy/10`), never `<hr>` or `<strong>` rows.
+4. **Header panel** — `header flex flex-col items-center gap-2`: `h2 text-display-lg`, the tagline `p font-sans text-lg italic text-copy/70 sm:text-xl`, then the meta line `mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm font-medium tabular-nums text-copy/80` (year, runtime, `aria-hidden` dots between them, `CertificationBadge` at the end). Under it: the `FavoriteButton` in `flex justify-center empty:hidden` (it renders nothing when signed out, and `empty:hidden` stops the gap doubling), genre badges in `ul flex flex-wrap items-center justify-center gap-2`, the overview as `section mx-auto flex w-full max-w-prose flex-col gap-2 text-left` with an `h3 font-sans EYEBROW` label and `p text-pretty leading-relaxed sm:text-lg`, the facts `dl grid grid-cols-2 gap-x-4 gap-y-5 border-y border-copy/10 py-5 sm:grid-cols-3` of `Stat` cells (Rating with a `StatNote` vote count, Status, Released, Language, Budget, Revenue), production companies as an eyebrow over `p text-sm text-copy/80`, `ExternalLink` pills in `flex flex-wrap justify-center gap-3`, and the `ReleaseDatesList` disclosure. A trailer, when there is one, follows in its own `mt-4 rounded-lg` block with the iframe `m-auto rounded-lg`.
+5. **Cast & Crew panel** — `h2 text-display-md`, a crew `dl flex flex-wrap justify-center gap-x-10 gap-y-4` of eyebrow `dt` over `dd font-display text-lg font-semibold` (Director, Writers), then `div flex flex-col gap-4 border-t border-copy/10 pt-5` holding an `h3 font-sans EYEBROW` "Top billed cast" and `CastList`.
+6. **Reviews and gallery** — `ReviewList` and `ImageGallery` between the cast and the recommendations (their recipes are not written up yet; see divergences).
+7. **Recommendations panel** — `h2 text-display-md` over a `CardGrid` of `FilmCard`s with `showFavorite={false}`.
 
 **Season page** is a detail page without the hero. Under the title bar, a back link (`text-sm text-accent hover:underline`, prefixed `←`), then a header row `mt-3 flex flex-col gap-4 sm:flex-row` holding the poster (`mx-auto w-40 flex-none rounded-lg sm:mx-0`) and a `min-w-0 flex-1` text block (`h1 text-display-lg`, meta line `mt-1 text-sm tabular-nums text-copy/70`, overview `mt-3 leading-relaxed`). The season switcher is `<nav aria-label="Seasons" className="mt-6 flex flex-wrap gap-2">` of chips. Episodes follow under `h2 mt-8 text-display-md` as an `ol mt-3 flex flex-col gap-4` of episode rows.
 
@@ -303,7 +307,7 @@ For a two-way layout switch use `ViewToggle` instead; it is a proper radiogroup.
 
 Static labels, never interactive.
 
--  **Badge** (genres, media type): `rounded-full bg-primary-background-color px-2 py-1 text-xs font-semibold uppercase tracking-wider text-copy/70`. Rows of badges are `flex flex-wrap items-center justify-center gap-2`.
+-  **Badge** (genres): `rounded-full border border-copy/15 bg-neutral-inverted/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider`, an outline that reads on either theme. Rows of badges are `flex flex-wrap items-center justify-center gap-2` (a `ul` with `aria-label`). The filled variant `rounded-full bg-primary-background-color px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-copy/70` survives only in the favourites table (see divergences).
 -  **Age rating** (`CertificationBadge`): `rounded-md border border-copy/40 px-2 py-0.5 text-sm font-semibold tabular-nums`, with the region as `<span className="ml-1 text-xs font-normal opacity-70">`.
 -  **Inline code-like value** (a certification inside a row): `rounded border border-copy/30 px-1 text-xs tabular-nums`.
 
@@ -345,7 +349,7 @@ note:    w-full text-xs italic opacity-60 sm:w-auto   (wraps to its own line on 
 
 ### Episode row — `views/season-info`
 
-A media row for items with a wide image: `flex flex-col gap-3 rounded-lg bg-tertiary-background-color p-3 sm:flex-row`. Still: `aspect-video w-full flex-none rounded-md object-cover sm:w-56` (placeholder: same classes on `bg-subtle`). Text: `min-w-0 flex-1` with an `h3 font-display text-base font-semibold leading-tight` whose number is `<span className="mr-2 tabular-nums opacity-60">`, a meta line `mt-1 text-xs tabular-nums text-copy/70`, and the overview `mt-2 text-sm leading-relaxed`. The seasons list on the series page is the compact version: `h-16 w-11 flex-none rounded object-cover` thumbnail beside a `font-display text-sm font-semibold leading-tight` name.
+A media row for items with a wide image: `flex flex-col gap-3 rounded-lg bg-tertiary-background-color p-3 sm:flex-row`. Still: a `MediaImage` with `aspect-video w-full flex-none rounded-md object-cover sm:w-56`. Text: `min-w-0 flex-1` with an `h3 font-display text-base font-semibold leading-tight` whose number is `<span className="mr-2 tabular-nums opacity-60">`, a meta line `mt-1 text-xs tabular-nums text-copy/70`, and the overview `mt-2 text-sm leading-relaxed`. The seasons list on the series page is the compact version: a `MediaImage` thumbnail `h-16 w-11 flex-none rounded object-cover` beside a `font-display text-sm font-semibold leading-tight` name.
 
 ### Modal — `atoms/modal`
 
@@ -367,7 +371,7 @@ Open and close through the `isOpen` prop; the component calls `showModal()` and 
 
 `Card` is the hover shell (`custom-card w-full`, CSS in `card.styles.css`): relative, hidden overflow, `10px` radius, and on hover or `focus-within` it scales to 1.15, blurs the image and fades in `.content`, a `rgba(0,0,0,.72)` overlay with white text.
 
-`FilmCard` fills it: a poster `aspect-[1/1.5] w-full rounded-md object-cover object-center` with `loading="lazy"` and `alt={title}` (the `masonry` prop drops the fixed aspect), then `.content` holding a `MediaLink` with the `h2` title (`mb-2 text-center text-base font-semibold leading-tight sm:text-lg`) and the overview (`line-clamp-4 text-center text-xs leading-snug text-white/85 sm:line-clamp-6 sm:text-sm`), and a `FavoriteButton` **beside** the link, not inside it. The link covers the whole card through a stretched `::after`; the button sits above it with `z-index: 1`. Never nest a control inside an `<a>`.
+`FilmCard` fills it: a `MediaImage` poster (`aspect-[1/1.5] w-full rounded-md object-cover object-center`, `alt={title}`, `fallbackClassName="aspect-[1/1.5]"`; the `masonry` prop drops the fixed aspect from the image but not from the skeleton), then `.content` holding a `MediaLink` with the `h2` title (`mb-2 text-center text-base font-semibold leading-tight sm:text-lg`) and the overview (`line-clamp-4 text-center text-xs leading-snug text-white/85 sm:line-clamp-6 sm:text-sm`), and a `FavoriteButton` **beside** the link, not inside it. The link covers the whole card through a stretched `::after`; the button sits above it with `z-index: 1`. Never nest a control inside an `<a>`.
 
 ### FilmTable — `film-table`
 
@@ -451,7 +455,7 @@ The jsx-a11y rules in `eslint.config.js` are mostly errors and block commits. Be
 
 ### Media and numbers
 
-Posters: `aspect-[1/1.5] w-full rounded-md object-cover object-center`. Stills: `aspect-video … rounded-md object-cover`. Avatars: `h-16 w-16 rounded-full object-cover object-top`. Thumbnails in rows: `h-16 w-11 flex-none rounded object-cover`. Sizes and placeholders are in [Images](#images). Counts go through `toLocaleString()` and sit in `tabular-nums`.
+Posters: `aspect-[1/1.5] w-full rounded-md object-cover object-center`. Stills: `aspect-video … rounded-md object-cover`. Cast avatars: `aspect-[3/4] w-full rounded-2xl object-cover object-top`; the person portrait is `aspect-[2/3] rounded-2xl object-cover object-top shadow-lg`. People are rounded rectangles, not circles. Thumbnails in rows: `h-16 w-11 flex-none rounded object-cover`. Sizes and placeholders are in [Images](#images). Counts go through `toLocaleString()` and sit in `tabular-nums`.
 
 ---
 
@@ -461,14 +465,15 @@ Places where the code does not yet follow this guide. Fixing them is tracked in 
 
 -  **Input placeholder** — `placeholder-text-copy` compiles to nothing because no map feeds `placeholderColor`. Wire `placeholderColor: textColors` in the config and use `placeholder-copy/50`.
 -  **Discover** uses a `max-w-6xl` column where every other page uses `max-w-4xl`, inlines the Select recipe as a local string, and hand-rolls its type switch instead of a Chip atom.
--  **Favourites** hand-rolls a `<table>` (`py-8` column, `text-copy/80 py-0.5` badges, `border-bold/30` rows) instead of rendering `FilmTable`.
+-  **Favourites** hand-rolls a `<table>` (`py-8` column, `border-bold/30` rows) instead of rendering `FilmTable`, and its media-type badge keeps the filled `bg-primary-background-color` look instead of the outline badge.
 -  **Error and not-found views** style their action with `border-blue-700 hover:bg-blue-900 text-slate-300` instead of the Button primary recipe or the accent token.
--  **Film detail** genre and age-rating badges carry `bg-primary`, which is not a utility in this config and does nothing; they should use `bg-primary-background-color` like the badge recipe.
+-  **Series detail** still has the pre-redesign skeleton: `text-content rounded-lg p-4` panels, `<hr className="my-3 border-bold">` dividers, `<strong>` fact rows, the tagline as an `h3`, and genre and type badges with `bg-primary`, which is not a utility and does nothing. Port it to the film page anatomy (frosted `p-5 sm:p-8` panels, eyebrow `Stat` facts, outline badges).
+-  **ReviewList and ImageGallery** ship on the film and series pages but have no recipe in this guide yet.
 -  **FlexContainer** sets both `bg-neutral` and `bg-primary-background-color` on the same element; one must go.
--  **Detail panel CSS** (`.text-content`) fixes `width: 80%`, `margin: 10px`, `height: 90%` and a `600px` media query, none of which is mobile-first or on the `sm` breakpoint. The column classes should own the width.
--  **Hero poster** — `.container-bg img:hover` drops the poster to 10% opacity for no reason, and the CSS `25px` radius overrides the `rounded-lg` utility on the element. Remove the fade and pick one radius. (`.text-content:hover` also fades panels to 50% at HEAD; the in-flight redesign replaces that with a background-only glass fade, which is intentional.)
--  **`opacity-*` on coloured text** appears where `text-copy/N` should be used (favourites `text-copy opacity-60`, discover and season meta). Reserve `opacity-*` for inherited colour.
+-  **Detail panel CSS** (`.text-content`) fixes `width: 80%`, `margin: 10px` and a `600px` max-width media query, none of which is mobile-first or on the `sm` breakpoint. The column classes should own the width.
+-  **Hero poster** — `.container-bg > div > img:hover` drops the poster to 10% opacity for no reason, and its `25px` radius lives in CSS while every other radius is a utility (the skeleton already carries `rounded-[25px]`). Remove the fade and move the radius onto the element.
+-  **`opacity-*` on coloured text** appears where `text-copy/N` should be used (favourites `text-copy opacity-60`, season meta). Reserve `opacity-*` for inherited colour.
 -  **Sticky title keyframe** in `film-info.styles.css` ends at `font-weight: 700`, the only 700 in the app; it should end at 600 and let the size change carry the effect.
 -  **Spinner** uses the legacy primary variable and a fixed `300px` margin rather than a token and flex centring.
 -  **Legacy hex variables** still define control borders and panel backgrounds. They need semantic tokens (a `border-subtle` and a panel background) before they can be retired.
--  **Reduced motion** is not honoured anywhere; the card scale and the scroll-driven title need a `prefers-reduced-motion` guard.
+-  **Reduced motion** is honoured only by the CastList avatar scale; the card scale, the panel hover and the scroll-driven title still need a `prefers-reduced-motion` guard.
