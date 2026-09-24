@@ -29,7 +29,7 @@ describe('Navlink Component', async () => {
       );
       await act(async () => {
          renderWithQueryContext(
-            <RouterProvider router={router as any} defaultComponent={element} />
+            <RouterProvider router={router} defaultComponent={element} />
          );
       });
       expect(screen.getByText(/custom/i)).toBeInTheDocument();
@@ -41,7 +41,7 @@ describe('Navlink Component', async () => {
       );
       await act(async () => {
          renderWithQueryContext(
-            <RouterProvider router={router as any} defaultComponent={element} />
+            <RouterProvider router={router} defaultComponent={element} />
          );
       });
       const linkElement = screen.getByRole('link', { name: /custom/i });
@@ -55,7 +55,7 @@ describe('Navlink Component', async () => {
       let violations;
       await act(async () => {
          ({ violations } = await renderWithAxe(
-            <RouterProvider router={router as any} defaultComponent={element} />
+            <RouterProvider router={router} defaultComponent={element} />
          ));
       });
       expect(violations).toHaveNoViolations();
