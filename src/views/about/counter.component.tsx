@@ -1,16 +1,4 @@
-import { useState } from 'react';
-
-export const useCounterHook = (initialCountValue = 0) => {
-   const [count, setCount] = useState<number>(initialCountValue);
-   const increment = () => setCount((prevCount) => prevCount + 1);
-   const decrement = () => setCount((prevCount) => prevCount - 1);
-
-   return {
-      count,
-      decrement,
-      increment,
-   };
-};
+import { useCounterHook } from './useCounterHook';
 
 const Counter = ({ countValue = 0 }) => {
    const { count, increment, decrement } = useCounterHook(countValue);
@@ -18,7 +6,9 @@ const Counter = ({ countValue = 0 }) => {
       <div className="flex-col border p-4 text-center">
          <div>
             If you enjoyed this app please give us a thumbs up : Current count:
-            <span className="p-2 font-bold text-gray-100">{count}</span>
+            <span className="p-2 font-semibold tabular-nums text-gray-100">
+               {count}
+            </span>
          </div>
 
          <div className="p-4">

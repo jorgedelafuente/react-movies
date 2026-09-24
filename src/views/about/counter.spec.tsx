@@ -6,7 +6,8 @@ import {
    screen,
 } from '@testing-library/react';
 
-import Counter, { useCounterHook } from './counter.component';
+import Counter from './counter.component';
+import { useCounterHook } from './useCounterHook';
 
 describe('Counter Component', () => {
    it('should renders Counter Component Title', () => {
