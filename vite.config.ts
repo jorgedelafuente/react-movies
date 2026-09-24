@@ -49,7 +49,7 @@ export default defineConfig({
          provider: 'istanbul',
          reporter: ['text-summary', 'json-summary', 'html'],
       },
-      exclude: [...configDefaults.exclude, 'src/tests/\\e2e\\/*', '.claude/**'],
+      exclude: [...configDefaults.exclude, '.claude/**'],
    },
    resolve: {
       alias: {

@@ -27,14 +27,7 @@ backup
 .env
 project.md
 docs/ROADMAP.md
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
 coverage
-
-# Playwright
-/playwright/.auth/
 tsconfig.app.tsbuildinfo
 tsconfig.node.tsbuildinfo
 .tsbuildinfo
