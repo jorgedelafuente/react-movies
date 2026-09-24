@@ -3,11 +3,11 @@ import '@/views/film-info/film-info.styles.css';
 import { Link } from '@tanstack/react-router';
 
 import CardGrid from '@/components/atoms/card-grid/card-grid.component';
-import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
-import FilmCard from '@/components/atoms/film-card/film-card.component';
 import MediaImage from '@/components/atoms/media-image/media-image.component';
 import StickyTitle from '@/components/atoms/sticky-title/sticky-title.component';
 import CastList from '@/components/cast-list/cast-list.component';
+import FavoriteButton from '@/components/favorite-button/favorite-button.component';
+import FilmCard from '@/components/film-card/film-card.component';
 import ImageGallery from '@/components/image-gallery/image-gallery.component';
 import Container from '@/components/layout/container/container.component';
 import ReviewList from '@/components/review-list/review-list.component';
@@ -16,9 +16,9 @@ import type {
    FilmCreditsType,
    FilmRecommendationType,
    FilmVideoType,
-} from '@/types/films.types';
+} from '@/types/films.schemas';
 import { MEDIA_TYPES } from '@/types/media.types';
-import type { SeriesInfoType } from '@/types/series.types';
+import type { SeriesInfoType } from '@/types/series.schemas';
 
 const CAST_LIMIT = 8;
 

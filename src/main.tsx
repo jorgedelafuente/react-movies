@@ -5,6 +5,8 @@ import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 
+import Spinner from '@/components/atoms/spinner/spinner.component';
+
 import { routeTree } from './routeTree.gen';
 
 const queryClient = new QueryClient();
@@ -14,6 +16,7 @@ const router = createRouter({
       queryClient,
    },
    defaultPreload: 'intent',
+   defaultPendingComponent: Spinner,
    defaultStaleTime: 60000,
 });
 

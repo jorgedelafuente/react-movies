@@ -1,4 +1,4 @@
-import type { PersonCreditType } from '@/types/people.types';
+import type { PersonCreditType } from '@/types/people.schemas';
 
 export type DedupedCredit = PersonCreditType & { roles: string[] };
 

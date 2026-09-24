@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import CardGrid from '@/components/atoms/card-grid/card-grid.component';
-import FilmCard from '@/components/atoms/film-card/film-card.component';
 import { ExternalLink } from '@/components/atoms/link/external-link.component';
 import MediaImage from '@/components/atoms/media-image/media-image.component';
 import {
@@ -9,8 +8,9 @@ import {
    Stat,
    StatNote,
 } from '@/components/atoms/stat/stat.component';
+import FilmCard from '@/components/film-card/film-card.component';
 import Container from '@/components/layout/container/container.component';
-import type { PersonInfoType } from '@/types/people.types';
+import type { PersonInfoType } from '@/types/people.schemas';
 import { dedupeCredits, type DedupedCredit } from '@/utils/dedupeCredits';
 
 const CREDITS_PREVIEW = 24;

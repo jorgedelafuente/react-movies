@@ -19,7 +19,7 @@ import {
    MOVIE_ONLY_SORTS,
    STREAMING_PROVIDERS,
 } from '@/types/discover.schemas';
-import type { GenreType } from '@/types/films.types';
+import type { GenreType } from '@/types/films.schemas';
 import {
    MEDIA_TYPE_PLURAL_LABELS,
    MEDIA_TYPES,

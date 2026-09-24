@@ -121,3 +121,19 @@ export const FilmRecommendationsSchema = z.object({
       })
    ),
 });
+
+export type FilmInfoType = z.infer<typeof FilmInfoSchema>;
+export type FilmList = z.infer<typeof FilmListSchema>;
+export type FilmVideoType = z.infer<typeof FilmVideoTypeSchema>;
+export type FilmVideoList = z.infer<typeof FilmVideoListSchema>;
+export type FilmCreditsType = z.infer<typeof FilmCreditsSchema>;
+export type CastMemberType = z.infer<typeof CastMemberSchema>;
+export type CrewMemberType = z.infer<typeof CrewMemberSchema>;
+export type FilmRecommendationType = z.infer<
+   typeof FilmRecommendationsSchema
+>['results'][number];
+export type GenreType = z.infer<typeof GenreSchema>;
+export type ReleaseDateType = z.infer<typeof ReleaseDateSchema>;
+export type ReleaseDatesByCountryType = z.infer<
+   typeof ReleaseDatesByCountrySchema
+>;

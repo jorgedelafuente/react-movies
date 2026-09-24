@@ -42,3 +42,6 @@ export const sortReviewsNewestFirst = (
    [...reviews].sort(
       (a, b) => Date.parse(b.created_at) - Date.parse(a.created_at)
    );
+
+export type ReviewType = z.infer<typeof ReviewSchema>;
+export type ReviewListType = z.infer<typeof ReviewListSchema>;

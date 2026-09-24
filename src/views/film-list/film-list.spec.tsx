@@ -7,7 +7,8 @@ import {
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { MOCK_FILM_LIST, MOCK_SERIES_LIST } from '@/tests/__mocks__/mocks';
+import { MOCK_FILM_LIST } from '@/tests/mocks/films.mocks';
+import { MOCK_SERIES_LIST } from '@/tests/mocks/series.mocks';
 import { renderWithQueryContext } from '@/tests/test-utils';
 import { FilmListSchema } from '@/types/films.schemas';
 import { LIST_VIEWS } from '@/types/list-view.types';

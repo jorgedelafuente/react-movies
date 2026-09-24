@@ -7,7 +7,10 @@ import {
 import { act, fireEvent, screen, within } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { MOCK_DISCOVER_MOVIES, MOCK_GENRES } from '@/tests/__mocks__/mocks';
+import {
+   MOCK_DISCOVER_MOVIES,
+   MOCK_GENRES,
+} from '@/tests/mocks/discover.mocks';
 import { renderWithQueryContext } from '@/tests/test-utils';
 import {
    DISCOVER_SORTS,

@@ -44,15 +44,15 @@ Co-located with the source as `<name>.spec.tsx` (or `.spec.ts` without JSX). One
 | `renderWithAxe`          | `renderWithQueryContext` plus an axe run; returns `{ …result, violations }`                            |
 | `router`                 | A router over the real `routeTree`. Rarely needed; most specs build a bare router instead (below)      |
 
-## Mock data — `src/tests/__mocks__/mocks.ts`
+## Mock data — `src/tests/mocks/<domain>.mocks.ts`
 
-`MOCK_FILM_LIST`, `MOCK_FILM_INFO`, `MOCK_FILM_TRAILER`, `MOCK_SERIES_LIST`, `MOCK_SERIES_INFO`, `MOCK_SERIES_CREDITS`, `MOCK_SERIES_RECOMMENDATIONS` are raw TMDB payloads. Always parse them through the matching Zod schema before handing them to a component, exactly as the service layer does:
+One file per TMDB domain, named after the matching `src/services/` folder: `films.mocks.ts` (`MOCK_FILM_LIST`, `MOCK_FILM_INFO`, `MOCK_FILM_TRAILER`, `MOCK_FILM_CREDITS`, `MOCK_RELEASE_DATES`), `series.mocks.ts` (`MOCK_SERIES_LIST`, `MOCK_SERIES_INFO`, `MOCK_SERIES_CREDITS`, `MOCK_SERIES_RECOMMENDATIONS`, `MOCK_SEASON_DETAIL`), `discover.mocks.ts`, `people.mocks.ts`, `images.mocks.ts`, `reviews.mocks.ts` and `search.mocks.ts`. Import from the domain file (`@/tests/mocks/films.mocks`), never from a barrel. They are raw TMDB payloads. Always parse them through the matching Zod schema before handing them to a component, exactly as the service layer does:
 
 ```tsx
 <FilmList list={SeriesListSchema.parse(MOCK_SERIES_LIST).results} />
 ```
 
-Never inline large fixtures in a spec. Add to the mocks file instead.
+Never inline large fixtures in a spec. Add them to the domain's mocks file instead (or create `<domain>.mocks.ts` for a new TMDB domain).
 
 ## Patterns
 

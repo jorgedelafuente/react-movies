@@ -1,4 +1,4 @@
-import type { ReleaseDatesByCountryType } from '@/types/films.types';
+import type { ReleaseDatesByCountryType } from '@/types/films.schemas';
 import {
    flattenReleaseDates,
    formatReleaseDate,

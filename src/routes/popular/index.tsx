@@ -1,22 +1,12 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
-import Spinner from '@/components/atoms/spinner/spinner.component';
 import { ErrorComponent } from '@/components/layout/error-component/error-component.component';
-import { filmsPopularQueryOptions } from '@/services/films/filmsQueryOptions';
-import FilmList from '@/views/film-list/film-list.view';
+import { filmsPopularQueryOptions } from '@/services/films/filmListQueryOptions';
+import FilmListPage from '@/views/film-list/film-list-page.view';
 
 export const Route = createFileRoute('/popular/')({
    loader: ({ context: { queryClient } }) =>
       queryClient.ensureQueryData(filmsPopularQueryOptions),
-   component: Index,
+   component: () => <FilmListPage queryOptions={filmsPopularQueryOptions} />,
    errorComponent: ErrorComponent,
 });
-
-function Index() {
-   const { data: popularFilms, isLoading } = useSuspenseQuery(
-      filmsPopularQueryOptions
-   );
-
-   return <>{isLoading ? <Spinner /> : <FilmList list={popularFilms} />}</>;
-}

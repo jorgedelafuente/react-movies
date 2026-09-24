@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { configureAxe } from 'vitest-axe';
 
 import { searchMedia } from '@/services/search/search';
-import { MOCK_MULTI_SEARCH } from '@/tests/__mocks__/mocks';
+import { MOCK_MULTI_SEARCH } from '@/tests/mocks/search.mocks';
 import { renderWithQueryContext } from '@/tests/test-utils';
 import { MultiSearchSchema } from '@/types/search.schemas';
 

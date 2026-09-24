@@ -1,11 +1,12 @@
 import { z } from 'zod';
 
 import {
+   type FilmInfoType,
+   type FilmRecommendationType,
    GenreSchema,
    ProductionCompanySchema,
    SpokenLanguageSchema,
 } from './films.schemas';
-import type { FilmInfoType, FilmRecommendationType } from './films.types';
 import { MEDIA_TYPES } from './media.types';
 
 /**
@@ -157,3 +158,9 @@ export const SeriesRecommendationsSchema = z.object({
       )
    ),
 });
+
+export type SeriesInfoType = z.infer<typeof SeriesInfoSchema>;
+export type SeriesListItemType = z.infer<typeof SeriesListItemSchema>;
+export type SeasonType = z.infer<typeof SeasonSchema>;
+export type SeasonDetailType = z.infer<typeof SeasonDetailSchema>;
+export type EpisodeType = z.infer<typeof EpisodeSchema>;

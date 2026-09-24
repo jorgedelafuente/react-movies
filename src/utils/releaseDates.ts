@@ -1,7 +1,7 @@
 import type {
    ReleaseDatesByCountryType,
    ReleaseDateType,
-} from '@/types/films.types';
+} from '@/types/films.schemas';
 
 /** TMDB release `type` codes. */
 export const RELEASE_TYPE_LABELS: Record<number, string> = {

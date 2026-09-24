@@ -1,9 +1,9 @@
 import CardGrid from '@/components/atoms/card-grid/card-grid.component';
-import FilmCard from '@/components/atoms/film-card/film-card.component';
-import ViewToggle from '@/components/atoms/view-toggle/view-toggle.component';
+import FilmCard from '@/components/film-card/film-card.component';
 import FilmTable from '@/components/film-table/film-table.component';
 import FlexContainer from '@/components/layout/container/flex-container.component';
-import type { FilmInfoType } from '@/types/films.types';
+import ViewToggle from '@/components/view-toggle/view-toggle.component';
+import type { FilmInfoType } from '@/types/films.schemas';
 import { LIST_VIEWS } from '@/types/list-view.types';
 import { useListView } from '@/utils/hooks/useListView';
 

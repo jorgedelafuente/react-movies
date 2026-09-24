@@ -1,4 +1,4 @@
-import { MOCK_REVIEWS } from '@/tests/__mocks__/mocks';
+import { MOCK_REVIEWS } from '@/tests/mocks/reviews.mocks';
 
 import { ReviewListSchema, sortReviewsNewestFirst } from './reviews.schemas';
 

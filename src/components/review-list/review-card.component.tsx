@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 
 import MediaImage from '@/components/atoms/media-image/media-image.component';
-import type { ReviewType } from '@/types/reviews.types';
+import type { ReviewType } from '@/types/reviews.schemas';
 import { resolveAvatarUrl } from '@/utils/avatarUrl';
 import { stripMarkdown } from '@/utils/stripMarkdown';
 

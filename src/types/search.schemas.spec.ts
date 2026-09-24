@@ -1,4 +1,4 @@
-import { MOCK_KEYWORDS, MOCK_MULTI_SEARCH } from '@/tests/__mocks__/mocks';
+import { MOCK_KEYWORDS, MOCK_MULTI_SEARCH } from '@/tests/mocks/search.mocks';
 
 import { MEDIA_TYPES } from './media.types';
 import { KeywordSearchSchema, MultiSearchSchema } from './search.schemas';

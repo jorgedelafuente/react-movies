@@ -2,7 +2,7 @@ import {
    MOCK_SERIES_INFO,
    MOCK_SERIES_LIST,
    MOCK_SERIES_RECOMMENDATIONS,
-} from '@/tests/__mocks__/mocks';
+} from '@/tests/mocks/series.mocks';
 
 import { MEDIA_TYPES } from './media.types';
 import {

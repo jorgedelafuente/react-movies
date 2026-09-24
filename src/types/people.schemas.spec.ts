@@ -1,4 +1,4 @@
-import { MOCK_PERSON_INFO } from '@/tests/__mocks__/mocks';
+import { MOCK_PERSON_INFO } from '@/tests/mocks/people.mocks';
 
 import { MEDIA_TYPES } from './media.types';
 import { PersonInfoSchema } from './people.schemas';

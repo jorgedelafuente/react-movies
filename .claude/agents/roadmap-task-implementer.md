@@ -111,7 +111,7 @@ Execute the approved plan step by step. Follow ALL project conventions without e
 
 ### Testing
 
--  Vitest unit tests: globals enabled, jsdom environment, use test-utils from `src/tests/test-utils.tsx`, shared mocks from `src/tests/__mocks__/mocks.ts`
+-  Vitest unit tests: globals enabled, jsdom environment, use test-utils from `src/tests/test-utils.tsx`, shared mocks from `src/tests/mocks/<domain>.mocks.ts`
 -  Vitest is the only test runner (no Playwright, Cypress or Storybook). Never call real TMDB or Supabase: `vi.mock` the service layer or pass parsed `MOCK_*` data as props (MSW is not installed)
 
 ### Package Manager

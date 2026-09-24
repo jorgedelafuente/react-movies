@@ -1,7 +1,6 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createLazyFileRoute } from '@tanstack/react-router';
 
-import Spinner from '@/components/atoms/spinner/spinner.component';
 import { ErrorComponent } from '@/components/layout/error-component/error-component.component';
 import {
    filmCreditsQueryOptions,
@@ -9,7 +8,7 @@ import {
    filmRecommendationsQueryOptions,
    filmVideoQueryOptions,
 } from '@/services/films/filmQueryOptions';
-import { VIDEO_TYPES } from '@/views/film-info/film-info.constants';
+import { pickTrailer } from '@/utils/pickTrailer';
 import FilmInfo from '@/views/film-info/film-info.view';
 
 export const Route = createLazyFileRoute('/film/$filmId')({
@@ -18,45 +17,22 @@ export const Route = createLazyFileRoute('/film/$filmId')({
 });
 
 function FilmComponent() {
-   const filmId = Route.useParams().filmId;
-   const { data: filmInfo, isLoading } = useSuspenseQuery(
-      filmQueryOptions(Number(filmId))
-   );
-   const { data: filmTrailerList } = useSuspenseQuery(
-      filmVideoQueryOptions(Number(filmId))
-   );
+   const filmId = Number(Route.useParams().filmId);
+   const { data: filmInfo } = useSuspenseQuery(filmQueryOptions(filmId));
+   const { data: filmVideos } = useSuspenseQuery(filmVideoQueryOptions(filmId));
    const { data: filmCredits } = useSuspenseQuery(
-      filmCreditsQueryOptions(Number(filmId))
+      filmCreditsQueryOptions(filmId)
    );
    const { data: recommendations } = useSuspenseQuery(
-      filmRecommendationsQueryOptions(Number(filmId))
+      filmRecommendationsQueryOptions(filmId)
    );
-
-   const filmTrailer = filmTrailerList.results.filter(
-      (item) => item.type === VIDEO_TYPES.TRAILER
-   );
-
-   const officialFilmTrailer =
-      (Array.isArray(filmTrailer) &&
-         filmTrailer.find(
-            (item) =>
-               item.name === VIDEO_TYPES.FINAL_TRAILER ||
-               item.name === VIDEO_TYPES.OFFICIAL_TRAILER
-         )) ||
-      filmTrailer[0];
 
    return (
-      <>
-         {isLoading ? (
-            <Spinner />
-         ) : (
-            <FilmInfo
-               filmInfo={filmInfo}
-               filmTrailer={officialFilmTrailer}
-               filmCredits={filmCredits}
-               recommendations={recommendations}
-            />
-         )}
-      </>
+      <FilmInfo
+         filmInfo={filmInfo}
+         filmTrailer={pickTrailer(filmVideos.results)}
+         filmCredits={filmCredits}
+         recommendations={recommendations}
+      />
    );
 }

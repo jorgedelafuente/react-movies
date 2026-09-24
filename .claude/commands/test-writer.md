@@ -20,7 +20,7 @@ Generate Vitest unit tests for a target file or feature: components, hooks, serv
 
 -  Read `$ARGUMENTS` (the target file).
 -  Read related files: if it's a hook, read the store; if it's a component, read its prop types and child components; if it's a service, read the Zod schemas it validates against.
--  Read [src/tests/test-utils.tsx](src/tests/test-utils.tsx) and [src/tests/**mocks**/mocks.ts](src/tests/__mocks__/mocks.ts) to understand available helpers and existing mock data.
+-  Read [src/tests/test-utils.tsx](src/tests/test-utils.tsx) and [src/tests/mocks/](src/tests/mocks/) (one `<domain>.mocks.ts` per TMDB domain) to understand available helpers and existing mock data.
 -  Read one existing test file of the same type for style reference:
    -  Hooks: `src/utils/hooks/*.spec.ts(x)`
    -  Components and forms: `src/components/auth/**/*.spec.tsx`
@@ -32,7 +32,7 @@ Generate Vitest unit tests for a target file or feature: components, hooks, serv
 -  Use `describe` / `it` blocks (vitest globals — no import needed)
 -  Import `renderWithQueryContext` from `@/tests/test-utils` for components that need a QueryClient; `renderWithAxe` when you also want axe results
 -  Components that render a TanStack `Link` need a router: create a bare root route with `createRootRoute()` + `createRouter()` and render through `<RouterProvider router={router} defaultComponent={element} />` inside `act`, then assert on `href`
--  Mock data: import `MOCK_*` constants from `@/tests/__mocks__/mocks` and parse them through the matching Zod schema (`FilmListSchema`, `SeriesListSchema`, ...) before passing them as props — never inline large data objects
+-  Mock data: import `MOCK_*` constants from the matching domain file, e.g. `@/tests/mocks/films.mocks` and parse them through the matching Zod schema (`FilmListSchema`, `SeriesListSchema`, ...) before passing them as props — never inline large data objects
 -  Use `vi.mock(...)` for external modules (Supabase client, TMDB fetch functions in `src/services/`); never call the real TMDB or Supabase APIs. MSW is not installed; do not add it
 -  Use `vi.spyOn(...)` for store actions
 -  Prefer `userEvent` from `@testing-library/user-event` over `fireEvent` for interactions

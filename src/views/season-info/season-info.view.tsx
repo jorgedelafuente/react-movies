@@ -5,7 +5,7 @@ import { Link } from '@tanstack/react-router';
 import MediaImage from '@/components/atoms/media-image/media-image.component';
 import StickyTitle from '@/components/atoms/sticky-title/sticky-title.component';
 import Container from '@/components/layout/container/container.component';
-import type { SeasonDetailType, SeriesInfoType } from '@/types/series.types';
+import type { SeasonDetailType, SeriesInfoType } from '@/types/series.schemas';
 
 const extractYear = (dateStr: string | null | undefined) =>
    dateStr && /^\d{4}/.test(dateStr) ? dateStr.slice(0, 4) : '—';

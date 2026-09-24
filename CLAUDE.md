@@ -13,7 +13,7 @@ pnpm dev                # dev server (http://localhost:5173)
 pnpm build              # tsc -b + Vite build
 pnpm lint               # ESLint
 pnpm test:silent        # Vitest, no watch
-pnpm exec tsc --noEmit  # type-check only
+pnpm typecheck          # tsc -b --noEmit (plain `tsc --noEmit` checks nothing: the root tsconfig has no files)
 ```
 
 ## TypeScript
@@ -30,7 +30,7 @@ import { Button } from '@/components/atoms/button/button.component';
 
 -  Setup: [src/tests/setupTests.ts](src/tests/setupTests.ts)
 -  Render helpers: [src/tests/test-utils.tsx](src/tests/test-utils.tsx) — `renderWithQueryContext` wraps in a fresh QueryClient; `renderWithAxe` also runs axe and returns `violations` for `toHaveNoViolations()`.
--  Shared mocks: [src/tests/**mocks**/mocks.ts](src/tests/__mocks__/mocks.ts) — parse them through the Zod schemas before passing as props.
+-  Shared mocks: [src/tests/mocks/](src/tests/mocks/) — one `<domain>.mocks.ts` per TMDB domain (`films`, `series`, `people`, `discover`, `images`, `reviews`, `search`), mirroring `src/services/` and `src/types/`. Import `MOCK_*` from the domain file and parse it through the Zod schema before passing as props.
 
 **Never call the real TMDB API or Supabase in tests.** Render with mock data from the shared mocks file or `vi.mock` the service module in `src/services/`. MSW is not installed; do not add it. Route-level behaviour (which detail route a card links to, navbar targets) is asserted through `href` attributes inside a bare `RouterProvider`, as in `media-link.spec.tsx` and `navbar.spec.tsx`.
 
@@ -52,13 +52,13 @@ Copy [.env.example](.env.example) to `.env.local`. All three are required at run
 
 ## Layout
 
--  `src/components/` — atoms, auth forms, `film-table/` (TanStack Table, the list pages' table layout), layout (navbar, containers, error boundaries)
+-  `src/components/` — `atoms/` holds generic UI primitives only (button, card, card-grid, input, link, media-image, modal, sortable-header, spinner, stat, sticky-title): nothing in there may import a hook, a store or a service beyond `services/config`, and `link/media-link` + `media-image` are the only ones that know `media_type`. Anything that knows about films, series, people or favourites sits one level up as `src/components/<name>/` (`film-card`, `favorite-button`, `view-toggle`, `film-table`, `cast-list`, `release-dates`, `image-gallery`, `review-list`, `keyword-filter`), plus `auth/` forms and `layout/` (navbar, containers, error boundaries)
 -  `src/routes/` — TanStack Router file-based routes
--  `src/services/` — TMDB fetchers + query options (`films/` for movies, `series/` for TV, `discover/` for filtered browsing + genres, `people/` for cast pages, `search/` for the navbar typeahead and keyword lookups), Supabase client/auth/favorites, image config
--  `src/types/` — TypeScript types and Zod schemas
+-  `src/services/` — TMDB fetchers + query options, one folder per domain (`films/` for movies, `series/` for TV, `discover/` for filtered browsing + genres, `people/` for cast pages, `search/` for the navbar typeahead and keyword lookups, `images/`, `reviews/`), Supabase client/auth/favorites, image config. Files are plain `.ts` (no JSX). Detail queries live in `<domain>QueryOptions.ts` and list queries in `<domain>ListQueryOptions.ts` (`filmQueryOptions` vs `filmListQueryOptions`, `seriesQueryOptions` vs `seriesListQueryOptions`)
+-  `src/types/` — `<domain>.schemas.ts` holds the Zod schemas for a TMDB domain **and** the `z.infer` types derived from them (`FilmInfoType`, `SeriesInfoType`, ...); there are no separate `.types.ts` files for TMDB shapes. `*.types.ts` is only for app-owned types with no schema (`auth`, `media`, `theme`, `list-view`)
 -  `src/utils/hooks/` — `useAuth`, `useFavorites`, `useTheme`, `useListView`, `useDebounce`
--  `src/utils/` — pure helpers: `sanitizeInput`, `releaseDates` (certification + release list shaping), `dedupeCredits` (collapse a person's repeated credits)
--  `src/views/` — page-level components
+-  `src/utils/` — pure helpers: `sanitizeInput`, `releaseDates` (certification + release list shaping), `dedupeCredits` (collapse a person's repeated credits), `pickTrailer` (choose the one trailer a detail page embeds), `avatarUrl`, `stripMarkdown`
+-  `src/views/` — page-level components. Every list route (`/popular`, `/series/top-rated`, ...) is a `createFileRoute` whose loader ensures a list query and whose component is `<FilmListPage queryOptions={...} />` from `views/film-list/`; loading UI comes from the router's `defaultPendingComponent` in `main.tsx`, so routes do not render spinners themselves
 -  `src/tests/` — Vitest setup, helpers, mocks
 -  `docs/` — long-form documentation (see [Documentation](#documentation))
 

@@ -22,12 +22,12 @@ vi.mock('@/services/reviews/reviews', () => ({
    }),
 }));
 
+import { MOCK_FILM_TRAILER } from '@/tests/mocks/films.mocks';
 import {
-   MOCK_FILM_TRAILER,
    MOCK_SERIES_CREDITS,
    MOCK_SERIES_INFO,
    MOCK_SERIES_RECOMMENDATIONS,
-} from '@/tests/__mocks__/mocks';
+} from '@/tests/mocks/series.mocks';
 import { renderWithQueryContext } from '@/tests/test-utils';
 import { FilmCreditsSchema } from '@/types/films.schemas';
 import {

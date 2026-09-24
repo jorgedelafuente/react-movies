@@ -36,3 +36,6 @@ export const pickGalleryBackdrops = (
             b.vote_average - a.vote_average || b.vote_count - a.vote_count
       )
       .slice(0, limit);
+
+export type TmdbImageType = z.infer<typeof TmdbImageSchema>;
+export type MediaImagesType = z.infer<typeof MediaImagesSchema>;

@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 
 import MediaImage from '@/components/atoms/media-image/media-image.component';
-import type { CastMemberType } from '@/types/films.types';
+import type { CastMemberType } from '@/types/films.schemas';
 
 /** Rows hold at most this many members; longer lists split evenly across two rows. */
 const MAX_PER_ROW = 6;

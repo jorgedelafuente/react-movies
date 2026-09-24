@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 import { configureAxe } from 'vitest-axe';
 
 import { searchKeywords } from '@/services/search/search';
-import { MOCK_KEYWORDS } from '@/tests/__mocks__/mocks';
+import { MOCK_KEYWORDS } from '@/tests/mocks/search.mocks';
 import { renderWithQueryContext } from '@/tests/test-utils';
 import { KeywordSearchSchema } from '@/types/search.schemas';
 

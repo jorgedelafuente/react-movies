@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
-import { FilmInfoSchema } from './films.schemas';
-import type { FilmInfoType } from './films.types';
+import { FilmInfoSchema, type FilmInfoType } from './films.schemas';
 import { MEDIA_TYPES } from './media.types';
 import { SeriesListItemSchema, toMediaItem } from './series.schemas';
 

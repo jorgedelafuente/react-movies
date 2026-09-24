@@ -1,10 +1,10 @@
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 
-import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
 import MediaLink from '@/components/atoms/link/media-link.component';
 import MediaImage from '@/components/atoms/media-image/media-image.component';
 import SortableHeader from '@/components/atoms/sortable-header/sortable-header.component';
+import FavoriteButton from '@/components/favorite-button/favorite-button.component';
 import Container from '@/components/layout/container/container.component';
 import type { FavoriteRow } from '@/services/supabase/favorites';
 import { MEDIA_TYPE_LABELS } from '@/types/media.types';

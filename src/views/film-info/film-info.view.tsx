@@ -1,8 +1,6 @@
 import './film-info.styles.css';
 
 import CardGrid from '@/components/atoms/card-grid/card-grid.component';
-import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
-import FilmCard from '@/components/atoms/film-card/film-card.component';
 import { ExternalLink } from '@/components/atoms/link/external-link.component';
 import MediaImage from '@/components/atoms/media-image/media-image.component';
 import {
@@ -12,6 +10,8 @@ import {
 } from '@/components/atoms/stat/stat.component';
 import StickyTitle from '@/components/atoms/sticky-title/sticky-title.component';
 import CastList from '@/components/cast-list/cast-list.component';
+import FavoriteButton from '@/components/favorite-button/favorite-button.component';
+import FilmCard from '@/components/film-card/film-card.component';
 import ImageGallery from '@/components/image-gallery/image-gallery.component';
 import Container from '@/components/layout/container/container.component';
 import {
@@ -25,7 +25,7 @@ import type {
    FilmInfoType,
    FilmRecommendationType,
    FilmVideoType,
-} from '@/types/films.types';
+} from '@/types/films.schemas';
 import { MEDIA_TYPES } from '@/types/media.types';
 import { formatReleaseDate } from '@/utils/releaseDates';
 

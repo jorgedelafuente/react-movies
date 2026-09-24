@@ -17,7 +17,7 @@ import Spinner from '@/components/atoms/spinner/spinner.component';
 import WaveDivider from '@/components/atoms/wave-divider/wave-divider.component';
 import { baseImagePathThumb } from '@/services/config';
 import { mediaSearchQueryOptions } from '@/services/search/searchQueryOptions';
-import type { FilmInfoType } from '@/types/films.types';
+import type { FilmInfoType } from '@/types/films.schemas';
 import { MEDIA_TYPE_LABELS, MEDIA_TYPES } from '@/types/media.types';
 import { THEME_OPTIONS } from '@/types/theme.types';
 import { useDebounce } from '@/utils/hooks/useDebounce';

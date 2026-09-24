@@ -17,7 +17,7 @@ export const filmsTopRatedQueryOptions = queryOptions({
    queryFn: () => fetchTopRatedFilms(),
 });
 
-export const filmsUpcoming = queryOptions({
+export const filmsUpcomingQueryOptions = queryOptions({
    queryKey: ['films-upcoming'],
    queryFn: () => fetchUpcoming(),
 });

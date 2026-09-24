@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import { MOCK_RELEASE_DATES } from '@/tests/__mocks__/mocks';
+import { MOCK_RELEASE_DATES } from '@/tests/mocks/films.mocks';
 
 import {
    CertificationBadge,

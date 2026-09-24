@@ -27,7 +27,7 @@ import {
    MOCK_FILM_INFO,
    MOCK_FILM_TRAILER,
    MOCK_RELEASE_DATES,
-} from '@/tests/__mocks__/mocks';
+} from '@/tests/mocks/films.mocks';
 import { renderWithQueryContext } from '@/tests/test-utils';
 import { FilmCreditsSchema, FilmInfoSchema } from '@/types/films.schemas';
 

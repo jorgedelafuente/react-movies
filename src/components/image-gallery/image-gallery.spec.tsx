@@ -7,7 +7,7 @@ vi.mock('@/services/images/images', () => ({
 }));
 
 import { fetchMediaImages } from '@/services/images/images';
-import { MOCK_MEDIA_IMAGES } from '@/tests/__mocks__/mocks';
+import { MOCK_MEDIA_IMAGES } from '@/tests/mocks/images.mocks';
 import { renderWithQueryContext } from '@/tests/test-utils';
 import {
    MediaImagesSchema,

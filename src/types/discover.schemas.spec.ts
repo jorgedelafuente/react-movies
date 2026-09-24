@@ -1,7 +1,5 @@
-import {
-   MOCK_DISCOVER_MOVIES,
-   MOCK_SERIES_LIST,
-} from '@/tests/__mocks__/mocks';
+import { MOCK_DISCOVER_MOVIES } from '@/tests/mocks/discover.mocks';
+import { MOCK_SERIES_LIST } from '@/tests/mocks/series.mocks';
 
 import {
    DISCOVER_SORTS,

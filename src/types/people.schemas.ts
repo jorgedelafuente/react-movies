@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
-import { MediaTypeSchema } from './films.schemas';
-import type { FilmRecommendationType } from './films.types';
+import { type FilmRecommendationType, MediaTypeSchema } from './films.schemas';
 
 /**
  * One row of `/person/{id}/combined_credits`. Movies carry `title` and
@@ -76,3 +75,5 @@ export const PersonInfoSchema = z.object({
       })
       .optional(),
 });
+
+export type PersonInfoType = z.infer<typeof PersonInfoSchema>;

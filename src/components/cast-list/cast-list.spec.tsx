@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-router';
 import { act, screen } from '@testing-library/react';
 
-import { MOCK_SERIES_CREDITS } from '@/tests/__mocks__/mocks';
+import { MOCK_SERIES_CREDITS } from '@/tests/mocks/series.mocks';
 import { renderWithQueryContext } from '@/tests/test-utils';
 import { FilmCreditsSchema } from '@/types/films.schemas';
 

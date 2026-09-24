@@ -6,11 +6,10 @@ import {
 } from '@tanstack/react-router';
 import { act, fireEvent, screen } from '@testing-library/react';
 
-import { MOCK_PERSON_INFO } from '@/tests/__mocks__/mocks';
+import { MOCK_PERSON_INFO } from '@/tests/mocks/people.mocks';
 import { renderWithQueryContext } from '@/tests/test-utils';
 import { MEDIA_TYPES } from '@/types/media.types';
-import { PersonInfoSchema } from '@/types/people.schemas';
-import type { PersonInfoType } from '@/types/people.types';
+import { PersonInfoSchema, type PersonInfoType } from '@/types/people.schemas';
 import { dedupeCredits } from '@/utils/dedupeCredits';
 
 import PersonInfo from './person-info.view';

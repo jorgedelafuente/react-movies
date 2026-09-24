@@ -8,7 +8,7 @@ vi.mock('@/services/reviews/reviews', () => ({
 
 import { baseImagePathAvatar } from '@/services/config';
 import { fetchMediaReviews } from '@/services/reviews/reviews';
-import { MOCK_REVIEWS } from '@/tests/__mocks__/mocks';
+import { MOCK_REVIEWS } from '@/tests/mocks/reviews.mocks';
 import { renderWithQueryContext } from '@/tests/test-utils';
 import { MEDIA_TYPES } from '@/types/media.types';
 import {

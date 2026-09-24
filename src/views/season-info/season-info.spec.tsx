@@ -6,7 +6,10 @@ import {
 } from '@tanstack/react-router';
 import { act, screen } from '@testing-library/react';
 
-import { MOCK_SEASON_DETAIL, MOCK_SERIES_INFO } from '@/tests/__mocks__/mocks';
+import {
+   MOCK_SEASON_DETAIL,
+   MOCK_SERIES_INFO,
+} from '@/tests/mocks/series.mocks';
 import { renderWithQueryContext } from '@/tests/test-utils';
 import { SeasonDetailSchema, SeriesInfoSchema } from '@/types/series.schemas';
 

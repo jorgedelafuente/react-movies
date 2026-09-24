@@ -258,6 +258,8 @@ Mobile first; the breakpoints in use are `sm` and `lg` (nothing uses `md`, `xl` 
 
 Recipes as they exist in code. Copy the class strings; do not approximate them.
 
+Recipes: [Navbar](#navbar--layoutnavbar), [NavMenu](#navmenu--layoutnavbarnav-menu), [Button](#button--atomsbutton), [Input](#input--atomsinput), [Form](#form--auth), [Select](#select), [Chip](#chip--segmented-choice), [Badge and pills](#badge-and-pills), [StickyTitle](#stickytitle--atomssticky-title), [Eyebrow and Stat](#eyebrow-and-stat--atomsstat), [MediaImage](#mediaimage--atomsmedia-image), [Disclosure](#disclosure--release-dates), [Episode row](#episode-row--viewsseason-info), [Modal](#modal--atomsmodal), [Card and FilmCard](#card-and-filmcard--atomscard-film-card), [FilmTable](#filmtable--film-table), [SortableHeader](#sortableheader--atomssortable-header), [ViewToggle](#viewtoggle--view-toggle), [Search combobox](#search-combobox--layoutnavbarsearch-input), [Links](#links--atomslink), [FavoriteButton](#favoritebutton--favorite-button), [CastList](#castlist--cast-list), [Spinner](#spinner--atomsspinner), [Empty and error states](#empty-and-error-states).
+
 ### Navbar — `layout/navbar`
 
 The one fixed element on every page. Root: `navbar sticky top-0 z-10 m-auto flex flex-col items-center border-b-2 border-solid border-secondary-background-color bg-primary-background-color p-4` plus the theme class; `navbar.styles.css` adds a `0 3px 3px` shadow in the secondary colour; the first child is a `WaveDivider` (recipe under Components), which the stylesheet tints with the legacy tertiary colour through `.navbar .wave-divider { color: … }`. Inside: one wrapping row `flex w-full flex-wrap items-start justify-between gap-2 sm:items-center lg:flex-nowrap lg:gap-6` holding `<nav aria-label="Browse" className="flex items-center gap-4 sm:gap-6">` (a `NavLink` and two `NavMenu` groups), the search combobox in a wrapper `order-3 flex basis-full justify-center lg:order-2 lg:min-w-0 lg:flex-1 lg:basis-0`, and `order-2 flex items-center gap-1 lg:order-3` of icon buttons (`ThemeToggleIcon`, `LoginIcon`). Up to `lg` the search wraps onto a full-width second line under the links and icons; from `lg` the row stops wrapping and the search sits between them, so the bar is a single line about 78px tall instead of 114px. The `order` utilities keep the DOM in reading order (links, search, icons) at every width. Nothing else goes in the navbar; add sections through `NavMenu`. A `ResizeObserver` on the root writes its rendered height to `--navbar-height` on `<html>` (constant `NAVBAR_HEIGHT_VAR`) so `StickyTitle` can sit under it; anything else that must clear the navbar reads the same variable.
@@ -410,7 +412,7 @@ title:  h2#modal-title  mb-4 text-display-sm
 
 Open and close through the `isOpen` prop; the component calls `showModal()` and wires `cancel` (Escape) and backdrop clicks to `onClose`.
 
-### Card and FilmCard — `atoms/card`, `atoms/film-card`
+### Card and FilmCard — `atoms/card`, `film-card`
 
 `Card` is the hover shell (`custom-card w-full`, CSS in `card.styles.css`): relative, hidden overflow, `10px` radius, and on hover or `focus-within` it scales to 1.15, blurs the image and fades in `.content`, a `rgba(0,0,0,.72)` overlay with white text.
 
@@ -424,7 +426,7 @@ The table layout for any list of titles: TanStack Table with `SortableHeader` ce
 
 A `<th aria-sort="…">` whose content is a reset `<button>` plus an `aria-hidden` sort glyph. Styles in `sortable-header.styles.css`; the focus ring is the standard 2px accent outline.
 
-### ViewToggle — `atoms/view-toggle`
+### ViewToggle — `view-toggle`
 
 `react-aria-components` `ToggleButtonGroup` in single-selection mode, so it is a radiogroup with arrow-key navigation. Each `ToggleButton` holds an `aria-hidden` 16-unit SVG glyph (grid for Cards, rows for Table) followed by the label, which carries the accessible name.
 
@@ -464,7 +466,7 @@ The same `ComboBox` pattern inside the discover filter form, styled to sit besid
 -  **`ExternalLink`** (homepage, IMDb) is a pill: `group rounded-full border border-copy/30 px-4 py-1.5 text-sm font-medium transition-colors hover:border-accent` with `target="_blank" rel="noreferrer"`, the label in `<span className="text-copy group-hover:text-accent">` (same `:visited` reason as NavLink) and a trailing `↗` that is `aria-hidden`. Label it `IMDb`, not `IMDB`. The colour difference from internal links is deliberate: accent means "stays in the app".
 -  **Links that inherit** (a whole card or cast column) are `text-inherit hover:text-accent`.
 
-### FavoriteButton — `atoms/favorite-button`
+### FavoriteButton — `favorite-button`
 
 Icon-only `<button>` with `aria-label` "Add to favorites" / "Remove from favorites", `cursor-pointer disabled:opacity-50` plus whatever `className` the parent passes. The heart is a `h-7 w-7` SVG: `fill-accent stroke-accent` when favourited, `fill-accent/20 stroke-accent` when not. The navbar icons use the same fill and stroke pairing.
 

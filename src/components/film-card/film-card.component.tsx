@@ -1,9 +1,9 @@
 import './film-card.styles.css';
 
 import Card from '@/components/atoms/card/card.component';
-import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
 import MediaLink from '@/components/atoms/link/media-link.component';
 import MediaImage from '@/components/atoms/media-image/media-image.component';
+import FavoriteButton from '@/components/favorite-button/favorite-button.component';
 import type { MediaType } from '@/types/media.types';
 
 interface FilmCardProps {

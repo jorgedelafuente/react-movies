@@ -10,7 +10,7 @@ import {
 
 import MediaLink from '@/components/atoms/link/media-link.component';
 import SortableHeader from '@/components/atoms/sortable-header/sortable-header.component';
-import type { FilmInfoType } from '@/types/films.types';
+import type { FilmInfoType } from '@/types/films.schemas';
 
 const languageNames = new Intl.DisplayNames(['en'], { type: 'language' });
 
