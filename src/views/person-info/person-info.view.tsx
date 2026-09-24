@@ -21,6 +21,13 @@ const LONG_BIO = 600;
 const PORTRAIT =
    'aspect-[2/3] w-56 flex-none rounded-2xl object-cover object-top shadow-lg sm:w-64 lg:w-72';
 
+/**
+ * Section surface. There is no backdrop behind this page, so the frosted
+ * detail-page panel would be invisible; `bg-subtle` at 70% on a `copy/10`
+ * hairline is the filter panel's surface and reads on both themes.
+ */
+const PANEL = 'rounded-lg border border-copy/10 bg-subtle/70 p-5 sm:p-8';
+
 const formatDate = (iso: string | null) => {
    if (!iso) return null;
    const d = new Date(iso);
@@ -60,7 +67,7 @@ const CreditsGrid = ({
    const visible = showAll ? credits : credits.slice(0, CREDITS_PREVIEW);
 
    return (
-      <section className="border-t border-copy/10 pt-8">
+      <section className={PANEL}>
          <h2 className="text-display-md">
             {title}
             <span className="ml-2 font-sans text-base font-normal tabular-nums text-copy/60">
@@ -102,8 +109,8 @@ const CreditsGrid = ({
 
 /**
  * Profile page. Unlike the film and series pages there is no backdrop, so no
- * parallax hero, no sticky title and no hover fades: a plain column with a
- * portrait header, then biography and credits under hairline rules.
+ * parallax hero, no sticky title and no hover fades: a column of quiet
+ * `PANEL`s, a portrait header first, then biography and credits.
  */
 const PersonInfo = ({ person }: { person: PersonInfoType }) => {
    const [bioExpanded, setBioExpanded] = useState(false);
@@ -124,8 +131,15 @@ const PersonInfo = ({ person }: { person: PersonInfoType }) => {
 
    return (
       <Container>
-         <div className="mx-auto flex w-full max-w-4xl flex-col gap-10 px-4 py-6 text-left text-copy">
-            <header className="flex flex-col items-center gap-6 text-center sm:flex-row sm:items-start sm:gap-10 sm:text-left">
+         {/*
+           The gutter goes from `lg`: the column is narrower than the viewport
+           there, and the panel padding would otherwise leave the credits grid
+           too narrow for three cards at the `lg` card minimum.
+         */}
+         <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-6 text-left text-copy lg:px-0">
+            <header
+               className={`${PANEL} flex flex-col items-center gap-6 text-center sm:flex-row sm:items-start sm:gap-10 sm:text-left`}
+            >
                <MediaImage
                   path={person.profile_path}
                   alt=""
@@ -201,7 +215,7 @@ const PersonInfo = ({ person }: { person: PersonInfoType }) => {
             </header>
 
             {person.biography && (
-               <section className="border-t border-copy/10 pt-8">
+               <section className={PANEL}>
                   <h2 className="text-display-md">Biography</h2>
                   <p
                      className={`mt-4 max-w-prose whitespace-pre-line text-pretty leading-relaxed sm:text-lg ${
