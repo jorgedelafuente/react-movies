@@ -1,0 +1,61 @@
+/*
+ * Sticky page title (atoms/sticky-title).
+ *
+ * Position: `--navbar-height` is published by Navbar from a ResizeObserver
+ * (declared with a 0px default in global.css), so the bar sits under the
+ * navbar whatever its row count. The extra 0.75rem matches the top margin the
+ * bar has at rest, so it floats just clear of the navbar edge once stuck.
+ *
+ * Stacking: the frosted `.text-content` panels carry a `backdrop-filter`,
+ * which makes each of them a stacking context painted in tree order alongside
+ * any positioned element without a z-index. Giving the title a z-index lifts
+ * it above the panels while keeping it below the navbar (`z-10`).
+ *
+ * Surface: the same glass recipe as `.text-content`, lighter at rest so the
+ * hero shows through, and opaque with a shadow once the page has scrolled.
+ */
+.sticky-title {
+   position: sticky;
+   top: calc(var(--navbar-height, 0px) + 0.75rem);
+   z-index: 1;
+   align-self: center;
+   width: fit-content;
+   max-width: calc(100% - 2rem);
+   margin: 0.75rem auto 0;
+   padding: 0.5rem 1rem;
+   border: 1px solid hsl(var(--color-text-copy) / 0.1);
+   border-radius: 9999px;
+   background-color: hsl(var(--color-bg-neutral) / 0.6);
+   -webkit-backdrop-filter: blur(16px) saturate(1.4);
+   backdrop-filter: blur(16px) saturate(1.4);
+   overflow-wrap: anywhere;
+   text-align: center;
+}
+
+/*
+ * Scroll-driven settle: over the first 200px of scroll the glass thickens, a
+ * shadow appears and the type steps up from `display-xs` to `display-md`.
+ * Browsers without scroll timelines, and visitors who prefer reduced motion,
+ * keep the resting look above.
+ */
+@supports (animation-timeline: scroll()) {
+   @media (prefers-reduced-motion: no-preference) {
+      .sticky-title {
+         animation: sticky-title-settle linear both;
+         animation-timeline: scroll();
+         animation-range: 0 200px;
+      }
+   }
+}
+
+@keyframes sticky-title-settle {
+   to {
+      padding: 0.625rem 1.5rem;
+      border-color: hsl(var(--color-text-copy) / 0.2);
+      background-color: hsl(var(--color-bg-neutral) / 0.9);
+      box-shadow: 0 8px 32px rgb(0 0 0 / 0.25);
+      font-size: theme('fontSize.display-md');
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+   }
+}

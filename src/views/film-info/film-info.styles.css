@@ -67,29 +67,3 @@
       margin-top: 50px;
    }
 }
-
-.text-title {
-   position: sticky;
-   top: 90px;
-   animation: adjust-header linear both;
-   animation-timeline: scroll();
-   animation-range: 0 200px;
-   padding: 10px;
-   margin: auto;
-   text-align: center;
-   font-family: theme('fontFamily.display');
-   font-size: 1.125rem;
-   font-weight: 500;
-   letter-spacing: -0.01em;
-   filter: contrast(200%);
-}
-
-@keyframes adjust-header {
-   to {
-      background-color: var(--secondary-background-color);
-      padding: 10px 20px;
-      font-size: 1.875rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-   }
-}

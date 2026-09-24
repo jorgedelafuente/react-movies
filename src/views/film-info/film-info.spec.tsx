@@ -70,6 +70,10 @@ describe('Film Info Component', () => {
       expect(screen.getByTestId('film-info-title')).toHaveTextContent(
          'Deadpool & Wolverine'
       );
+      // The sticky bar is the page's only h1; the hero panel repeats the title as an h2.
+      expect(
+         screen.getByRole('heading', { level: 1, name: 'Deadpool & Wolverine' })
+      ).toBeInTheDocument();
    });
 
    it('shows the age rating for the preferred region in the title meta strip', async () => {

@@ -3,6 +3,7 @@ import '@/views/film-info/film-info.styles.css';
 import { Link } from '@tanstack/react-router';
 
 import MediaImage from '@/components/atoms/media-image/media-image.component';
+import StickyTitle from '@/components/atoms/sticky-title/sticky-title.component';
 import Container from '@/components/layout/container/container.component';
 import type { SeasonDetailType, SeriesInfoType } from '@/types/series.types';
 
@@ -33,11 +34,10 @@ const SeasonInfo = ({
 
    return (
       <Container>
-         <div className="text-title text-copy">
-            <span data-testid="season-info-title">
-               {seriesInfo.name} · {season.name}
-            </span>
-         </div>
+         {/* The season name below is this page's h1, so the bar is a plain paragraph. */}
+         <StickyTitle as="p" testId="season-info-title">
+            {seriesInfo.name} · {season.name}
+         </StickyTitle>
 
          <div className="mx-auto w-full max-w-4xl px-4 py-6 text-copy">
             <Link

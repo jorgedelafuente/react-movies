@@ -38,6 +38,8 @@ describe('Season Info Component', () => {
       expect(screen.getByTestId('season-info-title')).toHaveTextContent(
          'Game of Thrones · Season 1'
       );
+      // The season name in the header is the only h1; the sticky bar stays a paragraph.
+      expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
       expect(
          screen.getByRole('heading', { level: 1, name: 'Season 1' })
       ).toBeInTheDocument();

@@ -6,6 +6,7 @@ import CardGrid from '@/components/atoms/card-grid/card-grid.component';
 import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
 import FilmCard from '@/components/atoms/film-card/film-card.component';
 import MediaImage from '@/components/atoms/media-image/media-image.component';
+import StickyTitle from '@/components/atoms/sticky-title/sticky-title.component';
 import CastList from '@/components/cast-list/cast-list.component';
 import ImageGallery from '@/components/image-gallery/image-gallery.component';
 import Container from '@/components/layout/container/container.component';
@@ -47,9 +48,7 @@ const SeriesInfo = ({
 
    return (
       <Container>
-         <div className="text-title text-copy">
-            <span data-testid="series-info-title">{seriesInfo.name}</span>
-         </div>
+         <StickyTitle testId="series-info-title">{seriesInfo.name}</StickyTitle>
          <div
             className="container-bg"
             style={{

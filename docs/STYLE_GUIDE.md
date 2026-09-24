@@ -150,9 +150,9 @@ Never write a bare `<img>` for TMDB artwork. Render it through `MediaImage` (rec
 A global rule in `global.css` transitions `background-color`, `color`, `border-color` and `fill` on every element over 0.25s. Theme switches and hover colour changes animate without any per-component class. Add `transition-all` or `transition-colors` only when you animate something else (Button transitions its gradient).
 
 -  Cards: 250ms `cubic-bezier(0.1, 0.1, 0.6, 0.9)`, `scale(1.15)` plus a 5px poster blur, on hover and `focus-within`.
--  Detail titles: `position: sticky; top: 90px` with a scroll-driven `animation-timeline: scroll()` over the first 200px that grows the type and adds a background. Pages without a backdrop (the person page) have no title bar at all.
+-  Detail titles (`StickyTitle`): `position: sticky` at `top: calc(var(--navbar-height) + 0.75rem)` with a scroll-driven `animation-timeline: scroll()` over the first 200px that thickens the glass, adds a shadow and steps the type from `display-xs` to `display-md`. The animation sits behind `@supports (animation-timeline: scroll())` and `prefers-reduced-motion: no-preference`; otherwise the resting look stays. Pages without a backdrop (the person page) have no title bar at all.
 -  Detail panels (`.text-content`): on hover only the background alpha, border and shadow change, over 0.3s; the text never fades.
--  `prefers-reduced-motion` is honoured only by the CastList avatar scale (`motion-reduce:transition-none`); the card scale, the panel hover and the scroll-driven title still ignore it (see divergences).
+-  `prefers-reduced-motion` is honoured by the CastList avatar scale (`motion-reduce:transition-none`) and the sticky title; the card scale and the panel hover still ignore it (see divergences).
 
 ### Interactive states
 
@@ -173,7 +173,7 @@ A global rule in `global.css` transitions `background-color`, `color`, `border-c
 1. **Route** — add the file under `src/routes/`; the router plugin regenerates `routeTree.gen.ts`. Data comes from query options in `src/services/`, loaded in the route's `loader` and read with `useSuspenseQuery` in the view.
 2. **Root** — the view returns `Container` (detail or utility page) or `FlexContainer` (a list that renders `FilmList`). Nothing outside these two picks up dark mode.
 3. **Column** — inside `Container`, one `<div className="mx-auto w-full max-w-4xl px-4 py-6 text-copy">`. `Container` centres text, so add `text-left` where prose should align left.
-4. **Title** — a detail page opens with the sticky `text-title` bar and the `.container-bg` hero (see anatomy). Any other page opens with `<h1 className="text-display-lg">`.
+4. **Title** — a detail page opens with `StickyTitle` (recipe under Components) and the `.container-bg` hero (see anatomy). Any other page opens with `<h1 className="text-display-lg">`.
 5. **Sections** — headings are `h2 text-display-md` with `mb-3` (or `mt-8` when following content). Group content in `text-content` panels on detail pages; use plain stacking with `mt-4` elsewhere.
 6. **Content** — pull recipes from section 3. Lists of titles are the card grid or `FilmTable`, never a new layout. Links to films or series go through `MediaLink`.
 7. **States** — an empty state sentence in `text-copy/70`, `Spinner` while waiting, and the error boundary already wraps the route.
@@ -205,7 +205,7 @@ Every route renders `Navbar` (sticky, `top-0 z-10`) then an `Outlet`. The view c
 
 **Detail pages.** The film page is the pattern; the series page still carries the pre-redesign skeleton (see divergences) and should be ported to this:
 
-1. `<div className="text-title text-copy">` — the sticky, scroll-animated title with a `data-testid="…-info-title"`.
+1. `<StickyTitle testId="…-info-title">` — the sticky, scroll-animated title and the page's `h1`; the hero panel repeats the title as an `h2`.
 2. `.container-bg` — hero with the backdrop (`baseImagePathPoster`) as a fixed cover background and the poster centred above the panels: a `MediaImage` with no class of its own (the CSS file sizes it and rounds it to `25px`) and `fallbackClassName="mx-auto aspect-[2/3] w-full max-w-[500px] rounded-[25px]"` so the skeleton matches.
 3. **Frosted panels** — `.text-content` in `film-info.styles.css`: `bg-neutral` at 0.9 alpha, a 1px `copy/10` border, a `0 8px 32px` shadow and `backdrop-filter: blur(16px) saturate(1.4)`; hover lowers the background to 0.62 and lifts the shadow, nothing else. Each panel is `text-content rounded-lg p-5 text-copy sm:p-8` plus the gap of its stack (`gap-6` header, `gap-5` cast, `gap-4` recommendations); every panel after the first adds `mt-4`. Group content with eyebrow labels and hairline rules (`border-t border-copy/10`), never `<hr>` or `<strong>` rows.
 4. **Header panel** — `header flex flex-col items-center gap-2`: `h2 text-display-lg`, the tagline `p font-sans text-lg italic text-copy/70 sm:text-xl`, then the meta line `mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm font-medium tabular-nums text-copy/80` (year, runtime, `aria-hidden` dots between them, `CertificationBadge` at the end). Under it: the `FavoriteButton` in `flex justify-center empty:hidden` (it renders nothing when signed out, and `empty:hidden` stops the gap doubling), genre badges in `ul flex flex-wrap items-center justify-center gap-2`, the overview as `section mx-auto flex w-full max-w-prose flex-col gap-2 text-left` with an `h3 font-sans EYEBROW` label and `p text-pretty leading-relaxed sm:text-lg`, the facts `dl grid grid-cols-2 gap-x-4 gap-y-5 border-y border-copy/10 py-5 sm:grid-cols-3` of `Stat` cells (Rating with a `StatNote` vote count, Status, Released, Language, Budget, Revenue), production companies as an eyebrow over `p text-sm text-copy/80`, `ExternalLink` pills in `flex flex-wrap justify-center gap-3`, and the `ReleaseDatesList` disclosure. A trailer, when there is one, follows in its own `mt-4 rounded-lg` block with the iframe `m-auto rounded-lg`.
@@ -213,7 +213,7 @@ Every route renders `Navbar` (sticky, `top-0 z-10`) then an `Outlet`. The view c
 6. **Reviews and gallery** — `ReviewList` and `ImageGallery` between the cast and the recommendations (their recipes are not written up yet; see divergences).
 7. **Recommendations panel** — `h2 text-display-md` over a `CardGrid` of `FilmCard`s with `showFavorite={false}`.
 
-**Season page** is a detail page without the hero. Under the title bar, a back link (`text-sm text-accent hover:underline`, prefixed `←`), then a header row `mt-3 flex flex-col gap-4 sm:flex-row` holding the poster (`mx-auto w-40 flex-none rounded-lg sm:mx-0`) and a `min-w-0 flex-1` text block (`h1 text-display-lg`, meta line `mt-1 text-sm tabular-nums text-copy/70`, overview `mt-3 leading-relaxed`). The season switcher is `<nav aria-label="Seasons" className="mt-6 flex flex-wrap gap-2">` of chips. Episodes follow under `h2 mt-8 text-display-md` as an `ol mt-3 flex flex-col gap-4` of episode rows.
+**Season page** is a detail page without the hero. Its `StickyTitle` takes `as="p"` because the `h1` sits in the header row below. Under the title bar, a back link (`text-sm text-accent hover:underline`, prefixed `←`), then a header row `mt-3 flex flex-col gap-4 sm:flex-row` holding the poster (`mx-auto w-40 flex-none rounded-lg sm:mx-0`) and a `min-w-0 flex-1` text block (`h1 text-display-lg`, meta line `mt-1 text-sm tabular-nums text-copy/70`, overview `mt-3 leading-relaxed`). The season switcher is `<nav aria-label="Seasons" className="mt-6 flex flex-wrap gap-2">` of chips. Episodes follow under `h2 mt-8 text-display-md` as an `ol mt-3 flex flex-col gap-4` of episode rows.
 
 **Profile page** (person) is the pattern for any page **without a backdrop**: no parallax hero, no sticky title bar, no frosted panels and no hover fade on anything (the only hover feedback is the card scale and link colour). It is a plain column, `mx-auto flex w-full max-w-4xl flex-col gap-10 px-4 py-6 text-left text-copy`, and the `h1` carries the `data-testid`.
 
@@ -328,6 +328,22 @@ Static labels, never interactive.
 -  **Badge** (genres): `rounded-full border border-copy/15 bg-neutral-inverted/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider`, an outline that reads on either theme. Rows of badges are `flex flex-wrap items-center justify-center gap-2` (a `ul` with `aria-label`). The filled variant `rounded-full bg-primary-background-color px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-copy/70` survives only in the favourites table (see divergences).
 -  **Age rating** (`CertificationBadge`): `rounded-md border border-copy/40 px-2 py-0.5 text-sm font-semibold tabular-nums`, with the region as `<span className="ml-1 text-xs font-normal opacity-70">`.
 -  **Inline code-like value** (a certification inside a row): `rounded border border-copy/30 px-1 text-xs tabular-nums`.
+
+### StickyTitle — `atoms/sticky-title`
+
+The title bar that opens every detail page (film, series, season) and stays in view under the navbar while the page scrolls.
+
+```tsx
+<StickyTitle testId="film-info-title">{filmInfo.title}</StickyTitle>
+<StickyTitle as="p" testId="season-info-title">
+   {seriesInfo.name} · {season.name}
+</StickyTitle>
+```
+
+-  **Element** — `h1` by default, the page's only top heading; `as="p"` on a page whose `h1` is already in the body. Classes: `sticky-title text-balance font-display text-display-xs font-semibold text-copy`, with the visible text in a `<span>` carrying `data-testid`.
+-  **Position** (`sticky-title.styles.css`) — `position: sticky; top: calc(var(--navbar-height, 0px) + 0.75rem); z-index: 1`, `align-self: center; width: fit-content; max-width: calc(100% - 2rem); margin: 0.75rem auto 0`. The z-index is required: the `.text-content` panels' `backdrop-filter` makes each a stacking context that would otherwise paint over the title. Stay below the navbar's `z-10`.
+-  **Surface** — the panel glass recipe as a pill: `padding 0.5rem 1rem`, `border-radius 9999px`, `1px` border at `copy/10`, `bg-neutral` at `0.6` over `backdrop-filter: blur(16px) saturate(1.4)`. The settle keyframe ends at `bg-neutral` `0.9`, border `copy/20`, `padding 0.625rem 1.5rem`, shadow `0 8px 32px rgb(0 0 0 / 0.25)` and `theme('fontSize.display-md')` with its line-height and tracking; the weight never changes.
+-  **Motion** — see Foundations › Motion. The animation is scroll-driven over the first 200px, gated behind `@supports` and `prefers-reduced-motion: no-preference`.
 
 ### Eyebrow and Stat — `atoms/stat`
 
@@ -491,7 +507,6 @@ Places where the code does not yet follow this guide. Fixing them is tracked in 
 -  **Detail panel CSS** (`.text-content`) fixes `width: 80%`, `margin: 10px` and a `600px` max-width media query, none of which is mobile-first or on the `sm` breakpoint. The column classes should own the width.
 -  **Hero poster** — `.container-bg > div > img:hover` drops the poster to 10% opacity for no reason, and its `25px` radius lives in CSS while every other radius is a utility (the skeleton already carries `rounded-[25px]`). Remove the fade and move the radius onto the element.
 -  **`opacity-*` on coloured text** appears where `text-copy/N` should be used (favourites `text-copy opacity-60`, season meta). Reserve `opacity-*` for inherited colour.
--  **Sticky title keyframe** in `film-info.styles.css` ends at `font-weight: 700`, the only 700 in the app; it should end at 600 and let the size change carry the effect.
 -  **Spinner** uses the legacy primary variable and a fixed `300px` margin rather than a token and flex centring.
 -  **Legacy hex variables** still define control borders and panel backgrounds. They need semantic tokens (a `border-subtle` and a panel background) before they can be retired.
--  **Reduced motion** is honoured only by the CastList avatar scale; the card scale, the panel hover and the scroll-driven title still need a `prefers-reduced-motion` guard.
+-  **Reduced motion** is honoured only by the CastList avatar scale and the sticky title; the card scale and the panel hover still need a `prefers-reduced-motion` guard.

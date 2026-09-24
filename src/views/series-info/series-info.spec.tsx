@@ -69,6 +69,9 @@ describe('Series Info Component', () => {
       expect(screen.getByTestId('series-info-title')).toHaveTextContent(
          'Game of Thrones'
       );
+      expect(
+         screen.getByRole('heading', { level: 1, name: 'Game of Thrones' })
+      ).toBeInTheDocument();
    });
 
    it('shows TV specific facts: seasons, episodes, episode length, network', async () => {

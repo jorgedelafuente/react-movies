@@ -10,6 +10,7 @@ import {
    Stat,
    StatNote,
 } from '@/components/atoms/stat/stat.component';
+import StickyTitle from '@/components/atoms/sticky-title/sticky-title.component';
 import CastList from '@/components/cast-list/cast-list.component';
 import ImageGallery from '@/components/image-gallery/image-gallery.component';
 import Container from '@/components/layout/container/container.component';
@@ -84,9 +85,7 @@ const FilmInfo = ({
 
    return (
       <Container>
-         <div className="text-title text-copy">
-            <span data-testid="film-info-title">{filmInfo.title}</span>
-         </div>
+         <StickyTitle testId="film-info-title">{filmInfo.title}</StickyTitle>
          <div
             className="container-bg"
             style={{
