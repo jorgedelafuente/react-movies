@@ -1,0 +1,62 @@
+.film-table {
+   display: flex;
+   flex-direction: column;
+   gap: 0.75rem;
+   width: 100%;
+   color: hsl(var(--color-text-copy) / 1);
+}
+
+.film-table__scroll {
+   width: 100%;
+   overflow-x: auto;
+}
+
+.film-table__table {
+   width: 100%;
+   border-collapse: collapse;
+   background: hsl(var(--color-bg-neutral) / 1);
+   font-variant-numeric: tabular-nums;
+}
+
+.film-table__header {
+   text-align: left;
+   user-select: none;
+   white-space: nowrap;
+   border-bottom: 2px solid hsl(var(--color-border-bold) / 1);
+   padding: 0.5rem;
+}
+
+.film-table__row:nth-child(even) {
+   background: hsl(var(--color-bg-subtle) / 1);
+}
+
+.film-table__cell {
+   padding: 0.5rem;
+   text-align: left;
+}
+
+/* Only the title column may wrap; dates and numbers stay on one line */
+.film-table__cell:not(:first-child) {
+   white-space: nowrap;
+}
+
+.film-table__title {
+   color: hsl(var(--color-text-copy) / 1);
+   text-decoration: underline;
+}
+
+.film-table__title-link:hover .film-table__title {
+   color: hsl(var(--color-accent) / 1);
+}
+
+/* Mobile-first: tighter type and padding so four columns fit a phone screen */
+@media (max-width: 639px) {
+   .film-table__table {
+      font-size: 0.875rem;
+   }
+
+   .film-table__header,
+   .film-table__cell {
+      padding: 0.375rem;
+   }
+}

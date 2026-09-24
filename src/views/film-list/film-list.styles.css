@@ -1,0 +1,53 @@
+/*
+ * Home's masonry-enhanced grid. Multi-column is the working baseline at
+ * every breakpoint; native CSS masonry (grid-template-rows: masonry) is
+ * layered on top at lg+ only where the browser actually implements it.
+ * As of 2026-09 that spec is still not Baseline (Chrome/Chromium included),
+ * so this stays a progressive enhancement rather than a guarantee — browsers
+ * without support simply keep the multi-column layout at every size.
+ */
+.film-list__masonry {
+   columns: 2;
+   column-gap: 1rem;
+}
+
+.film-list__masonry > * {
+   break-inside: avoid;
+   margin-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+   .film-list__masonry {
+      columns: 3;
+      column-gap: 1.5rem;
+   }
+
+   .film-list__masonry > * {
+      margin-bottom: 1.5rem;
+   }
+}
+
+@media (min-width: 1024px) {
+   .film-list__masonry {
+      columns: 4;
+      column-gap: 2rem;
+   }
+
+   .film-list__masonry > * {
+      margin-bottom: 2rem;
+   }
+
+   @supports (grid-template-rows: masonry) {
+      .film-list__masonry {
+         columns: initial;
+         display: grid;
+         grid-template-columns: repeat(4, 1fr);
+         grid-template-rows: masonry;
+         gap: 2rem;
+      }
+
+      .film-list__masonry > * {
+         margin-bottom: 0;
+      }
+   }
+}

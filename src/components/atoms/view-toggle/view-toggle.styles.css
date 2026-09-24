@@ -1,0 +1,34 @@
+.view-toggle {
+   display: inline-flex;
+   border: 2px solid hsl(var(--color-border-bold) / 1);
+   border-radius: 0.375rem;
+   overflow: hidden;
+}
+
+.view-toggle__button {
+   border: none;
+   background: hsl(var(--color-bg-neutral) / 1);
+   color: hsl(var(--color-text-copy) / 1);
+   font: inherit;
+   font-weight: 500;
+   padding: 0.25rem 0.75rem;
+   cursor: pointer;
+}
+
+.view-toggle__button + .view-toggle__button {
+   border-left: 2px solid hsl(var(--color-border-bold) / 1);
+}
+
+.view-toggle__button[data-hovered] {
+   background: hsl(var(--color-bg-subtle) / 1);
+}
+
+.view-toggle__button[data-selected] {
+   background: hsl(var(--color-bg-neutral-inverted) / 1);
+   color: hsl(var(--color-bg-neutral) / 1);
+}
+
+.view-toggle__button[data-focus-visible] {
+   outline: 2px solid hsl(var(--color-accent) / 1);
+   outline-offset: -2px;
+}
