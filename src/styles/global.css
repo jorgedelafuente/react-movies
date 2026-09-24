@@ -62,14 +62,28 @@
       --font-display: 'Outfit Variable', 'Inter Variable';
 
       /*
-        Layout — floor for the auto-fill card grids (`.card-grid`, home
-        masonry). Stepped per tier: phones keep two columns down to a 336px
-        viewport, tablets and desktops get a floor 25% above the old fixed
-        columns (220px and 250px) so cards read large and the grid fills the
-        width. Grids fit as many columns of at least this width as the row
-        allows and stretch them to fill it.
+        Layout — shared by every card layout (`.card-grid`, the home masonry,
+        the discover rhythm). Stepped per tier below, through Tailwind's own
+        breakpoints (`screen()`), so the CSS files and the `sm:` / `lg:`
+        utilities can never disagree on a pixel value.
+
+        `--card-min`     the narrowest a card column may get. Phones keep two
+                         columns down to a 336px viewport; tablets and desktops
+                         sit 25% above the old fixed columns (220px, 250px) so
+                         cards read large and the grid fills the width.
+        `--card-gap`     the gutter between cards, also used as the masonry
+                         item spacing and inside the rhythm's row maths.
+        `--card-columns` the auto-fill track list: as many columns of at least
+                         `--card-min` as fit, stretched to fill the row. The
+                         `min(100%, …)` guard keeps a card inside a column
+                         narrower than the floor.
       */
       --card-min: 9rem;
+      --card-gap: 1rem;
+      --card-columns: repeat(
+         auto-fill,
+         minmax(min(100%, var(--card-min)), 1fr)
+      );
 
       /*
         Layout — the navbar's rendered height in px. Navbar overwrites this
@@ -108,15 +122,17 @@
       --color-accent: var(--color-sky);
    }
 
-   @media (min-width: 640px) {
+   @media screen(sm) {
       :root {
          --card-min: 13.75rem;
+         --card-gap: 1.5rem;
       }
    }
 
-   @media (min-width: 1024px) {
+   @media screen(lg) {
       :root {
          --card-min: 15.625rem;
+         --card-gap: 2rem;
       }
    }
 

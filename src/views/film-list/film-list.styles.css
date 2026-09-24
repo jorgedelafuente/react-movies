@@ -2,10 +2,11 @@
  * Home's masonry-enhanced grid. Multi-column is the working baseline at
  * every breakpoint: `columns: <width>` makes the browser fit as many columns
  * of at least `--card-min` as the row allows and stretch them, so the home
- * grid follows the same floor-and-grow rule as `.card-grid`. Card heights
- * come from the poster crop cycle in `utils/posterAspect.ts` (2:3, 3:4 and
- * 1:1 by position), not from the images' natural sizes: TMDB posters are all
- * about 2:3, so natural heights only drift out of line. Native CSS masonry
+ * grid follows the same floor-and-grow rule as `.card-grid`, and the gutter
+ * and item spacing are the shared `--card-gap`. Card heights come from the
+ * poster crop cycle in `utils/posterAspect.ts` (2:3, 3:4 and 1:1 by
+ * position), not from the images' natural sizes: TMDB posters are all about
+ * 2:3, so natural heights only drift out of line. Native CSS masonry
  * (grid-template-rows: masonry) is layered on top at lg+ only where the
  * browser actually implements it.
  * As of 2026-09 that spec is still not Baseline (Chrome/Chromium included),
@@ -14,43 +15,22 @@
  */
 .film-list__masonry {
    columns: var(--card-min);
-   column-gap: 1rem;
+   column-gap: var(--card-gap);
 }
 
 .film-list__masonry > * {
    break-inside: avoid;
-   margin-bottom: 1rem;
+   margin-bottom: var(--card-gap);
 }
 
-@media (min-width: 640px) {
-   .film-list__masonry {
-      column-gap: 1.5rem;
-   }
-
-   .film-list__masonry > * {
-      margin-bottom: 1.5rem;
-   }
-}
-
-@media (min-width: 1024px) {
-   .film-list__masonry {
-      column-gap: 2rem;
-   }
-
-   .film-list__masonry > * {
-      margin-bottom: 2rem;
-   }
-
+@media screen(lg) {
    @supports (grid-template-rows: masonry) {
       .film-list__masonry {
          columns: initial;
          display: grid;
-         grid-template-columns: repeat(
-            auto-fill,
-            minmax(min(100%, var(--card-min)), 1fr)
-         );
+         grid-template-columns: var(--card-columns);
          grid-template-rows: masonry;
-         gap: 2rem;
+         gap: var(--card-gap);
       }
 
       .film-list__masonry > * {
@@ -71,57 +51,52 @@
  * own `flex-basis` width, so any leftover space on an incomplete last line
  * is real and `justify-content: center` centers it — which is what makes
  * "always center the last row, however many cards it has" actually work.
- * Each item's flex-basis is sized so N of them plus their gaps sum to
- * exactly 100%, which is also what forces the wrap into rows of that size.
+ *
+ * Each item's flex-basis is sized so N of them plus their N - 1 gaps sum to
+ * exactly 100%, which is also what forces the wrap into rows of that size:
+ * `100% / N - var(--card-gap) * (N - 1) / N`. The gap is the shared token,
+ * so the maths follows it if it ever changes.
  */
 .film-list__rhythm {
    display: flex;
    flex-wrap: wrap;
    justify-content: center;
-   gap: 1rem;
+   gap: var(--card-gap);
 }
 
 .film-list__rhythm > * {
-   flex: 0 0 calc(50% - 0.5rem);
+   flex: 0 0 calc(100% / 2 - var(--card-gap) * 1 / 2);
 }
 
-@media (min-width: 640px) {
-   .film-list__rhythm {
-      gap: 1.5rem;
-   }
-
+@media screen(sm) {
    .film-list__rhythm > * {
-      flex-basis: calc(33.333% - 1rem);
+      flex-basis: calc(100% / 3 - var(--card-gap) * 2 / 3);
    }
 }
 
-@media (min-width: 1024px) and (max-width: 1535px) {
-   .film-list__rhythm {
-      gap: 2rem;
-   }
-
+@media screen(lg) and (max-width: 1535px) {
    /* 3, 4, 3, 4… alternating every 7 cards. */
    .film-list__rhythm > :nth-child(7n + 1),
    .film-list__rhythm > :nth-child(7n + 2),
    .film-list__rhythm > :nth-child(7n + 3) {
-      flex-basis: calc(33.333% - 1.333rem);
+      flex-basis: calc(100% / 3 - var(--card-gap) * 2 / 3);
    }
 
    .film-list__rhythm > :nth-child(7n + 4),
    .film-list__rhythm > :nth-child(7n + 5),
    .film-list__rhythm > :nth-child(7n + 6),
    .film-list__rhythm > :nth-child(7n) {
-      flex-basis: calc(25% - 1.5rem);
+      flex-basis: calc(100% / 4 - var(--card-gap) * 3 / 4);
    }
 }
 
-@media (min-width: 1536px) {
+@media screen(2xl) {
    /* 4, 5, 4, 5… alternating every 9 cards. */
    .film-list__rhythm > :nth-child(9n + 1),
    .film-list__rhythm > :nth-child(9n + 2),
    .film-list__rhythm > :nth-child(9n + 3),
    .film-list__rhythm > :nth-child(9n + 4) {
-      flex-basis: calc(25% - 1.5rem);
+      flex-basis: calc(100% / 4 - var(--card-gap) * 3 / 4);
    }
 
    .film-list__rhythm > :nth-child(9n + 5),
@@ -129,6 +104,6 @@
    .film-list__rhythm > :nth-child(9n + 7),
    .film-list__rhythm > :nth-child(9n + 8),
    .film-list__rhythm > :nth-child(9n) {
-      flex-basis: calc(20% - 1.6rem);
+      flex-basis: calc(100% / 5 - var(--card-gap) * 4 / 5);
    }
 }

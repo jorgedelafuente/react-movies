@@ -1,36 +1,18 @@
 /*
  * The card grid used by the list pages, the recommendation panels and the
- * credits sections. `auto-fill` fits as many columns of at least `--card-min`
- * (a layout token in global.css, stepped 9 / 13.75 / 15.625rem at the base /
- * `sm` / `lg` tiers) as the row allows, then stretches them to fill it: cards
- * have a floor and grow with the viewport instead of being pinned to a fixed
- * count. The gap still grows with the tier.
+ * credits sections. Both values are layout tokens from global.css, stepped
+ * per breakpoint there, so this file has no media queries of its own:
+ * `--card-columns` fits as many columns of at least `--card-min` as the row
+ * allows and stretches them to fill it, and `--card-gap` grows with the tier.
  *
- * `auto-fill`, not `auto-fit`: empty tracks are kept, so two recommendation
- * cards stay card-sized instead of stretching to half the row each.
- *
- * `1fr` tracks always fill the row, so a short last row sits flush left. The
- * previous flexbox version centred it; that was traded for the minimum size
- * on purpose (2026-09). The `min(100%, …)` guard stops a card from
- * overflowing a column narrower than the floor.
+ * The tracks are `auto-fill`, not `auto-fit`: empty tracks are kept, so two
+ * recommendation cards stay card-sized instead of stretching to half the row
+ * each. `1fr` tracks always fill the row, so a short last row sits flush
+ * left; the earlier flexbox version centred it, and that was traded for the
+ * minimum size on purpose (2026-09).
  */
 .card-grid {
    display: grid;
-   grid-template-columns: repeat(
-      auto-fill,
-      minmax(min(100%, var(--card-min)), 1fr)
-   );
-   gap: 1rem;
-}
-
-@media (min-width: 640px) {
-   .card-grid {
-      gap: 1.5rem;
-   }
-}
-
-@media (min-width: 1024px) {
-   .card-grid {
-      gap: 2rem;
-   }
+   grid-template-columns: var(--card-columns);
+   gap: var(--card-gap);
 }
