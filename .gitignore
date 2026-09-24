@@ -38,3 +38,9 @@ coverage
 tsconfig.app.tsbuildinfo
 tsconfig.node.tsbuildinfo
 .tsbuildinfo
+
+# Only pnpm-lock.yaml is the source of truth for dependencies
+bun.lock
+bun.lockb
+package-lock.json
+yarn.lock

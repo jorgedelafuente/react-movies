@@ -2275,9 +2275,11 @@ jobs:
       runs-on: ubuntu-latest
       steps:
          - uses: actions/checkout@v4
+         - uses: pnpm/action-setup@v4
          - uses: actions/setup-node@v4
            with:
               node-version: lts/*
+              cache: pnpm
          - name: Install dependencies
            run: pnpm install
          - name: Install Playwright Browsers
@@ -2296,7 +2298,7 @@ jobs:
 
 1. Checkout code
 2. Setup Node.js LTS
-3. Install Bun and dependencies
+3. Install pnpm and dependencies
 4. Install Playwright browsers with system dependencies
 5. Run Playwright E2E tests
 6. Upload test report (even if tests fail)
@@ -2384,9 +2386,12 @@ jobs:
       steps:
          - uses: actions/checkout@v4
 
-         - uses: oven-sh/setup-pnpm@v2
+         - uses: pnpm/action-setup@v4
+
+         - uses: actions/setup-node@v4
            with:
-              pnpm-version: 1.3.11
+              node-version: 22
+              cache: pnpm
 
          - name: Install dependencies
            run: pnpm install
@@ -2406,9 +2411,12 @@ jobs:
       steps:
          - uses: actions/checkout@v4
 
-         - uses: oven-sh/setup-pnpm@v2
+         - uses: pnpm/action-setup@v4
+
+         - uses: actions/setup-node@v4
            with:
-              pnpm-version: 1.3.11
+              node-version: 22
+              cache: pnpm
 
          - name: Install dependencies
            run: pnpm install
@@ -2430,9 +2438,12 @@ jobs:
       steps:
          - uses: actions/checkout@v4
 
-         - uses: oven-sh/setup-pnpm@v2
+         - uses: pnpm/action-setup@v4
+
+         - uses: actions/setup-node@v4
            with:
-              pnpm-version: 1.3.11
+              node-version: 22
+              cache: pnpm
 
          - name: Install dependencies
            run: pnpm install
@@ -2500,10 +2511,11 @@ This workflow:
 #### 3. Cache Dependencies
 
 ```yaml
+- uses: pnpm/action-setup@v4 # reads the version from "packageManager" in package.json
 - uses: actions/setup-node@v4
   with:
      node-version: lts/*
-     pnpm-version: 1.3.11 # Bun handles its own caching
+     cache: pnpm # caches the pnpm store between runs
 ```
 
 #### 4. Matrix Testing (Optional)
