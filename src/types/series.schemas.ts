@@ -110,6 +110,31 @@ export const SeriesInfoSchema = z.object({
       .optional(),
 });
 
+export const EpisodeSchema = z.object({
+   id: z.number(),
+   name: z.string(),
+   overview: z.string(),
+   air_date: z.string().nullable(),
+   episode_number: z.number(),
+   season_number: z.number(),
+   still_path: z.string().nullable(),
+   vote_average: z.number().optional(),
+   vote_count: z.number().optional(),
+   runtime: z.number().nullable().optional(),
+});
+
+/** TMDB `/tv/{id}/season/{n}`: the season header plus every episode. */
+export const SeasonDetailSchema = z.object({
+   id: z.number(),
+   name: z.string(),
+   overview: z.string(),
+   air_date: z.string().nullable(),
+   poster_path: z.string().nullable(),
+   season_number: z.number(),
+   vote_average: z.number().optional(),
+   episodes: z.array(EpisodeSchema),
+});
+
 const SeriesRecommendationItemSchema = z.object({
    id: z.number(),
    name: z.string(),

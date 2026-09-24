@@ -18,7 +18,9 @@ const paramOptions = {
    popular: () => `/movie/popular${apiKey}&language=en-US&page=1`,
    top_rated: () => `/movie/top_rated${apiKey}&language=en-US&page=1`,
    upcoming: () => `/movie/upcoming${apiKey}&language=en-US&page=1`,
-   movieInfo: (filmId: number) => `movie/${filmId}${apiKey}&language=en-US`,
+   now_playing: () => `/movie/now_playing${apiKey}&language=en-US&page=1`,
+   movieInfo: (filmId: number) =>
+      `movie/${filmId}${apiKey}&language=en-US&append_to_response=release_dates`,
    movieVideo: (filmId: number) =>
       `movie/${filmId}/videos${apiKey}&language=en-US`,
    movieCredits: (filmId: number) =>
@@ -44,6 +46,12 @@ export const fetchTopRatedFilms = async () => {
 export const fetchUpcoming = async () => {
    return axios
       .get(paramOptions.upcoming())
+      .then((res) => FilmListSchema.parse(res.data).results);
+};
+
+export const fetchNowPlaying = async () => {
+   return axios
+      .get(paramOptions.now_playing())
       .then((res) => FilmListSchema.parse(res.data).results);
 };
 

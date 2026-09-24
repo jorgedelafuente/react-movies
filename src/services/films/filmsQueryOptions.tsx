@@ -1,6 +1,11 @@
 import { queryOptions } from '@tanstack/react-query';
 
-import { fetchPopularFilms, fetchTopRatedFilms, fetchUpcoming } from './films';
+import {
+   fetchNowPlaying,
+   fetchPopularFilms,
+   fetchTopRatedFilms,
+   fetchUpcoming,
+} from './films';
 
 export const filmsPopularQueryOptions = queryOptions({
    queryKey: ['films-popular'],
@@ -15,4 +20,9 @@ export const filmsTopRatedQueryOptions = queryOptions({
 export const filmsUpcoming = queryOptions({
    queryKey: ['films-upcoming'],
    queryFn: () => fetchUpcoming(),
+});
+
+export const filmsNowPlayingQueryOptions = queryOptions({
+   queryKey: ['films-nowPlaying'],
+   queryFn: () => fetchNowPlaying(),
 });

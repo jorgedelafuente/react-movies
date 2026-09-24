@@ -2,7 +2,12 @@ import './film-info.styles.css';
 
 import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
 import FilmCard from '@/components/atoms/film-card/film-card.component';
+import CastList from '@/components/cast-list/cast-list.component';
 import Container from '@/components/layout/container/container.component';
+import {
+   CertificationBadge,
+   ReleaseDatesList,
+} from '@/components/release-dates/release-dates.component';
 import { baseImagePath, baseImagePathPoster } from '@/services/config';
 import type {
    FilmCreditsType,
@@ -83,7 +88,7 @@ const FilmInfo = ({
                <hr className="my-3 border-bold" />
 
                {filmInfo.genres && filmInfo.genres.length > 0 && (
-                  <div className="mt-3 flex flex-wrap justify-center gap-2">
+                  <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
                      <span className="bg-primary rounded-full px-2 py-1 text-sm">
                         Genre:{' '}
                      </span>
@@ -95,6 +100,9 @@ const FilmInfo = ({
                            {genre.name}
                         </span>
                      ))}
+                     <CertificationBadge
+                        results={filmInfo.release_dates?.results}
+                     />
                   </div>
                )}
                <hr className="my-3 border-bold" />
@@ -190,6 +198,8 @@ const FilmInfo = ({
                      )}
                   </div>
                )}
+
+               <ReleaseDatesList results={filmInfo.release_dates?.results} />
             </div>
 
             {filmTrailer && (
@@ -228,35 +238,7 @@ const FilmInfo = ({
                      </div>
                   )}
 
-                  {topCast.length > 0 && (
-                     <div className="flex flex-wrap justify-center gap-4">
-                        {topCast.map((member) => (
-                           <div
-                              key={`${member.id}-${member.character}`}
-                              className="flex w-20 flex-col items-center gap-1 text-center"
-                           >
-                              {member.profile_path ? (
-                                 <img
-                                    loading="lazy"
-                                    src={`${baseImagePath}${member.profile_path}`}
-                                    alt={member.name}
-                                    className="h-16 w-16 rounded-full object-cover object-top"
-                                 />
-                              ) : (
-                                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-400 text-2xl text-white">
-                                    👤
-                                 </div>
-                              )}
-                              <span className="text-xs font-semibold leading-tight">
-                                 {member.name}
-                              </span>
-                              <span className="text-xs leading-tight opacity-70">
-                                 {member.character}
-                              </span>
-                           </div>
-                        ))}
-                     </div>
-                  )}
+                  <CastList cast={topCast} />
                </div>
             )}
 

@@ -3,6 +3,7 @@ import axios from 'redaxios';
 import { tmdbBaseUrl } from '@/services/config';
 import { FilmCreditsSchema, FilmVideoListSchema } from '@/types/films.schemas';
 import {
+   SeasonDetailSchema,
    SeriesInfoSchema,
    SeriesListSchema,
    SeriesRecommendationsSchema,
@@ -25,6 +26,8 @@ const paramOptions = {
       `/tv/${seriesId}/credits${apiKey}&language=en-US`,
    seriesRecommendations: (seriesId: number) =>
       `/tv/${seriesId}/recommendations${apiKey}&language=en-US&page=1`,
+   season: (seriesId: number, seasonNumber: number) =>
+      `/tv/${seriesId}/season/${seasonNumber}${apiKey}&language=en-US`,
 };
 
 export const fetchPopularSeries = async () => {
@@ -67,6 +70,20 @@ export const fetchSeriesVideo = async (seriesId: number) => {
          if (err.status === 404) {
             throw new SeriesNotFoundError(
                `Series with id "${seriesId}" not found!`
+            );
+         }
+         throw err;
+      });
+};
+
+export const fetchSeason = async (seriesId: number, seasonNumber: number) => {
+   return axios
+      .get(paramOptions.season(seriesId, seasonNumber))
+      .then((res) => SeasonDetailSchema.parse(res.data))
+      .catch((err) => {
+         if (err.status === 404) {
+            throw new SeriesNotFoundError(
+               `Season ${seasonNumber} of series "${seriesId}" not found!`
             );
          }
          throw err;

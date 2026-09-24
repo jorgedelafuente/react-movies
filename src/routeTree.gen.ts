@@ -13,13 +13,17 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as UpcomingIndexRouteImport } from './routes/upcoming/index'
 import { Route as TopRatedIndexRouteImport } from './routes/top-rated/index'
 import { Route as PopularIndexRouteImport } from './routes/popular/index'
+import { Route as NowPlayingIndexRouteImport } from './routes/now-playing/index'
 import { Route as FavoritesIndexRouteImport } from './routes/favorites/index'
+import { Route as DiscoverIndexRouteImport } from './routes/discover/index'
 import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as TvSeriesIdRouteImport } from './routes/tv/$seriesId'
+import { Route as PersonPersonIdRouteImport } from './routes/person/$personId'
 import { Route as FilmFilmIdRouteImport } from './routes/film/$filmId'
 import { Route as SeriesTopRatedIndexRouteImport } from './routes/series/top-rated/index'
 import { Route as SeriesPopularIndexRouteImport } from './routes/series/popular/index'
 import { Route as SeriesOnTheAirIndexRouteImport } from './routes/series/on-the-air/index'
+import { Route as TvSeriesIdSeasonSeasonNumberRouteImport } from './routes/tv/$seriesId_.season.$seasonNumber'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -41,9 +45,19 @@ const PopularIndexRoute = PopularIndexRouteImport.update({
   path: '/popular/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NowPlayingIndexRoute = NowPlayingIndexRouteImport.update({
+  id: '/now-playing/',
+  path: '/now-playing/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FavoritesIndexRoute = FavoritesIndexRouteImport.update({
   id: '/favorites/',
   path: '/favorites/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscoverIndexRoute = DiscoverIndexRouteImport.update({
+  id: '/discover/',
+  path: '/discover/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutIndexRoute = AboutIndexRouteImport.update({
@@ -56,6 +70,13 @@ const TvSeriesIdRoute = TvSeriesIdRouteImport.update({
   path: '/tv/$seriesId',
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/tv/$seriesId.lazy').then((d) => d.Route))
+const PersonPersonIdRoute = PersonPersonIdRouteImport.update({
+  id: '/person/$personId',
+  path: '/person/$personId',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() =>
+  import('./routes/person/$personId.lazy').then((d) => d.Route),
+)
 const FilmFilmIdRoute = FilmFilmIdRouteImport.update({
   id: '/film/$filmId',
   path: '/film/$filmId',
@@ -76,101 +97,139 @@ const SeriesOnTheAirIndexRoute = SeriesOnTheAirIndexRouteImport.update({
   path: '/series/on-the-air/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TvSeriesIdSeasonSeasonNumberRoute =
+  TvSeriesIdSeasonSeasonNumberRouteImport.update({
+    id: '/tv/$seriesId_/season/$seasonNumber',
+    path: '/tv/$seriesId/season/$seasonNumber',
+    getParentRoute: () => rootRouteImport,
+  } as any).lazy(() =>
+    import('./routes/tv/$seriesId_.season.$seasonNumber.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/film/$filmId': typeof FilmFilmIdRoute
+  '/person/$personId': typeof PersonPersonIdRoute
   '/tv/$seriesId': typeof TvSeriesIdRoute
   '/about/': typeof AboutIndexRoute
+  '/discover/': typeof DiscoverIndexRoute
   '/favorites/': typeof FavoritesIndexRoute
+  '/now-playing/': typeof NowPlayingIndexRoute
   '/popular/': typeof PopularIndexRoute
   '/top-rated/': typeof TopRatedIndexRoute
   '/upcoming/': typeof UpcomingIndexRoute
   '/series/on-the-air/': typeof SeriesOnTheAirIndexRoute
   '/series/popular/': typeof SeriesPopularIndexRoute
   '/series/top-rated/': typeof SeriesTopRatedIndexRoute
+  '/tv/$seriesId/season/$seasonNumber': typeof TvSeriesIdSeasonSeasonNumberRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/film/$filmId': typeof FilmFilmIdRoute
+  '/person/$personId': typeof PersonPersonIdRoute
   '/tv/$seriesId': typeof TvSeriesIdRoute
   '/about': typeof AboutIndexRoute
+  '/discover': typeof DiscoverIndexRoute
   '/favorites': typeof FavoritesIndexRoute
+  '/now-playing': typeof NowPlayingIndexRoute
   '/popular': typeof PopularIndexRoute
   '/top-rated': typeof TopRatedIndexRoute
   '/upcoming': typeof UpcomingIndexRoute
   '/series/on-the-air': typeof SeriesOnTheAirIndexRoute
   '/series/popular': typeof SeriesPopularIndexRoute
   '/series/top-rated': typeof SeriesTopRatedIndexRoute
+  '/tv/$seriesId/season/$seasonNumber': typeof TvSeriesIdSeasonSeasonNumberRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/film/$filmId': typeof FilmFilmIdRoute
+  '/person/$personId': typeof PersonPersonIdRoute
   '/tv/$seriesId': typeof TvSeriesIdRoute
   '/about/': typeof AboutIndexRoute
+  '/discover/': typeof DiscoverIndexRoute
   '/favorites/': typeof FavoritesIndexRoute
+  '/now-playing/': typeof NowPlayingIndexRoute
   '/popular/': typeof PopularIndexRoute
   '/top-rated/': typeof TopRatedIndexRoute
   '/upcoming/': typeof UpcomingIndexRoute
   '/series/on-the-air/': typeof SeriesOnTheAirIndexRoute
   '/series/popular/': typeof SeriesPopularIndexRoute
   '/series/top-rated/': typeof SeriesTopRatedIndexRoute
+  '/tv/$seriesId_/season/$seasonNumber': typeof TvSeriesIdSeasonSeasonNumberRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/film/$filmId'
+    | '/person/$personId'
     | '/tv/$seriesId'
     | '/about/'
+    | '/discover/'
     | '/favorites/'
+    | '/now-playing/'
     | '/popular/'
     | '/top-rated/'
     | '/upcoming/'
     | '/series/on-the-air/'
     | '/series/popular/'
     | '/series/top-rated/'
+    | '/tv/$seriesId/season/$seasonNumber'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/film/$filmId'
+    | '/person/$personId'
     | '/tv/$seriesId'
     | '/about'
+    | '/discover'
     | '/favorites'
+    | '/now-playing'
     | '/popular'
     | '/top-rated'
     | '/upcoming'
     | '/series/on-the-air'
     | '/series/popular'
     | '/series/top-rated'
+    | '/tv/$seriesId/season/$seasonNumber'
   id:
     | '__root__'
     | '/'
     | '/film/$filmId'
+    | '/person/$personId'
     | '/tv/$seriesId'
     | '/about/'
+    | '/discover/'
     | '/favorites/'
+    | '/now-playing/'
     | '/popular/'
     | '/top-rated/'
     | '/upcoming/'
     | '/series/on-the-air/'
     | '/series/popular/'
     | '/series/top-rated/'
+    | '/tv/$seriesId_/season/$seasonNumber'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FilmFilmIdRoute: typeof FilmFilmIdRoute
+  PersonPersonIdRoute: typeof PersonPersonIdRoute
   TvSeriesIdRoute: typeof TvSeriesIdRoute
   AboutIndexRoute: typeof AboutIndexRoute
+  DiscoverIndexRoute: typeof DiscoverIndexRoute
   FavoritesIndexRoute: typeof FavoritesIndexRoute
+  NowPlayingIndexRoute: typeof NowPlayingIndexRoute
   PopularIndexRoute: typeof PopularIndexRoute
   TopRatedIndexRoute: typeof TopRatedIndexRoute
   UpcomingIndexRoute: typeof UpcomingIndexRoute
   SeriesOnTheAirIndexRoute: typeof SeriesOnTheAirIndexRoute
   SeriesPopularIndexRoute: typeof SeriesPopularIndexRoute
   SeriesTopRatedIndexRoute: typeof SeriesTopRatedIndexRoute
+  TvSeriesIdSeasonSeasonNumberRoute: typeof TvSeriesIdSeasonSeasonNumberRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -203,11 +262,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PopularIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/now-playing/': {
+      id: '/now-playing/'
+      path: '/now-playing'
+      fullPath: '/now-playing/'
+      preLoaderRoute: typeof NowPlayingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/favorites/': {
       id: '/favorites/'
       path: '/favorites'
       fullPath: '/favorites/'
       preLoaderRoute: typeof FavoritesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/discover/': {
+      id: '/discover/'
+      path: '/discover'
+      fullPath: '/discover/'
+      preLoaderRoute: typeof DiscoverIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about/': {
@@ -222,6 +295,13 @@ declare module '@tanstack/react-router' {
       path: '/tv/$seriesId'
       fullPath: '/tv/$seriesId'
       preLoaderRoute: typeof TvSeriesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/person/$personId': {
+      id: '/person/$personId'
+      path: '/person/$personId'
+      fullPath: '/person/$personId'
+      preLoaderRoute: typeof PersonPersonIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/film/$filmId': {
@@ -252,21 +332,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SeriesOnTheAirIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tv/$seriesId_/season/$seasonNumber': {
+      id: '/tv/$seriesId_/season/$seasonNumber'
+      path: '/tv/$seriesId/season/$seasonNumber'
+      fullPath: '/tv/$seriesId/season/$seasonNumber'
+      preLoaderRoute: typeof TvSeriesIdSeasonSeasonNumberRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FilmFilmIdRoute: FilmFilmIdRoute,
+  PersonPersonIdRoute: PersonPersonIdRoute,
   TvSeriesIdRoute: TvSeriesIdRoute,
   AboutIndexRoute: AboutIndexRoute,
+  DiscoverIndexRoute: DiscoverIndexRoute,
   FavoritesIndexRoute: FavoritesIndexRoute,
+  NowPlayingIndexRoute: NowPlayingIndexRoute,
   PopularIndexRoute: PopularIndexRoute,
   TopRatedIndexRoute: TopRatedIndexRoute,
   UpcomingIndexRoute: UpcomingIndexRoute,
   SeriesOnTheAirIndexRoute: SeriesOnTheAirIndexRoute,
   SeriesPopularIndexRoute: SeriesPopularIndexRoute,
   SeriesTopRatedIndexRoute: SeriesTopRatedIndexRoute,
+  TvSeriesIdSeasonSeasonNumberRoute: TvSeriesIdSeasonSeasonNumberRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

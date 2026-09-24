@@ -23,6 +23,27 @@ export const SpokenLanguageSchema = z.object({
    name: z.string(),
 });
 
+export const GenreListSchema = z.object({
+   genres: z.array(GenreSchema),
+});
+
+/**
+ * One entry from `/movie/{id}/release_dates`. `type` is TMDB's release kind:
+ * 1 premiere, 2 limited theatrical, 3 theatrical, 4 digital, 5 physical, 6 TV.
+ */
+export const ReleaseDateSchema = z.object({
+   certification: z.string(),
+   iso_639_1: z.string().optional(),
+   release_date: z.string(),
+   type: z.number(),
+   note: z.string().optional(),
+});
+
+export const ReleaseDatesByCountrySchema = z.object({
+   iso_3166_1: z.string(),
+   release_dates: z.array(ReleaseDateSchema),
+});
+
 export const FilmInfoSchema = z.object({
    id: z.number(),
    media_type: MediaTypeSchema.default(MEDIA_TYPES.MOVIE),
@@ -46,6 +67,10 @@ export const FilmInfoSchema = z.object({
    genres: z.array(GenreSchema).optional(),
    production_companies: z.array(ProductionCompanySchema).optional(),
    spoken_languages: z.array(SpokenLanguageSchema).optional(),
+   /** Present on the detail endpoint via `append_to_response=release_dates`. */
+   release_dates: z
+      .object({ results: z.array(ReleaseDatesByCountrySchema) })
+      .optional(),
 });
 
 export const FilmListSchema = z.object({

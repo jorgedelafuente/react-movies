@@ -9,3 +9,8 @@ export const MEDIA_TYPE_LABELS: Record<MediaType, string> = {
    [MEDIA_TYPES.MOVIE]: 'Film',
    [MEDIA_TYPES.TV]: 'Series',
 };
+
+export const MEDIA_TYPE_PLURAL_LABELS: Record<MediaType, string> = {
+   [MEDIA_TYPES.MOVIE]: 'Films',
+   [MEDIA_TYPES.TV]: 'Series',
+};

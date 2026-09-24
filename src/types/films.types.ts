@@ -9,6 +9,9 @@ import type {
    FilmRecommendationsSchema,
    FilmVideoListSchema,
    FilmVideoTypeSchema,
+   GenreSchema,
+   ReleaseDatesByCountrySchema,
+   ReleaseDateSchema,
 } from './films.schemas';
 
 export type FilmInfoType = z.infer<typeof FilmInfoSchema>;
@@ -21,3 +24,8 @@ export type CrewMemberType = z.infer<typeof CrewMemberSchema>;
 export type FilmRecommendationType = z.infer<
    typeof FilmRecommendationsSchema
 >['results'][number];
+export type GenreType = z.infer<typeof GenreSchema>;
+export type ReleaseDateType = z.infer<typeof ReleaseDateSchema>;
+export type ReleaseDatesByCountryType = z.infer<
+   typeof ReleaseDatesByCountrySchema
+>;

@@ -1,7 +1,10 @@
 import '@/views/film-info/film-info.styles.css';
 
+import { Link } from '@tanstack/react-router';
+
 import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
 import FilmCard from '@/components/atoms/film-card/film-card.component';
+import CastList from '@/components/cast-list/cast-list.component';
 import Container from '@/components/layout/container/container.component';
 import { baseImagePath, baseImagePathPoster } from '@/services/config';
 import type {
@@ -224,31 +227,37 @@ const SeriesInfo = ({
                   <h2 className="mb-3 text-display-md">Seasons</h2>
                   <ul className="flex flex-col gap-3">
                      {seasons.map((season) => (
-                        <li
-                           key={season.id}
-                           className="bg-primary-background-color/40 flex items-center gap-3 rounded-md p-2"
-                        >
-                           {season.poster_path ? (
-                              <img
-                                 loading="lazy"
-                                 src={`${baseImagePath}${season.poster_path}`}
-                                 alt=""
-                                 className="h-16 w-11 flex-none rounded object-cover"
-                              />
-                           ) : (
-                              <div className="h-16 w-11 flex-none rounded bg-gray-400/40" />
-                           )}
-                           <div className="min-w-0 flex-1">
-                              <div className="font-display text-sm font-semibold leading-tight">
-                                 {season.name}
+                        <li key={season.id}>
+                           <Link
+                              to="/tv/$seriesId/season/$seasonNumber"
+                              params={{
+                                 seriesId: String(seriesInfo.id),
+                                 seasonNumber: String(season.season_number),
+                              }}
+                              className="bg-primary-background-color/40 hover:bg-primary-background-color/70 flex items-center gap-3 rounded-md p-2 text-inherit hover:text-accent"
+                           >
+                              {season.poster_path ? (
+                                 <img
+                                    loading="lazy"
+                                    src={`${baseImagePath}${season.poster_path}`}
+                                    alt=""
+                                    className="h-16 w-11 flex-none rounded object-cover"
+                                 />
+                              ) : (
+                                 <div className="h-16 w-11 flex-none rounded bg-gray-400/40" />
+                              )}
+                              <div className="min-w-0 flex-1">
+                                 <div className="font-display text-sm font-semibold leading-tight">
+                                    {season.name}
+                                 </div>
+                                 <div className="text-xs tabular-nums text-copy/70">
+                                    {extractYear(season.air_date)}
+                                    <span className="mx-1 opacity-50">·</span>
+                                    {season.episode_count} episode
+                                    {season.episode_count === 1 ? '' : 's'}
+                                 </div>
                               </div>
-                              <div className="text-xs tabular-nums text-copy/70">
-                                 {extractYear(season.air_date)}
-                                 <span className="mx-1 opacity-50">·</span>
-                                 {season.episode_count} episode
-                                 {season.episode_count === 1 ? '' : 's'}
-                              </div>
-                           </div>
+                           </Link>
                         </li>
                      ))}
                   </ul>
@@ -258,33 +267,7 @@ const SeriesInfo = ({
             {topCast.length > 0 && (
                <div className="text-content mt-4 rounded-lg p-4 text-copy">
                   <h2 className="mb-3 text-display-md">Cast</h2>
-                  <div className="flex flex-wrap justify-center gap-4">
-                     {topCast.map((member) => (
-                        <div
-                           key={`${member.id}-${member.character}`}
-                           className="flex w-20 flex-col items-center gap-1 text-center"
-                        >
-                           {member.profile_path ? (
-                              <img
-                                 loading="lazy"
-                                 src={`${baseImagePath}${member.profile_path}`}
-                                 alt={member.name}
-                                 className="h-16 w-16 rounded-full object-cover object-top"
-                              />
-                           ) : (
-                              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-400 text-2xl text-white">
-                                 👤
-                              </div>
-                           )}
-                           <span className="font-display text-sm font-semibold leading-tight">
-                              {member.name}
-                           </span>
-                           <span className="text-xs leading-tight text-copy/70">
-                              {member.character}
-                           </span>
-                        </div>
-                     ))}
-                  </div>
+                  <CastList cast={topCast} />
                </div>
             )}
 

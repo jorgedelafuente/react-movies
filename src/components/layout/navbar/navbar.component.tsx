@@ -59,6 +59,8 @@ const Navbar = () => {
                   <NavLink path="/top-rated" text="Top Rated" />
                   <span className="p-1 text-copy">|</span>
                   <NavLink path="/upcoming" text="Upcoming" />
+                  <span className="p-1 text-copy">|</span>
+                  <NavLink path="/now-playing" text="Now Playing" />
                </div>
                <div
                   role="group"
@@ -76,6 +78,9 @@ const Navbar = () => {
                   <NavLink path="/series/top-rated" text="Top Rated" />
                   <span className="p-1 text-copy">|</span>
                   <NavLink path="/series/on-the-air" text="On The Air" />
+               </div>
+               <div className="flex items-center">
+                  <NavLink path="/discover" text="Discover" />
                </div>
             </nav>
             <div className="flex items-center gap-1">
