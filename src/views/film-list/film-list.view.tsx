@@ -9,9 +9,16 @@ import { useListView } from '@/utils/hooks/useListView';
 
 type FilmListProps = {
    list: FilmInfoType[];
+   /**
+    * Render only the toggle-and-cards column, for a page that already has a
+    * themed root of its own (Discover renders inside `Container`). By default
+    * the list is wrapped in `FlexContainer`, the list routes' page root, which
+    * brings `min-h-screen`, the page padding and the theme class.
+    */
+   embedded?: boolean;
 };
 
-const FilmList = ({ list }: FilmListProps) => {
+const FilmList = ({ list, embedded = false }: FilmListProps) => {
    const view = useListView((state) => state.view);
    const setView = useListView((state) => state.setView);
    const cards = list.map((item) => (
@@ -27,8 +34,8 @@ const FilmList = ({ list }: FilmListProps) => {
       </div>
    ));
 
-   return (
-      <FlexContainer>
+   const column = (
+      <>
          <div className="flex justify-center">
             <ViewToggle value={view} onChange={setView} />
          </div>
@@ -38,8 +45,20 @@ const FilmList = ({ list }: FilmListProps) => {
          ) : (
             <CardGrid>{cards}</CardGrid>
          )}
-      </FlexContainer>
+      </>
    );
+
+   if (embedded) {
+      // Same horizontal padding as FlexContainer so the grid lines up with the
+      // list pages; vertical rhythm is the host page's to decide.
+      return (
+         <div className="flex w-full flex-col gap-4 px-4 sm:gap-6 sm:px-6 lg:px-10">
+            {column}
+         </div>
+      );
+   }
+
+   return <FlexContainer>{column}</FlexContainer>;
 };
 
 export default FilmList;

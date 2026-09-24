@@ -109,6 +109,22 @@ describe('Film Lists Component', () => {
       expect(grid?.children).toHaveLength(films.length);
    });
 
+   it('wraps the list in the page root by default and skips it when embedded', async () => {
+      await renderFilmList();
+      expect(document.querySelector('.min-h-screen')).not.toBeNull();
+
+      document.body.innerHTML = '';
+      const element = () => <FilmList list={films} embedded />;
+      await act(async () => {
+         renderWithQueryContext(
+            <RouterProvider router={router} defaultComponent={element} />
+         );
+      });
+      expect(document.querySelector('.min-h-screen')).toBeNull();
+      expect(document.querySelector('.card-grid')).not.toBeNull();
+      expect(screen.getByRole('radio', { name: /cards/i })).toBeChecked();
+   });
+
    it('switches to the table view when the user picks "Table"', async () => {
       await renderFilmList();
 

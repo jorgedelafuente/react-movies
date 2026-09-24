@@ -29,8 +29,11 @@ const YEARS = Array.from(
 const selectClass =
    'w-full rounded-md border-2 border-solid border-secondary-background-color bg-neutral px-2 py-1 text-copy';
 const labelClass = 'text-sm font-medium';
+// The filters sit on a `bg-subtle` panel, the same surface as the ViewToggle
+// track and the search field, so it reads in both themes. It hugs its content
+// from `sm` up and spans the column on phones, where the fields stack.
 const formClass =
-   'mt-4 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-center';
+   'mx-auto mt-4 w-full flex-col gap-3 rounded-lg border border-copy/10 bg-subtle/70 p-4 sm:w-fit sm:max-w-full sm:flex-row sm:flex-wrap sm:items-end sm:justify-center sm:p-5';
 
 type DiscoverViewProps = {
    params: DiscoverParams;
@@ -70,7 +73,7 @@ const DiscoverView = ({
 
    return (
       <Container>
-         <div className="mx-auto w-full px-4 py-6 text-copy">
+         <div className="mx-auto w-full px-4 py-6 text-copy sm:px-6 lg:px-10">
             <h1 className="text-display-lg">Discover</h1>
 
             <button
@@ -211,17 +214,21 @@ const DiscoverView = ({
          </div>
 
          {page.results.length === 0 ? (
-            <p className="px-4 text-copy/70">
+            <p className="px-4 py-10 text-copy/70">
                Nothing matches those filters. Try a different genre or year.
             </p>
          ) : (
-            <FilmList list={page.results} />
+            <FilmList list={page.results} embedded />
          )}
 
+         {/*
+           `mt-auto` pins the pager to the bottom of the viewport when the
+           results are short (the Container is a min-h-screen flex column).
+         */}
          {totalPages > 1 && (
             <nav
                aria-label="Pagination"
-               className="mx-auto mt-6 flex w-full max-w-xs gap-3 px-4 pb-8"
+               className="mx-auto mt-auto flex w-full max-w-xs gap-3 px-4 pb-10 pt-8"
             >
                <Button
                   variant="secondary"
