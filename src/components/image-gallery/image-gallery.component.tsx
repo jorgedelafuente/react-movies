@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 
 import Button from '@/components/atoms/button/button.component';
+import MediaImage from '@/components/atoms/media-image/media-image.component';
 import Modal from '@/components/atoms/modal/modal.component';
 import { baseImagePathGallery, baseImagePathPoster } from '@/services/config';
 import { mediaImagesQueryOptions } from '@/services/images/imagesQueryOptions';
@@ -75,13 +76,11 @@ const ImageGallery = ({ mediaType, id, title }: ImageGalleryProps) => {
                      onClick={() => setOpenIndex(index)}
                      className="block w-full overflow-hidden rounded-md transition-transform hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                   >
-                     <img
-                        className="aspect-video w-full object-cover"
-                        loading="lazy"
-                        src={`${baseImagePathGallery}${image.file_path}`}
-                        width={image.width}
-                        height={image.height}
+                     <MediaImage
+                        path={image.file_path}
+                        basePath={baseImagePathGallery}
                         alt={describe(index)}
+                        className="aspect-video w-full object-cover"
                      />
                   </button>
                </li>
@@ -98,10 +97,15 @@ const ImageGallery = ({ mediaType, id, title }: ImageGalleryProps) => {
          >
             {selected && openIndex !== null && (
                <figure className="flex flex-col items-center gap-3">
-                  <img
-                     className="max-h-[75vh] w-auto max-w-full rounded-md"
-                     src={`${baseImagePathPoster}${selected.file_path}`}
+                  {/* The image sizes from its own dimensions, so the skeleton
+                      needs a ratio of its own to have any height. */}
+                  <MediaImage
+                     path={selected.file_path}
+                     basePath={baseImagePathPoster}
                      alt={describe(openIndex)}
+                     loading="eager"
+                     className="max-h-[75vh] max-w-full rounded-md"
+                     fallbackClassName="aspect-video w-full"
                   />
                   <figcaption className="text-sm tabular-nums text-copy/70">
                      {openIndex + 1} / {count}

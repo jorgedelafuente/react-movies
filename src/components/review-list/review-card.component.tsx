@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 
+import MediaImage from '@/components/atoms/media-image/media-image.component';
 import type { ReviewType } from '@/types/reviews.types';
 import { resolveAvatarUrl } from '@/utils/avatarUrl';
 import { stripMarkdown } from '@/utils/stripMarkdown';
@@ -79,13 +80,14 @@ const ReviewCard = ({ review }: { review: ReviewType }) => {
          >
             <header className="flex items-center gap-3">
                {avatarUrl ? (
-                  <img
-                     className="h-10 w-10 shrink-0 rounded-full object-cover"
-                     src={avatarUrl}
+                  // resolveAvatarUrl already produced a full URL (TMDB or
+                  // Gravatar), so the base path is empty here.
+                  <MediaImage
+                     path={avatarUrl}
+                     basePath=""
                      alt=""
-                     width={40}
-                     height={40}
-                     loading="lazy"
+                     variant="person"
+                     className="h-10 w-10 shrink-0 rounded-full object-cover"
                   />
                ) : (
                   <span

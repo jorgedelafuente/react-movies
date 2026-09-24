@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'vitest-axe';
 
@@ -63,6 +63,23 @@ describe('ImageGallery', () => {
          expect.stringContaining('/w780//backdrop-top.jpg')
       );
       expect(firstImage).toHaveAttribute('loading', 'lazy');
+   });
+
+   it('keeps a tile in place with a skeleton when its backdrop fails to load', async () => {
+      mockedFetch.mockResolvedValue(FETCHED);
+      renderGallery();
+
+      const tiles = await screen.findAllByRole('button', {
+         name: /backdrop \d of 3/,
+      });
+      fireEvent.error(tiles[0].querySelector('img') as HTMLImageElement);
+
+      expect(tiles[0].querySelector('img')).toBeNull();
+      expect(within(tiles[0]).getByTestId('media-image-skeleton')).toHaveClass(
+         'aspect-video'
+      );
+      // The tile is still announced by name, so it stays usable.
+      expect(tiles[0]).toHaveAccessibleName(`${TITLE} backdrop 1 of 3`);
    });
 
    it('renders nothing when the title has no backdrops', async () => {

@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'vitest-axe';
 
@@ -76,6 +76,19 @@ describe('ReviewList', () => {
          'src',
          'https://secure.gravatar.com/avatar/0123456789abcdef0123456789abcdef.jpg'
       );
+   });
+
+   it('swaps a broken avatar for a decorative silhouette', async () => {
+      mockedFetch.mockResolvedValue(FETCHED);
+      renderReviews();
+
+      const [, , oldest] = await findArticles();
+      fireEvent.error(within(oldest).getByRole('presentation'));
+
+      expect(within(oldest).queryByRole('presentation')).toBeNull();
+      const skeleton = within(oldest).getByTestId('media-image-skeleton');
+      expect(skeleton).toHaveAttribute('aria-hidden', 'true');
+      expect(skeleton).toHaveClass('rounded-full');
    });
 
    it('shows a rating badge only when the reviewer gave one', async () => {
