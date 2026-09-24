@@ -1,34 +1,64 @@
+/*
+ * Segmented pill. The track sits on the subtle surface with a faint border;
+ * the selected segment is a raised pill on the page background. Same tokens
+ * and 1px-border-plus-shadow language as the nav menu and search popover.
+ */
 .view-toggle {
    display: inline-flex;
-   border: 2px solid hsl(var(--color-border-bold) / 1);
-   border-radius: 0.375rem;
-   overflow: hidden;
+   align-items: center;
+   gap: 0.125rem;
+   padding: 0.25rem;
+   border: 1px solid hsl(var(--color-border-bold) / 0.35);
+   border-radius: 9999px;
+   background: hsl(var(--color-bg-subtle) / 0.7);
+   box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.06);
 }
 
 .view-toggle__button {
+   display: inline-flex;
+   align-items: center;
+   gap: 0.375rem;
    border: none;
-   background: hsl(var(--color-bg-neutral) / 1);
-   color: hsl(var(--color-text-copy) / 1);
-   font: inherit;
+   border-radius: 9999px;
+   background: transparent;
+   color: hsl(var(--color-text-copy) / 0.7);
+   font-family: var(--font-display);
+   font-size: 0.875rem;
    font-weight: 500;
-   padding: 0.25rem 0.75rem;
+   letter-spacing: 0.02em;
+   line-height: 1;
+   padding: 0.375rem 0.875rem;
    cursor: pointer;
+   transition:
+      background-color 150ms ease,
+      color 150ms ease,
+      box-shadow 150ms ease;
 }
 
-.view-toggle__button + .view-toggle__button {
-   border-left: 2px solid hsl(var(--color-border-bold) / 1);
+.view-toggle__icon {
+   width: 0.875rem;
+   height: 0.875rem;
+   fill: currentColor;
+   flex: none;
 }
 
 .view-toggle__button[data-hovered] {
-   background: hsl(var(--color-bg-subtle) / 1);
+   color: hsl(var(--color-text-copy) / 1);
 }
 
 .view-toggle__button[data-selected] {
-   background: hsl(var(--color-bg-neutral-inverted) / 1);
-   color: hsl(var(--color-bg-neutral) / 1);
+   background: hsl(var(--color-bg-neutral) / 1);
+   color: hsl(var(--color-text-copy) / 1);
+   box-shadow:
+      0 1px 3px rgb(0 0 0 / 0.18),
+      0 0 0 1px hsl(var(--color-border-bold) / 0.3);
+}
+
+.view-toggle__button[data-selected] .view-toggle__icon {
+   fill: hsl(var(--color-accent) / 1);
 }
 
 .view-toggle__button[data-focus-visible] {
    outline: 2px solid hsl(var(--color-accent) / 1);
-   outline-offset: -2px;
+   outline-offset: 2px;
 }
