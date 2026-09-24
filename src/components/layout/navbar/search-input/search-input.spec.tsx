@@ -106,6 +106,18 @@ describe('Search Input', () => {
       });
    });
 
+   it('flags the root as open while results show, which drives the page scrim', async () => {
+      const root = screen.getByRole('combobox').closest('.search-combobox');
+      expect(root).not.toHaveAttribute('data-open');
+
+      await userEvent.type(screen.getByRole('combobox'), 'sev');
+      await findOptions();
+      expect(root).toHaveAttribute('data-open', 'true');
+
+      await userEvent.keyboard('{Escape}');
+      await waitFor(() => expect(root).not.toHaveAttribute('data-open'));
+   });
+
    it('tells the visitor when nothing matches', async () => {
       vi.mocked(searchMedia).mockResolvedValue([]);
       await userEvent.type(screen.getByRole('combobox'), 'zzz');

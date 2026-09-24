@@ -1,7 +1,14 @@
+/*
+ * The root is the popover's portal container, and react-aria clamps a
+ * portalled popover inside its container's edges (not the viewport's). So the
+ * root, not the field, sets how wide the results panel can be: it matches the
+ * field up to `lg`, then grows so the panel can be wider than the field.
+ */
 .search-combobox {
    position: relative;
    display: flex;
    flex-direction: column;
+   align-items: center;
    width: 100%;
    max-width: 40rem;
 }
@@ -19,8 +26,38 @@
 
 .search-combobox__field {
    position: relative;
+   z-index: 2; /* above the scrim */
    display: flex;
    align-items: center;
+   width: 100%;
+   max-width: 40rem;
+}
+
+/*
+ * Scrim: dims the page while results are open so the eye stays on the field.
+ * A pseudo-element of the root, so it follows react-aria's `data-open` with no
+ * extra state. It lives in the navbar's stacking context: above the nav links
+ * (z 1), below the field (z 2) and the popover (react-aria's inline z-index).
+ * Clicking it moves focus off the input, which closes the results.
+ */
+.search-combobox[data-open]::before {
+   content: '';
+   position: fixed;
+   inset: 0;
+   z-index: 1;
+   background: rgb(0 0 0 / 0.4);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+   .search-combobox[data-open]::before {
+      animation: search-combobox-scrim 180ms ease-out;
+   }
+
+   @keyframes search-combobox-scrim {
+      from {
+         opacity: 0;
+      }
+   }
 }
 
 .search-combobox__icon {
@@ -44,7 +81,7 @@
    background: hsl(var(--color-bg-subtle) / 0.7);
    color: hsl(var(--color-text-copy) / 1);
    padding: 0.5rem 5rem 0.5rem 2.75rem;
-   font-size: 1.125rem;
+   font-size: 1rem; /* 1.125rem from `sm` */
    line-height: 1.5rem;
 }
 
@@ -96,11 +133,20 @@
    outline-offset: 2px;
 }
 
-/* Popover: a frosted panel in the same language as the detail-page panels */
+/*
+ * Popover: a frosted panel in the same language as the detail-page panels.
+ * Sizes are mobile-first: the field's width and compact rows on phones, the
+ * other session's medium rows from `sm`, and from `lg` a panel wider than
+ * the field with larger posters and a two-line overview.
+ *
+ * react-aria writes an inline `max-height` (the free space below the field)
+ * on the popover, which beats any stylesheet value, so the height cap sits
+ * on the list instead and the list is the scroll container. The popover keeps
+ * `overflow-y: auto` only as a fallback for viewports shorter than that cap.
+ */
 
 .search-combobox__popover {
    width: var(--trigger-width);
-   max-height: min(32rem, 70vh);
    overflow-y: auto;
    padding: 0.375rem;
    border: 1px solid hsl(var(--color-text-copy) / 0.1);
@@ -116,6 +162,8 @@
    display: flex;
    flex-direction: column;
    gap: 0.125rem;
+   max-height: min(30rem, 62vh);
+   overflow-y: auto;
    outline: none;
 }
 
@@ -124,8 +172,8 @@
 .search-combobox__item {
    display: flex;
    align-items: center;
-   gap: 0.75rem;
-   padding: 0.5rem 0.625rem;
+   gap: 0.625rem;
+   padding: 0.375rem 0.5rem;
    border-radius: 0.625rem;
    color: hsl(var(--color-text-copy) / 1);
    cursor: pointer;
@@ -149,7 +197,7 @@
 
 .search-combobox__item-poster {
    flex: none;
-   width: 2.75rem;
+   width: 2.25rem;
    aspect-ratio: 2 / 3;
    border-radius: 0.375rem;
    object-fit: cover;
@@ -166,7 +214,7 @@
 
 .search-combobox__item-title {
    font-family: var(--font-display);
-   font-size: 1rem;
+   font-size: 0.9375rem;
    font-weight: 600;
    line-height: 1.375rem;
    overflow: hidden;
@@ -201,6 +249,7 @@
 }
 
 .search-combobox__item-overview {
+   display: none; /* phones: title and meta only */
    overflow: hidden;
    text-overflow: ellipsis;
    white-space: nowrap;
@@ -216,12 +265,76 @@
    color: hsl(var(--color-text-copy) / 0.7);
 }
 
-@media (max-width: 639px) {
+/* Tablets and up: medium rows with a one-line overview */
+
+@media (min-width: 640px) {
    .search-combobox__input {
+      font-size: 1.125rem;
+   }
+
+   .search-combobox__list {
+      max-height: min(32rem, 70vh);
+   }
+
+   .search-combobox__item {
+      gap: 0.75rem;
+      padding: 0.5rem 0.625rem;
+   }
+
+   .search-combobox__item-poster {
+      width: 2.75rem;
+   }
+
+   .search-combobox__item-title {
       font-size: 1rem;
    }
 
    .search-combobox__item-overview {
-      display: none;
+      display: block;
+   }
+}
+
+/* Desktops: a panel wider than the field, taller, with bigger posters and a
+   two-line overview. `placement="bottom"` keeps it centred under the field. */
+
+@media (min-width: 1024px) {
+   .search-combobox {
+      max-width: 52rem;
+   }
+
+   .search-combobox__popover {
+      width: 100%; /* the root's width, centred under the field by `placement="bottom"` */
+      padding: 0.5rem;
+   }
+
+   .search-combobox__list {
+      max-height: min(44rem, 76vh);
+   }
+
+   .search-combobox__item {
+      gap: 1rem;
+      padding: 0.625rem 0.875rem;
+   }
+
+   .search-combobox__item-poster {
+      width: 3.25rem;
+   }
+
+   .search-combobox__item-title {
+      font-size: 1.0625rem;
+      line-height: 1.5rem;
+   }
+
+   .search-combobox__item-meta {
+      font-size: 0.8125rem;
+   }
+
+   .search-combobox__item-overview {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      white-space: normal;
+      font-size: 0.875rem;
+      line-height: 1.3125rem;
    }
 }

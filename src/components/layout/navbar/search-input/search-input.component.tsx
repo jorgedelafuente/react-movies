@@ -151,6 +151,8 @@ const SearchInput = () => {
             // sideways off the field. Zero it and keep a small gap below.
             containerPadding={0}
             offset={6}
+            // Centre under the field: from `lg` the panel is wider than it.
+            placement="bottom"
          >
             <ListBox<FilmInfoType>
                className="search-combobox__list"
