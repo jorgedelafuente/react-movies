@@ -32,8 +32,14 @@ tsconfig.app.tsbuildinfo
 tsconfig.node.tsbuildinfo
 .tsbuildinfo
 
+# TanStack Router plugin scratch dir
+.tanstack/
+
 # Only pnpm-lock.yaml is the source of truth for dependencies
 bun.lock
 bun.lockb
 package-lock.json
 yarn.lock
+
+# TanStack Router plugin scratch dir
+/.tanstack/
