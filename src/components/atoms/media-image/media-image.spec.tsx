@@ -17,6 +17,19 @@ describe('MediaImage', () => {
       expect(screen.queryByTestId('media-image-skeleton')).toBeNull();
    });
 
+   it('loads from the given base path when one is passed', () => {
+      render(
+         <MediaImage
+            path="/poster.jpg"
+            alt="The Substance"
+            basePath="https://image.tmdb.org/t/p/w92/"
+         />
+      );
+      expect(
+         screen.getByRole('img', { name: 'The Substance' })
+      ).toHaveAttribute('src', 'https://image.tmdb.org/t/p/w92//poster.jpg');
+   });
+
    it('renders a labelled skeleton instead of a broken image when there is no path', () => {
       render(<MediaImage path={null} alt="The Substance" />);
       expect(document.querySelector('img')).toBeNull();

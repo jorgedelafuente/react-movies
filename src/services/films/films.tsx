@@ -27,8 +27,6 @@ const paramOptions = {
       `movie/${filmId}/credits${apiKey}&language=en-US`,
    movieRecommendations: (filmId: number) =>
       `movie/${filmId}/recommendations${apiKey}&language=en-US&page=1`,
-   search: (searchQuery: string) =>
-      `/search/movie${apiKey}&query=${encodeURIComponent(searchQuery)}`,
 };
 
 export const fetchPopularFilms = async () => {
@@ -95,10 +93,4 @@ export const fetchFilmRecommendations = async (filmId: number) => {
       .then((res) =>
          FilmRecommendationsSchema.parse(res.data).results.slice(0, 12)
       );
-};
-
-export const searchFilm = async (searchQuery: string) => {
-   return axios
-      .get(paramOptions.search(searchQuery))
-      .then((res) => FilmListSchema.parse(res.data).results);
 };

@@ -138,7 +138,7 @@ Anything numeric — ratings, years, dates, counts, money — gets `tabular-nums
 
 ### Images
 
-Both TMDB size prefixes live in [src/services/config.ts](../src/services/config.ts). `baseImagePath` is `w500`: use it for every poster, still, avatar and thumbnail. `baseImagePathPoster` is `w1280`: use it only for the detail-page hero backdrop. Always `loading="lazy"`; `alt` is the title on card posters and empty on decorative images beside a visible title.
+The TMDB size prefixes live in [src/services/config.ts](../src/services/config.ts). `baseImagePath` is `w500`: use it for every poster, still, avatar and thumbnail. `baseImagePathPoster` is `w1280`: use it only for the detail-page hero backdrop. `baseImagePathThumb` is `w92`: use it, through `MediaImage`'s `basePath` prop, only for tiny thumbnails in long lists such as the search rows. Always `loading="lazy"`; `alt` is the title on card posters and empty on decorative images beside a visible title.
 
 Never write a bare `<img>` for TMDB artwork. Render it through `MediaImage` (recipe under Components), which draws a `bg-subtle` skeleton with the same box and radius whenever the path is null or the request fails. Give it the class string you would have put on the image; person-info's portrait is the reference (`aspect-[2/3] w-56 flex-none rounded-2xl object-cover object-top shadow-lg sm:w-64 lg:w-72` with `variant="person"`).
 
@@ -327,7 +327,7 @@ glyph:    h-auto w-1/3 max-w-12 fill-none stroke-current
 a11y:     role="img" aria-label={alt} when alt is set; aria-hidden when it is empty
 ```
 
-`bg-subtle` and `text-copy` swap under `.dark`, so the block matches the page in both themes. Pass `fallbackClassName` for an aspect ratio (`aspect-[1/1.5]` posters, `aspect-video` stills) whenever the image itself sizes from its natural dimensions, otherwise the skeleton collapses to zero height.
+`bg-subtle` and `text-copy` swap under `.dark`, so the block matches the page in both themes. Pass `fallbackClassName` for an aspect ratio (`aspect-[1/1.5]` posters, `aspect-video` stills) whenever the image itself sizes from its natural dimensions, otherwise the skeleton collapses to zero height. The image loads from `baseImagePath` (w500) unless a `basePath` from `services/config` is passed; the search rows pass `baseImagePathThumb`.
 
 ### Disclosure — `release-dates`
 
@@ -393,7 +393,13 @@ Copy this pairing of states for any future segmented control built on react-aria
 
 ### Search combobox — `layout/navbar/search-input`
 
-`react-aria-components` `ComboBox` with a visually hidden label, an in-field spinner and clear button, and a portalled popover sized to `var(--trigger-width)`. Styles in `search-input.styles.css` under `search-combobox__*`; list items use `bg-subtle` for `[data-focused]` and `[data-hovered]`. It applies the theme class to its own root because the popover renders outside the page roots.
+`react-aria-components` `ComboBox` with a visually hidden label, a leading search icon, an in-field spinner and clear button, and a popover portalled into its own root (so it rides with the sticky navbar) and sized to `var(--trigger-width)`. Styles in `search-input.styles.css` under `search-combobox__*`. It applies the theme class to its own root because the popover renders outside the page roots. The clear button is a plain `<button>`, not a react-aria `Button`, which inside `ComboBox` would become the popover trigger.
+
+Field: root `max-width: 40rem`; the input is a pill (`border-radius: 9999px`, `min-height: 2.75rem`, `1.125rem` text, `1rem` below `sm`) filled `bg-subtle/70` with a `border-bold/40` 1px border, going `bg-neutral` with an `accent` border plus the standard 2px `accent` outline on focus. The icon sits at `left: 1rem` in `text-copy/55` and turns `accent` on `:focus-within`.
+
+Popover: pass `containerPadding={0}` and `offset={6}`, because inside a positioned portal container react-aria's default 12px boundary padding shifts the panel sideways off the field. It is a frosted panel in the detail-page language: `bg-neutral/85`, `backdrop-filter: blur(16px) saturate(1.4)`, `text-copy/10` 1px border, `border-radius: 1rem`, `0 8px 32px` shadow, `0.375rem` inner padding, `max-height: min(32rem, 70vh)`.
+
+Row (`search-combobox__item`, `rounded 0.625rem`, `bg-subtle` on `[data-focused]`/`[data-hovered]`, 2px inset `accent` outline on `[data-focus-visible]`): a `2.75rem`-wide `aspect-ratio: 2 / 3` poster through `MediaImage` with `basePath={baseImagePathThumb}` (w92) and an empty `alt`; then a body column of title (`font-display`, `1rem`/600, turns `accent` when the row is focused or hovered, single line with ellipsis), a meta line (`0.75rem text-copy/70 tabular-nums`: uppercase `search-combobox__item-type` pill in `border-bold/50` reading Film or Series, the year, and `★ 8.4` when the title has votes), and a one-line ellipsised overview at `0.8125rem text-copy/60`, hidden below `sm`. The empty state (`search-combobox__empty`, centred `0.9375rem text-copy/70`) reads a hint when nothing is typed, “Searching…” until the debounced query settles, then “No films or series found”.
 
 ### Links — `atoms/link`
 

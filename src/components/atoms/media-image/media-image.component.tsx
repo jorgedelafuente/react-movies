@@ -18,6 +18,12 @@ type MediaImageProps = {
    /** Which glyph the skeleton shows: a framed picture (default) or a person silhouette. */
    variant?: 'picture' | 'person';
    loading?: 'lazy' | 'eager';
+   /**
+    * TMDB size prefix from `services/config`. Defaults to `baseImagePath`
+    * (w500); pass a smaller one, such as `baseImagePathThumb`, for tiny
+    * thumbnails so a long list does not download full posters.
+    */
+   basePath?: string;
 };
 
 const GLYPHS = {
@@ -51,6 +57,7 @@ const MediaImage = ({
    fallbackClassName = '',
    variant = 'picture',
    loading = 'lazy',
+   basePath = baseImagePath,
 }: MediaImageProps) => {
    // Remember which path failed rather than a plain boolean: if the same
    // mounted component receives a new path it gets a fresh attempt.
@@ -87,7 +94,7 @@ const MediaImage = ({
       // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
       <img
          loading={loading}
-         src={`${baseImagePath}${path}`}
+         src={`${basePath}${path}`}
          alt={alt}
          className={className || undefined}
          onError={() => setFailedPath(path)}

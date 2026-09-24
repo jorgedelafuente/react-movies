@@ -8,3 +8,6 @@ export const baseImagePathGallery = 'https://image.tmdb.org/t/p/w780/';
 
 /** Reviewer avatars: TMDB's w185 profile size, plenty for a 40px circle on 2x displays. */
 export const baseImagePathAvatar = 'https://image.tmdb.org/t/p/w185/';
+
+/** Search-row thumbnails: TMDB's w92 poster size, sharp at 44px on 2x displays. */
+export const baseImagePathThumb = 'https://image.tmdb.org/t/p/w92/';
