@@ -56,7 +56,7 @@ describe('Film Info Component', () => {
       );
    });
 
-   it('shows the age rating for the preferred region next to the genres', async () => {
+   it('shows the age rating for the preferred region in the title meta strip', async () => {
       // jsdom reports navigator.language as en-US, so the US rating wins.
       await renderView();
 
@@ -110,10 +110,10 @@ describe('Film Info Component', () => {
    it('names the director and writers from the crew list', async () => {
       await renderView();
 
-      expect(screen.getByText(/^director:/i).parentElement).toHaveTextContent(
+      expect(screen.getByText(/^director$/i).parentElement).toHaveTextContent(
          'Shawn Levy'
       );
-      expect(screen.getByText(/^writers:/i).parentElement).toHaveTextContent(
+      expect(screen.getByText(/^writers$/i).parentElement).toHaveTextContent(
          'Rhett Reese'
       );
    });

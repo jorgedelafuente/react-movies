@@ -2,6 +2,12 @@ import './film-info.styles.css';
 
 import FavoriteButton from '@/components/atoms/favorite-button/favorite-button.component';
 import FilmCard from '@/components/atoms/film-card/film-card.component';
+import { ExternalLink } from '@/components/atoms/link/external-link.component';
+import {
+   EYEBROW,
+   Stat,
+   StatNote,
+} from '@/components/atoms/stat/stat.component';
 import CastList from '@/components/cast-list/cast-list.component';
 import Container from '@/components/layout/container/container.component';
 import {
@@ -15,6 +21,7 @@ import type {
    FilmRecommendationType,
    FilmVideoType,
 } from '@/types/films.types';
+import { formatReleaseDate } from '@/utils/releaseDates';
 
 const CREW_JOBS = new Set(['Director', 'Screenplay', 'Writer']);
 const CAST_LIMIT = 8;
@@ -27,6 +34,16 @@ const formatCurrency = (amount: number) =>
            maximumFractionDigits: 0,
         }).format(amount)
       : 'N/A';
+
+/** TMDB reports runtime in minutes: `128` → `2h 8m`, `45` → `45m`. */
+const formatRuntime = (minutes: number) => {
+   const hours = Math.floor(minutes / 60);
+   const rest = minutes % 60;
+   if (hours === 0) return `${rest}m`;
+   return rest === 0 ? `${hours}h` : `${hours}h ${rest}m`;
+};
+
+const extractYear = (dateStr: string) => dateStr.slice(0, 4) || undefined;
 
 const FilmInfo = ({
    filmInfo,
@@ -41,11 +58,24 @@ const FilmInfo = ({
 }) => {
    const directors =
       filmCredits?.crew.filter((c) => c.job === 'Director') ?? [];
-   const writers =
-      filmCredits?.crew.filter(
-         (c) => CREW_JOBS.has(c.job) && c.job !== 'Director'
-      ) ?? [];
+   // The same person is often credited as both Screenplay and Writer.
+   const writers = [
+      ...new Set(
+         filmCredits?.crew
+            .filter((c) => CREW_JOBS.has(c.job) && c.job !== 'Director')
+            .map((c) => c.name) ?? []
+      ),
+   ];
    const topCast = filmCredits?.cast.slice(0, CAST_LIMIT) ?? [];
+
+   const year = extractYear(filmInfo.release_date);
+   const runtime = filmInfo.runtime ? formatRuntime(filmInfo.runtime) : null;
+   const meta = [year, runtime].filter(Boolean);
+   const language = filmInfo.original_language
+      ? (filmInfo.spoken_languages?.find(
+           (l) => l.iso_639_1 === filmInfo.original_language
+        )?.english_name ?? filmInfo.original_language.toUpperCase())
+      : undefined;
 
    return (
       <Container>
@@ -66,15 +96,34 @@ const FilmInfo = ({
                />
             </div>
 
-            <div className="text-content rounded-lg p-4 text-copy">
-               <h2 className="mb-2 text-display-lg">{filmInfo.title}</h2>
-               {filmInfo.tagline && (
-                  <h3 className="font-sans text-lg font-normal italic tracking-normal text-copy/75 sm:text-xl">
-                     {filmInfo.tagline}
-                  </h3>
-               )}
+            <div className="text-content gap-6 rounded-lg p-5 text-copy sm:p-8">
+               <header className="flex flex-col items-center gap-2">
+                  <h2 className="text-display-lg">{filmInfo.title}</h2>
+                  {filmInfo.tagline && (
+                     <p className="font-sans text-lg italic text-copy/70 sm:text-xl">
+                        {filmInfo.tagline}
+                     </p>
+                  )}
+                  {(meta.length > 0 || filmInfo.release_dates) && (
+                     <div className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm font-medium tabular-nums text-copy/80">
+                        {meta.map((item, index) => (
+                           <span
+                              key={item}
+                              className="flex items-center gap-x-3"
+                           >
+                              {index > 0 && <span aria-hidden="true">·</span>}
+                              {item}
+                           </span>
+                        ))}
+                        <CertificationBadge
+                           results={filmInfo.release_dates?.results}
+                        />
+                     </div>
+                  )}
+               </header>
 
-               <div className="my-3 flex justify-center">
+               {/* FavoriteButton renders nothing when signed out; collapse the slot so the gap does not double. */}
+               <div className="flex justify-center empty:hidden">
                   <FavoriteButton
                      filmId={filmInfo.id}
                      filmTitle={filmInfo.title}
@@ -83,116 +132,97 @@ const FilmInfo = ({
                   />
                </div>
 
-               <hr className="my-3 border-bold" />
-
                {filmInfo.genres && filmInfo.genres.length > 0 && (
-                  <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-                     <span className="bg-primary rounded-full px-2 py-1 text-xs font-semibold uppercase tracking-wider text-copy/70">
-                        Genre
-                     </span>
+                  <ul
+                     aria-label="Genres"
+                     className="flex flex-wrap items-center justify-center gap-2"
+                  >
                      {filmInfo.genres.map((genre) => (
-                        <span
+                        <li
                            key={genre.id}
-                           className="bg-primary rounded-full px-2 py-1 text-sm font-medium"
+                           className="rounded-full border border-copy/15 bg-neutral-inverted/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider"
                         >
                            {genre.name}
-                        </span>
+                        </li>
                      ))}
-                     <CertificationBadge
-                        results={filmInfo.release_dates?.results}
-                     />
-                  </div>
+                  </ul>
                )}
-               <hr className="my-3 border-bold" />
 
-               <p className="leading-relaxed">
-                  <strong>Overview: </strong>
-                  {filmInfo.overview}
-               </p>
+               {filmInfo.overview && (
+                  <section className="mx-auto flex w-full max-w-prose flex-col gap-2 text-left">
+                     <h3 className={`font-sans ${EYEBROW}`}>Overview</h3>
+                     <p className="text-pretty leading-relaxed sm:text-lg">
+                        {filmInfo.overview}
+                     </p>
+                  </section>
+               )}
 
-               <hr className="my-3 border-bold" />
-
-               <div className="tabular-nums">
-                  <strong>Rating: </strong>
-                  {filmInfo.vote_average?.toFixed(1)} / 10
-                  {filmInfo.vote_count !== undefined && (
-                     <span className="ml-2 text-sm opacity-70">
-                        ({filmInfo.vote_count.toLocaleString()} votes)
-                     </span>
+               <dl className="grid grid-cols-2 gap-x-4 gap-y-5 border-y border-copy/10 py-5 sm:grid-cols-3">
+                  <Stat label="Rating">
+                     {filmInfo.vote_average !== undefined ? (
+                        <>
+                           <span aria-hidden="true" className="mr-1 text-base">
+                              ★
+                           </span>
+                           {filmInfo.vote_average.toFixed(1)}
+                           <span className="text-sm font-normal text-copy/60">
+                              {' '}
+                              / 10
+                           </span>
+                           {filmInfo.vote_count !== undefined && (
+                              <StatNote>
+                                 {filmInfo.vote_count.toLocaleString()} votes
+                              </StatNote>
+                           )}
+                        </>
+                     ) : (
+                        'N/A'
+                     )}
+                  </Stat>
+                  <Stat label="Status">{filmInfo.status ?? 'N/A'}</Stat>
+                  <Stat label="Released">
+                     {filmInfo.release_date
+                        ? formatReleaseDate(filmInfo.release_date)
+                        : 'N/A'}
+                  </Stat>
+                  {language && <Stat label="Language">{language}</Stat>}
+                  {filmInfo.budget !== undefined && (
+                     <Stat label="Budget">
+                        {formatCurrency(filmInfo.budget)}
+                     </Stat>
                   )}
-               </div>
-               <div>
-                  <strong>Status: </strong>
-                  {filmInfo.status ?? 'N/A'}
-               </div>
-               <div className="tabular-nums">
-                  <strong>Release Date: </strong>
-                  {filmInfo.release_date}
-               </div>
-               <div className="tabular-nums">
-                  <strong>Duration: </strong>
-                  {filmInfo.runtime ? `${filmInfo.runtime} minutes` : 'N/A'}
-               </div>
-               {filmInfo.original_language && (
-                  <div>
-                     <strong>Original Language: </strong>
-                     {filmInfo.spoken_languages?.find(
-                        (l) => l.iso_639_1 === filmInfo.original_language
-                     )?.english_name ??
-                        filmInfo.original_language.toUpperCase()}
-                  </div>
-               )}
+                  {filmInfo.revenue !== undefined && (
+                     <Stat label="Revenue">
+                        {formatCurrency(filmInfo.revenue)}
+                     </Stat>
+                  )}
+               </dl>
 
-               <hr className="my-3 border-bold" />
-
-               {(filmInfo.budget !== undefined ||
-                  filmInfo.revenue !== undefined) && (
-                  <div className="my-2 mt-2 flex justify-center gap-6 tabular-nums">
-                     {filmInfo.budget !== undefined && (
-                        <div>
-                           <strong>Budget: </strong>
-                           {formatCurrency(filmInfo.budget)}
-                        </div>
-                     )}
-                     {filmInfo.revenue !== undefined && (
-                        <div>
-                           <strong>Revenue: </strong>
-                           {formatCurrency(filmInfo.revenue)}
-                        </div>
-                     )}
-                  </div>
-               )}
                {filmInfo.production_companies &&
                   filmInfo.production_companies.length > 0 && (
-                     <div className="mt-2">
-                        <strong>Production: </strong>
-                        {filmInfo.production_companies
-                           .map((c) => c.name)
-                           .join(', ')}
+                     <div className="flex flex-col items-center gap-1">
+                        <span className={EYEBROW}>Production</span>
+                        <p className="text-sm text-copy/80">
+                           {filmInfo.production_companies
+                              .map((c) => c.name)
+                              .join(' · ')}
+                        </p>
                      </div>
                   )}
 
                {(filmInfo.homepage || filmInfo.imdb_id) && (
-                  <div className="mt-2 flex flex-wrap gap-4">
+                  <div className="flex flex-wrap justify-center gap-3">
                      {filmInfo.homepage && (
-                        <a
-                           href={filmInfo.homepage}
-                           target="_blank"
-                           rel="noreferrer"
-                           className="text-copy underline"
-                        >
+                        <ExternalLink href={filmInfo.homepage}>
                            Homepage
-                        </a>
+                        </ExternalLink>
                      )}
                      {filmInfo.imdb_id && (
-                        <a
+                        <ExternalLink
                            href={`https://www.imdb.com/title/${filmInfo.imdb_id}`}
-                           target="_blank"
-                           rel="noreferrer"
-                           className="text-copy underline"
                         >
-                           IMDB
-                        </a>
+                           IMDb
+                        </ExternalLink>
                      )}
                   </div>
                )}
@@ -216,31 +246,46 @@ const FilmInfo = ({
             {(directors.length > 0 ||
                writers.length > 0 ||
                topCast.length > 0) && (
-               <div className="text-content mt-4 rounded-lg p-4 text-copy">
-                  <h2 className="mb-3 text-display-md">Cast &amp; Crew</h2>
+               <div className="text-content mt-4 gap-5 rounded-lg p-5 text-copy sm:p-8">
+                  <h2 className="text-display-md">Cast &amp; Crew</h2>
 
-                  {directors.length > 0 && (
-                     <div className="mb-1">
-                        <strong>
-                           Director{directors.length > 1 ? 's' : ''}:{' '}
-                        </strong>
-                        {directors.map((d) => d.name).join(', ')}
+                  {(directors.length > 0 || writers.length > 0) && (
+                     <dl className="flex flex-wrap justify-center gap-x-10 gap-y-4">
+                        {directors.length > 0 && (
+                           <div className="flex flex-col items-center gap-1">
+                              <dt className={EYEBROW}>
+                                 Director{directors.length > 1 ? 's' : ''}
+                              </dt>
+                              <dd className="font-display text-lg font-semibold">
+                                 {directors.map((d) => d.name).join(', ')}
+                              </dd>
+                           </div>
+                        )}
+                        {writers.length > 0 && (
+                           <div className="flex flex-col items-center gap-1">
+                              <dt className={EYEBROW}>Writers</dt>
+                              <dd className="font-display text-lg font-semibold">
+                                 {writers.join(', ')}
+                              </dd>
+                           </div>
+                        )}
+                     </dl>
+                  )}
+
+                  {topCast.length > 0 && (
+                     <div className="flex flex-col gap-4 border-t border-copy/10 pt-5">
+                        <h3 className={`font-sans ${EYEBROW}`}>
+                           Top billed cast
+                        </h3>
+                        <CastList cast={topCast} />
                      </div>
                   )}
-                  {writers.length > 0 && (
-                     <div className="mb-3">
-                        <strong>Writers: </strong>
-                        {writers.map((w) => w.name).join(', ')}
-                     </div>
-                  )}
-
-                  <CastList cast={topCast} />
                </div>
             )}
 
             {recommendations && recommendations.length > 0 && (
-               <div className="text-content mt-4 rounded-lg p-4 text-copy">
-                  <h2 className="mb-4 text-display-md">Recommendations</h2>
+               <div className="text-content mt-4 gap-4 rounded-lg p-5 text-copy sm:p-8">
+                  <h2 className="text-display-md">Recommendations</h2>
                   <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4 lg:gap-8">
                      {recommendations.map((film) => (
                         <FilmCard
