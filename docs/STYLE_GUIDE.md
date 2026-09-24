@@ -140,7 +140,7 @@ Anything numeric — ratings, years, dates, counts, money — gets `tabular-nums
 
 Both TMDB size prefixes live in [src/services/config.ts](../src/services/config.ts). `baseImagePath` is `w500`: use it for every poster, still, avatar and thumbnail. `baseImagePathPoster` is `w1280`: use it only for the detail-page hero backdrop. Always `loading="lazy"`; `alt` is the title on card posters and empty on decorative images beside a visible title.
 
-When an image may be missing, render a placeholder with the same box and radius on `bg-subtle` (person-info's portrait is the reference: photo and placeholder share one class string, `aspect-[2/3] w-40 flex-none rounded-2xl object-cover object-top shadow-lg sm:w-48 lg:w-56`, and the placeholder adds `flex items-center justify-center bg-subtle text-6xl`).
+When an image may be missing, render a placeholder with the same box and radius on `bg-subtle` (person-info's portrait is the reference: photo and placeholder share one class string, `aspect-[2/3] w-56 flex-none rounded-2xl object-cover object-top shadow-lg sm:w-64 lg:w-72`, and the placeholder adds `flex items-center justify-center bg-subtle text-6xl`).
 
 ### Motion
 

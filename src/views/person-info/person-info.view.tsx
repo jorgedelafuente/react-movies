@@ -1,14 +1,24 @@
-import '@/views/film-info/film-info.styles.css';
-
 import { useState } from 'react';
 
 import FilmCard from '@/components/atoms/film-card/film-card.component';
+import { ExternalLink } from '@/components/atoms/link/external-link.component';
+import {
+   EYEBROW,
+   Stat,
+   StatNote,
+} from '@/components/atoms/stat/stat.component';
 import Container from '@/components/layout/container/container.component';
 import { baseImagePath } from '@/services/config';
 import type { PersonInfoType } from '@/types/people.types';
 import { dedupeCredits, type DedupedCredit } from '@/utils/dedupeCredits';
 
 const CREDITS_PREVIEW = 24;
+const ALIASES_LIMIT = 4;
+const LONG_BIO = 600;
+
+/** Portrait box shared by the photo and its placeholder. */
+const PORTRAIT =
+   'aspect-[2/3] w-56 flex-none rounded-2xl object-cover object-top shadow-lg sm:w-64 lg:w-72';
 
 const formatDate = (iso: string | null) => {
    if (!iso) return null;
@@ -49,14 +59,14 @@ const CreditsGrid = ({
    const visible = showAll ? credits : credits.slice(0, CREDITS_PREVIEW);
 
    return (
-      <section className="text-content mt-4 rounded-lg p-4 text-copy">
-         <h2 className="mb-4 text-display-md">
+      <section className="border-t border-copy/10 pt-8">
+         <h2 className="text-display-md">
             {title}
-            <span className="ml-2 text-base font-normal tabular-nums opacity-70">
+            <span className="ml-2 font-sans text-base font-normal tabular-nums text-copy/60">
                ({credits.length})
             </span>
          </h2>
-         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4 lg:gap-8">
+         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4 lg:gap-8">
             {visible.map((credit) => (
                <FilmCard
                   key={`${credit.media_type}-${credit.id}`}
@@ -78,7 +88,7 @@ const CreditsGrid = ({
             <button
                type="button"
                onClick={() => setShowAll((v) => !v)}
-               className="mt-4 text-accent hover:underline"
+               className="mt-6 text-sm font-medium text-accent hover:underline"
             >
                {showAll
                   ? 'Show fewer'
@@ -89,6 +99,11 @@ const CreditsGrid = ({
    );
 };
 
+/**
+ * Profile page. Unlike the film and series pages there is no backdrop, so no
+ * parallax hero, no sticky title and no hover fades: a plain column with a
+ * portrait header, then biography and credits under hairline rules.
+ */
 const PersonInfo = ({ person }: { person: PersonInfoType }) => {
    const [bioExpanded, setBioExpanded] = useState(false);
    const cast = dedupeCredits(
@@ -103,102 +118,101 @@ const PersonInfo = ({ person }: { person: PersonInfoType }) => {
    const born = formatDate(person.birthday);
    const died = formatDate(person.deathday);
    const age = yearsBetween(person.birthday, person.deathday);
-   const longBio = person.biography.length > 600;
+   const aliases = person.also_known_as?.slice(0, ALIASES_LIMIT) ?? [];
+   const longBio = person.biography.length > LONG_BIO;
 
-   // Same shell as the film and series pages, minus the backdrop image. The
-   // title bar stays but is static: with no backdrop to parallax over there is
-   // nothing for the sticky, scroll-driven version to play against.
    return (
       <Container>
-         <div className="text-title text-title--static text-copy">
-            <span data-testid="person-info-title">{person.name}</span>
-         </div>
-         <div className="container-bg">
-            <div>
+         <div className="mx-auto flex w-full max-w-4xl flex-col gap-10 px-4 py-6 text-left text-copy">
+            <header className="flex flex-col items-center gap-6 text-center sm:flex-row sm:items-start sm:gap-10 sm:text-left">
                {person.profile_path ? (
                   <img
                      loading="lazy"
                      src={`${baseImagePath}${person.profile_path}`}
                      alt=""
+                     className={PORTRAIT}
                   />
                ) : (
                   <div
                      aria-hidden="true"
-                     className="flex h-72 w-48 items-center justify-center rounded-[25px] bg-subtle text-6xl"
+                     className={`flex items-center justify-center bg-subtle text-6xl ${PORTRAIT}`}
                   >
                      👤
                   </div>
                )}
-            </div>
 
-            <div className="text-content rounded-lg p-4 text-copy">
-               <h1 className="mb-2 text-display-lg">{person.name}</h1>
-               {person.known_for_department && (
-                  <p className="font-sans text-lg font-normal tracking-normal text-copy/75 sm:text-xl">
-                     {person.known_for_department}
-                  </p>
-               )}
-
-               <hr className="my-3 border-bold" />
-
-               {born && (
-                  <div className="tabular-nums">
-                     <strong>Born: </strong>
-                     {born}
-                     {age !== null && !died ? ` (age ${age})` : ''}
-                     {person.place_of_birth
-                        ? ` · ${person.place_of_birth}`
-                        : ''}
+               <div className="flex min-w-0 flex-1 flex-col items-center gap-6 sm:items-start">
+                  <div className="flex flex-col gap-2">
+                     {person.known_for_department && (
+                        <p className={EYEBROW}>{person.known_for_department}</p>
+                     )}
+                     <h1
+                        className="text-display-xl"
+                        data-testid="person-info-title"
+                     >
+                        {person.name}
+                     </h1>
                   </div>
-               )}
-               {died && (
-                  <div className="tabular-nums">
-                     <strong>Died: </strong>
-                     {died}
-                     {age !== null ? ` (aged ${age})` : ''}
-                  </div>
-               )}
-               {person.also_known_as && person.also_known_as.length > 0 && (
-                  <div>
-                     <strong>Also known as: </strong>
-                     {person.also_known_as.slice(0, 4).join(', ')}
-                  </div>
-               )}
 
-               {(person.homepage || imdbId) && (
-                  <>
-                     <hr className="my-3 border-bold" />
-                     <div className="mt-2 flex flex-wrap gap-4">
+                  {(born || died || person.place_of_birth) && (
+                     <dl className="flex flex-wrap justify-center gap-x-10 gap-y-5 sm:justify-start">
+                        {born && (
+                           <Stat label="Born" className="sm:items-start">
+                              {born}
+                              {age !== null && !died && (
+                                 <StatNote>(age {age})</StatNote>
+                              )}
+                           </Stat>
+                        )}
+                        {died && (
+                           <Stat label="Died" className="sm:items-start">
+                              {died}
+                              {age !== null && (
+                                 <StatNote>(aged {age})</StatNote>
+                              )}
+                           </Stat>
+                        )}
+                        {person.place_of_birth && (
+                           <Stat label="Birthplace" className="sm:items-start">
+                              {person.place_of_birth}
+                           </Stat>
+                        )}
+                     </dl>
+                  )}
+
+                  {aliases.length > 0 && (
+                     <div className="flex flex-col items-center gap-1 sm:items-start">
+                        <span className={EYEBROW}>Also known as</span>
+                        <p className="text-sm text-copy/80">
+                           {aliases.join(' · ')}
+                        </p>
+                     </div>
+                  )}
+
+                  {(person.homepage || imdbId) && (
+                     <div className="flex flex-wrap justify-center gap-3 sm:justify-start">
                         {person.homepage && (
-                           <a
-                              href={person.homepage}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-copy underline"
-                           >
+                           <ExternalLink href={person.homepage}>
                               Homepage
-                           </a>
+                           </ExternalLink>
                         )}
                         {imdbId && (
-                           <a
+                           <ExternalLink
                               href={`https://www.imdb.com/name/${imdbId}`}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-copy underline"
                            >
-                              IMDB
-                           </a>
+                              IMDb
+                           </ExternalLink>
                         )}
                      </div>
-                  </>
-               )}
-            </div>
+                  )}
+               </div>
+            </header>
 
             {person.biography && (
-               <div className="text-content mt-4 rounded-lg p-4 text-copy">
-                  <h2 className="mb-3 text-display-md">Biography</h2>
+               <section className="border-t border-copy/10 pt-8">
+                  <h2 className="text-display-md">Biography</h2>
                   <p
-                     className={`whitespace-pre-line leading-relaxed ${
+                     className={`mt-4 max-w-prose whitespace-pre-line text-pretty leading-relaxed sm:text-lg ${
                         longBio && !bioExpanded ? 'line-clamp-6' : ''
                      }`}
                   >
@@ -208,13 +222,13 @@ const PersonInfo = ({ person }: { person: PersonInfoType }) => {
                      <button
                         type="button"
                         onClick={() => setBioExpanded((v) => !v)}
-                        className="mt-2 text-accent hover:underline"
+                        className="mt-3 text-sm font-medium text-accent hover:underline"
                         aria-expanded={bioExpanded}
                      >
                         {bioExpanded ? 'Read less' : 'Read more'}
                      </button>
                   )}
-               </div>
+               </section>
             )}
 
             <CreditsGrid title="Known for" credits={cast} rolePrefix="as " />

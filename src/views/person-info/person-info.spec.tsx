@@ -64,15 +64,17 @@ describe('Person Info Component', () => {
          screen.getByRole('heading', { level: 1, name: 'Emilia Clarke' })
       ).toBeInTheDocument();
       expect(screen.getByText('Acting')).toBeInTheDocument();
-      const born = screen.getByText('Born:').parentElement;
+      const born = screen.getByText('Born').parentElement;
       expect(born).toHaveTextContent('23 October 1986');
       expect(born).toHaveTextContent(/\(age \d+\)/);
-      expect(born).toHaveTextContent('London, England, UK');
+      expect(screen.getByText('Birthplace').parentElement).toHaveTextContent(
+         'London, England, UK'
+      );
    });
 
-   it('links to IMDB using the name id', async () => {
+   it('links to IMDb using the name id', async () => {
       await renderView();
-      expect(screen.getByRole('link', { name: 'IMDB' })).toHaveAttribute(
+      expect(screen.getByRole('link', { name: 'IMDb' })).toHaveAttribute(
          'href',
          'https://www.imdb.com/name/nm3592338'
       );
@@ -125,10 +127,10 @@ describe('Person Info Component', () => {
 
    it('shows a death date and final age when present', async () => {
       await renderView({ ...person, deathday: '2020-06-01' });
-      const died = screen.getByText('Died:').parentElement;
+      const died = screen.getByText('Died').parentElement;
       expect(died).toHaveTextContent('01 June 2020');
       expect(died).toHaveTextContent('(aged 33)');
-      expect(screen.getByText('Born:').parentElement).not.toHaveTextContent(
+      expect(screen.getByText('Born').parentElement).not.toHaveTextContent(
          /age \d+/
       );
    });
