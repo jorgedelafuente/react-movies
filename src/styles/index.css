@@ -105,15 +105,6 @@ h6 {
    isolation: isolate;
 }
 
-/*
-  10. Reset Link styles
-*/
-a,
-a:visited {
-   text-decoration: none;
-   color: black;
-}
-
 :root {
    line-height: 1.5;
    font-weight: 400;

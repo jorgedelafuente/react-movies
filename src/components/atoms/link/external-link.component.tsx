@@ -2,8 +2,8 @@ import type { ReactNode } from 'react';
 
 /**
  * Pill for links that leave the app (homepage, IMDb). Opens in a new tab.
- * The colour sits on the inner span because `index.css` forces
- * `a:visited { color: black }`, which would otherwise win in dark mode.
+ * The colour sits on the inner span so the `group-hover` swap stays scoped
+ * to the label; anchors themselves inherit colour (Tailwind preflight).
  */
 export const ExternalLink = ({
    href,

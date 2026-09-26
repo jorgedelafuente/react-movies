@@ -483,10 +483,10 @@ The same `ComboBox` pattern inside the discover filter form, styled to sit besid
 
 ### Links — `atoms/link`
 
--  **`NavLink`** puts colour on a `<span>` inside the router `Link` — `font-display text-lg font-medium tracking-wide text-copy hover:text-accent` — because `index.css` forces `a, a:visited { color: black }` and a colour on the anchor itself would not survive `:visited` in dark mode.
+-  **`NavLink`** puts colour on a `<span>` inside the router `Link` — `font-display text-lg font-medium tracking-wide text-copy hover:text-accent` — a leftover from when `index.css` forced `a:visited { color: black }`; since that reset was removed anchors inherit colour (Tailwind preflight), so a colour class on the `Link` itself works just as well.
 -  **`MediaLink`** chooses `/film/:id` or `/tv/:id` by media type; always use it for detail links.
 -  **Internal text links** are `text-accent hover:underline`; back links are `text-sm text-accent hover:underline` prefixed with `←`.
--  **`ExternalLink`** (homepage, IMDb) is a pill: `group rounded-full border border-copy/30 px-4 py-1.5 text-sm font-medium transition-colors hover:border-accent` with `target="_blank" rel="noreferrer"`, the label in `<span className="text-copy group-hover:text-accent">` (same `:visited` reason as NavLink) and a trailing `↗` that is `aria-hidden`. Label it `IMDb`, not `IMDB`. The colour difference from internal links is deliberate: accent means "stays in the app".
+-  **`ExternalLink`** (homepage, IMDb) is a pill: `group rounded-full border border-copy/30 px-4 py-1.5 text-sm font-medium transition-colors hover:border-accent` with `target="_blank" rel="noreferrer"`, the label in `<span className="text-copy group-hover:text-accent">` and a trailing `↗` that is `aria-hidden`. Label it `IMDb`, not `IMDB`. The colour difference from internal links is deliberate: accent means "stays in the app".
 -  **Links that inherit** (a whole card or cast column) are `text-inherit hover:text-accent`.
 
 ### FavoriteButton — `favorite-button`
