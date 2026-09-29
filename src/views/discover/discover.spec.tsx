@@ -87,25 +87,27 @@ describe('Discover view', () => {
       ).toBeNull();
    });
 
-   it('collapses the filters behind a disclosure button on small screens', async () => {
+   it('collapses the filters behind an animated disclosure on small screens', async () => {
       await renderView();
       const toggle = screen.getByRole('button', { name: /show filters/i });
       const form = screen.getByRole('form', { name: 'Discover filters' });
+      const accordion = form.parentElement as HTMLElement;
 
-      // Closed by default: hidden on phones, always shown from `sm` up.
+      // Closed by default: the wrapper's row collapses to zero height (always
+      // shown from `sm` up via `sm:grid-rows-[minmax(0,1fr)]`), the form stays
+      // mounted (`overflow-hidden` clips it) so the height can animate.
       expect(toggle).toHaveAttribute('aria-expanded', 'false');
       expect(toggle).toHaveAttribute('aria-controls', form.id);
-      expect(form).toHaveClass('hidden', 'sm:flex');
+      expect(accordion).toHaveClass('grid-rows-[minmax(0,0fr)]');
 
       fireEvent.click(toggle);
       expect(toggle).toHaveAttribute('aria-expanded', 'true');
       expect(toggle).toHaveTextContent(/hide filters/i);
-      expect(form).toHaveClass('flex');
-      expect(form).not.toHaveClass('hidden');
+      expect(accordion).toHaveClass('grid-rows-[minmax(0,1fr)]');
 
       fireEvent.click(toggle);
       expect(toggle).toHaveAttribute('aria-expanded', 'false');
-      expect(form).toHaveClass('hidden');
+      expect(accordion).toHaveClass('grid-rows-[minmax(0,0fr)]');
    });
 
    it('counts the active filters on the disclosure button', async () => {

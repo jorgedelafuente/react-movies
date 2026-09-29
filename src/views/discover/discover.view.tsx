@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Button from '@/components/atoms/button/button.component';
 import Chip from '@/components/atoms/chip/chip.component';
@@ -61,6 +61,18 @@ const DiscoverView = ({
    // Phones start with the filters collapsed behind a disclosure button; from
    // `sm` up the form is always visible and this state has no effect.
    const [filtersOpen, setFiltersOpen] = useState(false);
+   // Tracks the `sm` breakpoint so the collapsed form can be made `inert`
+   // (unfocusable, hidden from assistive tech) only while it is actually
+   // collapsed on a narrow screen, never while it's shown at `sm` and up.
+   const [isMobile, setIsMobile] = useState(
+      () => window.matchMedia('(max-width: 639px)').matches
+   );
+   useEffect(() => {
+      const query = window.matchMedia('(max-width: 639px)');
+      const onChange = () => setIsMobile(query.matches);
+      query.addEventListener('change', onChange);
+      return () => query.removeEventListener('change', onChange);
+   }, []);
    const activeFilters =
       Number(params.genre !== undefined) +
       Number(params.keyword !== undefined) +
@@ -88,8 +100,8 @@ const DiscoverView = ({
 
    return (
       <Container>
-         <div className="mx-auto w-full px-4 py-6 text-copy sm:px-6 lg:px-10">
-            <h1 className="text-display-lg">Discover</h1>
+         <div className="mx-auto w-full px-4 py-4 text-left text-copy sm:px-6 sm:py-6 sm:text-center lg:px-10">
+            <h1 className="text-display-md sm:text-display-lg">Discover</h1>
 
             <Chip
                className="mt-4 sm:hidden"
@@ -118,119 +130,130 @@ const DiscoverView = ({
                </svg>
             </Chip>
 
-            <form
-               id="discover-filters"
-               className={`${formClass} ${filtersOpen ? 'flex' : 'hidden sm:flex'}`}
-               onSubmit={(e) => e.preventDefault()}
-               aria-label="Discover filters"
+            <div
+               className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ease-in-out sm:grid-rows-[minmax(0,1fr)] sm:overflow-visible ${
+                  filtersOpen
+                     ? 'grid-rows-[minmax(0,1fr)]'
+                     : 'grid-rows-[minmax(0,0fr)]'
+               }`}
             >
-               <WaveDivider className="rounded-t-lg text-copy/25" />
-
-               <fieldset className="flex flex-col">
-                  <legend className={`${EYEBROW} mb-1.5`}>Type</legend>
-                  {/* Same height as the controls, so the row aligns on its bottom edge. */}
-                  <div className="flex h-10 items-center gap-2">
-                     {(Object.values(MEDIA_TYPES) as MediaType[]).map(
-                        (type) => (
-                           <Chip
-                              key={type}
-                              selected={params.type === type}
-                              onClick={() => setType(type)}
-                           >
-                              {MEDIA_TYPE_PLURAL_LABELS[type]}
-                           </Chip>
-                        )
-                     )}
-                  </div>
-               </fieldset>
-
-               <Select
-                  id="discover-genre"
-                  label="Genre"
-                  className="sm:w-48"
-                  value={params.genre ?? ''}
-                  onChange={(e) =>
-                     onChange({
-                        genre: numberOrUndefined(e.target.value),
-                        page: 1,
-                     })
-                  }
+               <form
+                  id="discover-filters"
+                  inert={isMobile && !filtersOpen}
+                  className={`${formClass} flex overflow-hidden`}
+                  onSubmit={(e) => e.preventDefault()}
+                  aria-label="Discover filters"
                >
-                  <option value="">All genres</option>
-                  {genres.map((g) => (
-                     <option key={g.id} value={g.id}>
-                        {g.name}
-                     </option>
-                  ))}
-               </Select>
+                  <WaveDivider className="rounded-t-lg text-copy/25" />
 
-               <KeywordFilter
-                  // Remount on change so the text starts from the new name.
-                  key={keyword?.id ?? 'none'}
-                  className="sm:w-48"
-                  selected={keyword}
-                  onSelect={(next) => onChange({ keyword: next?.id, page: 1 })}
-               />
+                  <fieldset className="flex flex-col">
+                     <legend className={`${EYEBROW} mb-1.5`}>Type</legend>
+                     {/* Same height as the controls, so the row aligns on its bottom edge. */}
+                     <div className="flex h-10 items-center gap-2">
+                        {(Object.values(MEDIA_TYPES) as MediaType[]).map(
+                           (type) => (
+                              <Chip
+                                 key={type}
+                                 selected={params.type === type}
+                                 onClick={() => setType(type)}
+                              >
+                                 {MEDIA_TYPE_PLURAL_LABELS[type]}
+                              </Chip>
+                           )
+                        )}
+                     </div>
+                  </fieldset>
 
-               <Select
-                  id="discover-provider"
-                  label="Streaming on"
-                  className="sm:w-40"
-                  value={params.provider ?? ''}
-                  onChange={(e) =>
-                     onChange({
-                        provider: providerOrUndefined(e.target.value),
-                        page: 1,
-                     })
-                  }
-               >
-                  <option value="">Any service</option>
-                  {STREAMING_PROVIDERS.map((p) => (
-                     <option key={p.id} value={p.id}>
-                        {p.name}
-                     </option>
-                  ))}
-               </Select>
+                  <Select
+                     id="discover-genre"
+                     label="Genre"
+                     className="sm:w-48"
+                     value={params.genre ?? ''}
+                     onChange={(e) =>
+                        onChange({
+                           genre: numberOrUndefined(e.target.value),
+                           page: 1,
+                        })
+                     }
+                  >
+                     <option value="">All genres</option>
+                     {genres.map((g) => (
+                        <option key={g.id} value={g.id}>
+                           {g.name}
+                        </option>
+                     ))}
+                  </Select>
 
-               <Select
-                  id="discover-sort"
-                  label="Sort by"
-                  className="sm:w-44"
-                  value={params.sort}
-                  onChange={(e) =>
-                     onChange({
-                        sort: e.target.value as DiscoverSort,
-                        page: 1,
-                     })
-                  }
-               >
-                  {sorts.map((sort) => (
-                     <option key={sort} value={sort}>
-                        {DISCOVER_SORT_LABELS[sort]}
-                     </option>
-                  ))}
-               </Select>
+                  <KeywordFilter
+                     // Remount on change so the text starts from the new name.
+                     key={keyword?.id ?? 'none'}
+                     className="sm:w-48"
+                     selected={keyword}
+                     onSelect={(next) =>
+                        onChange({ keyword: next?.id, page: 1 })
+                     }
+                  />
 
-               <Select
-                  id="discover-year"
-                  label="Year"
-                  className="sm:w-32"
-                  value={params.year ?? ''}
-                  onChange={(e) =>
-                     onChange({
-                        year: numberOrUndefined(e.target.value),
-                        page: 1,
-                     })
-                  }
-               >
-                  <option value="">Any year</option>
-                  {YEARS.map((year) => (
-                     <option key={year} value={year}>
-                        {year}
-                     </option>
-                  ))}
-               </Select>
-            </form>
+                  <Select
+                     id="discover-provider"
+                     label="Streaming on"
+                     className="sm:w-40"
+                     value={params.provider ?? ''}
+                     onChange={(e) =>
+                        onChange({
+                           provider: providerOrUndefined(e.target.value),
+                           page: 1,
+                        })
+                     }
+                  >
+                     <option value="">Any service</option>
+                     {STREAMING_PROVIDERS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                           {p.name}
+                        </option>
+                     ))}
+                  </Select>
+
+                  <Select
+                     id="discover-sort"
+                     label="Sort by"
+                     className="sm:w-44"
+                     value={params.sort}
+                     onChange={(e) =>
+                        onChange({
+                           sort: e.target.value as DiscoverSort,
+                           page: 1,
+                        })
+                     }
+                  >
+                     {sorts.map((sort) => (
+                        <option key={sort} value={sort}>
+                           {DISCOVER_SORT_LABELS[sort]}
+                        </option>
+                     ))}
+                  </Select>
+
+                  <Select
+                     id="discover-year"
+                     label="Year"
+                     className="sm:w-32"
+                     value={params.year ?? ''}
+                     onChange={(e) =>
+                        onChange({
+                           year: numberOrUndefined(e.target.value),
+                           page: 1,
+                        })
+                     }
+                  >
+                     <option value="">Any year</option>
+                     {YEARS.map((year) => (
+                        <option key={year} value={year}>
+                           {year}
+                        </option>
+                     ))}
+                  </Select>
+               </form>
+            </div>
          </div>
 
          {page.results.length === 0 ? (
