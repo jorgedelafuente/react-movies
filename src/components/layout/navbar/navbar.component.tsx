@@ -70,7 +70,7 @@ const Navbar = () => {
          <div className="flex w-full flex-wrap items-start justify-between gap-2 sm:items-center lg:flex-nowrap lg:gap-6">
             <nav
                aria-label="Browse"
-               className="flex items-center gap-4 sm:gap-6"
+               className="order-2 flex basis-full flex-col items-start gap-2 text-sm sm:order-1 sm:basis-auto sm:flex-row sm:items-center sm:gap-6 sm:text-base"
             >
                <NavLink path="/" text="Discover" />
                <NavMenu label="Films" links={FILM_LINKS} />
@@ -79,7 +79,7 @@ const Navbar = () => {
             <div className="order-3 flex basis-full justify-center lg:order-2 lg:min-w-0 lg:flex-1 lg:basis-0">
                <SearchInput />
             </div>
-            <div className="order-2 flex items-center gap-1 lg:order-3">
+            <div className="order-1 flex basis-full justify-end gap-1 sm:order-3 sm:basis-auto">
                <ThemeToggleIcon tabIndex={0} />
                <LoginIcon tabIndex={0} />
             </div>
