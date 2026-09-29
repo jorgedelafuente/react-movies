@@ -7,6 +7,7 @@ import { EYEBROW } from '@/components/atoms/stat/stat.component';
 import WaveDivider from '@/components/atoms/wave-divider/wave-divider.component';
 import KeywordFilter from '@/components/keyword-filter/keyword-filter.component';
 import Container from '@/components/layout/container/container.component';
+import ViewToggle from '@/components/view-toggle/view-toggle.component';
 import {
    DISCOVER_MAX_PAGE,
    DISCOVER_MIN_YEAR,
@@ -26,6 +27,7 @@ import {
    type MediaType,
 } from '@/types/media.types';
 import type { KeywordType } from '@/types/search.schemas';
+import { useListView } from '@/utils/hooks/useListView';
 import FilmList from '@/views/film-list/film-list.view';
 
 const YEARS = Array.from(
@@ -61,6 +63,8 @@ const DiscoverView = ({
    // Phones start with the filters collapsed behind a disclosure button; from
    // `sm` up the form is always visible and this state has no effect.
    const [filtersOpen, setFiltersOpen] = useState(false);
+   const view = useListView((state) => state.view);
+   const setView = useListView((state) => state.setView);
    // Tracks the `sm` breakpoint so the collapsed form can be made `inert`
    // (unfocusable, hidden from assistive tech) only while it is actually
    // collapsed on a narrow screen, never while it's shown at `sm` and up.
@@ -101,34 +105,46 @@ const DiscoverView = ({
    return (
       <Container>
          <div className="mx-auto w-full px-4 py-4 text-left text-copy sm:px-6 sm:py-6 sm:text-center lg:px-10">
-            <h1 className="text-display-md sm:text-display-lg">Discover</h1>
+            <h1 className="hidden text-display-md sm:block sm:text-display-lg">
+               Discover
+            </h1>
 
-            <Chip
-               className="mt-4 sm:hidden"
-               aria-expanded={filtersOpen}
-               aria-controls="discover-filters"
-               onClick={() => setFiltersOpen((open) => !open)}
-            >
-               {filtersOpen ? 'Hide filters' : 'Show filters'}
-               {activeFilters > 0 && (
-                  <span className="rounded-full bg-accent/10 px-1.5 text-xs tabular-nums text-accent">
-                     {activeFilters}
-                     <span className="sr-only"> active</span>
-                  </span>
-               )}
-               <svg
-                  viewBox="0 0 16 16"
-                  aria-hidden="true"
-                  className={`h-3 w-3 fill-none stroke-current transition-transform ${
-                     filtersOpen ? 'rotate-180' : ''
-                  }`}
-                  strokeWidth="1.75"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+            {/*
+              Show-filters (mobile only) and the Cards/Table switch share a
+              row: `justify-between` spreads them apart on phones, then
+              `sm:justify-center` re-centers the lone ViewToggle once the
+              chip hides itself at `sm`.
+            */}
+            <div className="mt-4 flex items-center justify-between gap-2 sm:justify-center">
+               <Chip
+                  className="sm:hidden"
+                  aria-expanded={filtersOpen}
+                  aria-controls="discover-filters"
+                  onClick={() => setFiltersOpen((open) => !open)}
                >
-                  <path d="m3 6 5 5 5-5" />
-               </svg>
-            </Chip>
+                  {filtersOpen ? 'Hide filters' : 'Show filters'}
+                  {activeFilters > 0 && (
+                     <span className="rounded-full bg-accent/10 px-1.5 text-xs tabular-nums text-accent">
+                        {activeFilters}
+                        <span className="sr-only"> active</span>
+                     </span>
+                  )}
+                  <svg
+                     viewBox="0 0 16 16"
+                     aria-hidden="true"
+                     className={`h-3 w-3 fill-none stroke-current transition-transform ${
+                        filtersOpen ? 'rotate-180' : ''
+                     }`}
+                     strokeWidth="1.75"
+                     strokeLinecap="round"
+                     strokeLinejoin="round"
+                  >
+                     <path d="m3 6 5 5 5-5" />
+                  </svg>
+               </Chip>
+
+               <ViewToggle value={view} onChange={setView} />
+            </div>
 
             <div
                className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ease-in-out sm:grid-rows-[minmax(0,1fr)] sm:overflow-visible ${
@@ -262,7 +278,7 @@ const DiscoverView = ({
                year or streaming service.
             </p>
          ) : (
-            <FilmList list={page.results} embedded />
+            <FilmList list={page.results} embedded hideViewToggle />
          )}
 
          {/*

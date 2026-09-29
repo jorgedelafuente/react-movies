@@ -16,9 +16,19 @@ type FilmListProps = {
     * brings `min-h-screen`, the page padding and the theme class.
     */
    embedded?: boolean;
+   /**
+    * Skip rendering the built-in `ViewToggle` row, for a page that renders its
+    * own (Discover puts it beside the mobile filters toggle). The view still
+    * comes from the shared `useListView` store either way.
+    */
+   hideViewToggle?: boolean;
 };
 
-const FilmList = ({ list, embedded = false }: FilmListProps) => {
+const FilmList = ({
+   list,
+   embedded = false,
+   hideViewToggle = false,
+}: FilmListProps) => {
    const view = useListView((state) => state.view);
    const setView = useListView((state) => state.setView);
    const cards = list.map((item) => (
@@ -36,9 +46,11 @@ const FilmList = ({ list, embedded = false }: FilmListProps) => {
 
    const column = (
       <>
-         <div className="flex justify-center">
-            <ViewToggle value={view} onChange={setView} />
-         </div>
+         {!hideViewToggle && (
+            <div className="flex justify-center">
+               <ViewToggle value={view} onChange={setView} />
+            </div>
+         )}
 
          {view === LIST_VIEWS.TABLE ? (
             <FilmTable list={list} />
