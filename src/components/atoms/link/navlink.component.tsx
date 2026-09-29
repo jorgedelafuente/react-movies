@@ -13,8 +13,9 @@ const NavLink = ({ path, text, tabIndex }: NavLinkProps) => {
          to={path}
          activeOptions={{ exact: true }}
          tabIndex={tabIndex}
+         className="group"
       >
-         <span className="font-display text-base font-medium tracking-wide text-copy hover:text-accent sm:text-lg">
+         <span className="font-display text-base font-medium tracking-wide text-copy hover:text-accent group-data-[status=active]:text-accent sm:text-lg">
             {text}
          </span>
       </Link>

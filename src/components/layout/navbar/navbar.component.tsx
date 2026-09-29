@@ -70,7 +70,7 @@ const Navbar = () => {
          <div className="flex w-full flex-wrap items-start justify-between gap-2 sm:items-center lg:flex-nowrap lg:gap-6">
             <nav
                aria-label="Browse"
-               className="order-1 flex flex-col items-start gap-2 text-sm sm:flex-row sm:items-center sm:gap-6 sm:text-base"
+               className="order-1 flex items-center gap-3 text-sm sm:gap-6 sm:text-base"
             >
                <NavLink path="/" text="Discover" />
                <NavMenu label="Films" links={FILM_LINKS} />
