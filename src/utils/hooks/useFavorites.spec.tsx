@@ -237,6 +237,36 @@ describe('useFavorites', () => {
          expect(mockAddFavorite).not.toHaveBeenCalled();
       });
 
+      it('calls the given onSuccess once addFavorite resolves', async () => {
+         mockGetUserFavorites.mockResolvedValue({ data: [], error: null });
+         const onSuccess = vi.fn();
+
+         const { result } = renderHook(() => useFavorites(), { wrapper });
+         await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+         act(() => {
+            result.current.toggle(MOCK_FILM_INPUT, { onSuccess });
+         });
+
+         await waitFor(() => expect(onSuccess).toHaveBeenCalledOnce());
+      });
+
+      it('does not call onSuccess when addFavorite fails', async () => {
+         mockGetUserFavorites.mockResolvedValue({ data: [], error: null });
+         mockAddFavorite.mockRejectedValue(new Error('Server error'));
+         const onSuccess = vi.fn();
+
+         const { result } = renderHook(() => useFavorites(), { wrapper });
+         await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+         act(() => {
+            result.current.toggle(MOCK_FILM_INPUT, { onSuccess });
+         });
+
+         await waitFor(() => expect(result.current.isPending).toBe(false));
+         expect(onSuccess).not.toHaveBeenCalled();
+      });
+
       it('rolls back optimistic add on server error', async () => {
          mockGetUserFavorites.mockResolvedValue({ data: [], error: null });
          mockAddFavorite.mockRejectedValue(new Error('Server error'));

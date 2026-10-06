@@ -84,15 +84,18 @@ export const useFavorites = () => {
       },
    });
 
-   const toggle = (favorite: FavoriteInput) => {
+   const toggle = (
+      favorite: FavoriteInput,
+      options?: { onSuccess?: () => void }
+   ) => {
       if (!userId) return;
       if (isFavorited(favorite.filmId, favorite.mediaType)) {
-         removeMutation.mutate({
-            filmId: favorite.filmId,
-            mediaType: favorite.mediaType,
-         });
+         removeMutation.mutate(
+            { filmId: favorite.filmId, mediaType: favorite.mediaType },
+            { onSuccess: options?.onSuccess }
+         );
       } else {
-         addMutation.mutate(favorite);
+         addMutation.mutate(favorite, { onSuccess: options?.onSuccess });
       }
    };
 

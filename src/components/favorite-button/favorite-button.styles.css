@@ -1,0 +1,54 @@
+/*
+ * The pop and burst only need to play once per toggle-to-favorited event.
+ * Adding `--active` fires both because the browser starts a CSS animation
+ * whenever `animation-name` changes away from `none`, even without
+ * remounting the node — no key trick or JS timer needed for the pop.
+ */
+.favorite-button__icon-path {
+   transform-box: fill-box;
+   transform-origin: center;
+}
+
+.favorite-button--active .favorite-button__icon-path {
+   animation: favorite-pop 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes favorite-pop {
+   0% {
+      transform: scale(0.75);
+   }
+   45% {
+      transform: scale(1.35);
+   }
+   100% {
+      transform: scale(1);
+   }
+}
+
+/* The burst is a one-shot DOM node, unmounted on `animationend` so it never lingers. */
+.favorite-button__burst {
+   position: absolute;
+   inset: 0;
+   border-radius: 9999px;
+   border: 2px solid hsl(var(--color-accent) / 1);
+   animation: favorite-burst 500ms ease-out forwards;
+   pointer-events: none;
+}
+
+@keyframes favorite-burst {
+   0% {
+      transform: scale(0.6);
+      opacity: 0.9;
+   }
+   100% {
+      transform: scale(1.7);
+      opacity: 0;
+   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+   .favorite-button--active .favorite-button__icon-path,
+   .favorite-button__burst {
+      animation: none;
+   }
+}

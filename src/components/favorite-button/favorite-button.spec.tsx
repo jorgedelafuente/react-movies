@@ -1,5 +1,5 @@
 import { QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createTestQueryClient } from '@/tests/test-utils';
@@ -85,13 +85,34 @@ describe('FavoriteButton', () => {
          fireEvent.click(
             screen.getByRole('button', { name: 'Add to favorites' })
          );
-         expect(mockToggle).toHaveBeenCalledWith({
-            filmId: 533535,
-            mediaType: MEDIA_TYPES.MOVIE,
-            filmTitle: 'Deadpool & Wolverine',
-            filmPosterPath: '/poster.jpg',
-            filmReleaseDate: '2024-07-24',
-         });
+         expect(mockToggle).toHaveBeenCalledWith(
+            {
+               filmId: 533535,
+               mediaType: MEDIA_TYPES.MOVIE,
+               filmTitle: 'Deadpool & Wolverine',
+               filmPosterPath: '/poster.jpg',
+               filmReleaseDate: '2024-07-24',
+            },
+            expect.objectContaining({ onSuccess: expect.any(Function) })
+         );
+      });
+
+      it('only plays the save celebration once the mutation actually succeeds', () => {
+         renderButton();
+         fireEvent.click(
+            screen.getByRole('button', { name: 'Add to favorites' })
+         );
+
+         const [, { onSuccess }] = mockToggle.mock.calls[0];
+         expect(
+            document.querySelector('.favorite-button__burst')
+         ).not.toBeInTheDocument();
+
+         act(() => onSuccess());
+
+         expect(
+            document.querySelector('.favorite-button__burst')
+         ).toBeInTheDocument();
       });
 
       it('passes the series media type through to toggle and isFavorited', () => {
@@ -111,7 +132,11 @@ describe('FavoriteButton', () => {
             screen.getByRole('button', { name: 'Add to favorites' })
          );
          expect(mockToggle).toHaveBeenCalledWith(
-            expect.objectContaining({ filmId: 1399, mediaType: MEDIA_TYPES.TV })
+            expect.objectContaining({
+               filmId: 1399,
+               mediaType: MEDIA_TYPES.TV,
+            }),
+            expect.objectContaining({ onSuccess: expect.any(Function) })
          );
       });
 
