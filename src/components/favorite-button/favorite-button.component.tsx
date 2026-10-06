@@ -1,10 +1,24 @@
 import './favorite-button.styles.css';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { MEDIA_TYPES, type MediaType } from '@/types/media.types';
 import { useAuth } from '@/utils/hooks/useAuth';
 import { useFavorites } from '@/utils/hooks/useFavorites';
+
+/**
+ * Eight particles alternating between two shapes and two colors (accent,
+ * rebeccapurple) so the burst reads as varied confetti rather than a single
+ * uniform ping. The longest particle animation is 600ms — `BURST_DURATION_MS`
+ * below must match it so the celebration layer unmounts only once every
+ * child has finished.
+ */
+const BURST_PARTICLES = Array.from({ length: 8 }, (_, i) => ({
+   angle: i * 45,
+   purple: i % 2 === 1,
+   diamond: i % 3 === 0,
+}));
+const BURST_DURATION_MS = 600;
 
 /**
  * Visible surface for the heart when it sits beside the score ring on a
@@ -36,6 +50,12 @@ const FavoriteButton = ({
    const { isFavorited, toggle, isPending } = useFavorites();
    const [celebrate, setCelebrate] = useState(false);
 
+   useEffect(() => {
+      if (!celebrate) return;
+      const timeout = setTimeout(() => setCelebrate(false), BURST_DURATION_MS);
+      return () => clearTimeout(timeout);
+   }, [celebrate]);
+
    if (!user) return null;
 
    const favorited = isFavorited(filmId, mediaType);
@@ -63,11 +83,18 @@ const FavoriteButton = ({
          className={`favorite-button relative inline-flex cursor-pointer items-center justify-center rounded-full p-2.5 transition-colors hover:bg-accent/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-default disabled:opacity-50 ${favorited ? 'favorite-button--active' : ''} ${className}`.trim()}
       >
          {celebrate && (
-            <span
-               aria-hidden="true"
-               className="favorite-button__burst"
-               onAnimationEnd={() => setCelebrate(false)}
-            />
+            <span aria-hidden="true" className="favorite-button__burst">
+               <span className="favorite-button__ring" />
+               {BURST_PARTICLES.map(({ angle, purple, diamond }) => (
+                  <span
+                     key={angle}
+                     style={{ '--angle': `${angle}deg` } as React.CSSProperties}
+                     className={`favorite-button__particle ${
+                        purple ? 'favorite-button__particle--purple' : ''
+                     } ${diamond ? 'favorite-button__particle--diamond' : ''}`.trim()}
+                  />
+               ))}
+            </span>
          )}
          <HeartIcon filled={favorited} />
       </button>
