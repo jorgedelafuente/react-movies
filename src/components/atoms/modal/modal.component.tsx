@@ -1,3 +1,5 @@
+import './modal.styles.css';
+
 import { useEffect, useRef } from 'react';
 
 import { ModalProps } from './modal.types';
@@ -75,7 +77,7 @@ const Modal = ({
          onClick={handleDialogClick}
          aria-labelledby={title ? 'modal-title' : undefined}
          aria-modal="true"
-         className="m-0 h-screen max-h-none w-screen max-w-none overflow-hidden bg-transparent p-0 backdrop:bg-black/60"
+         className="modal-dialog m-0 h-screen max-h-none w-screen max-w-none overflow-hidden bg-transparent p-0 backdrop:bg-black/60"
       >
          <div className="flex min-h-screen items-center justify-center p-4">
             <div

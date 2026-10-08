@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes } from 'react';
 
 const BASE =
-   'inline-flex items-center gap-2 rounded-full border border-solid px-3.5 py-1.5 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent';
+   'inline-flex items-center gap-2 rounded-full border border-solid px-3.5 py-1.5 text-sm font-medium transition-[color,border-color,background-color,transform] duration-[var(--motion-duration-fast)] ease-[var(--motion-ease-spring)] active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent';
 
 const SELECTED = 'border-accent bg-accent/10 text-accent';
 const IDLE = 'border-copy/30 text-copy hover:border-accent hover:text-accent';

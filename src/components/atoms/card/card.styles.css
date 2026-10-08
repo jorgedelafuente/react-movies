@@ -2,15 +2,14 @@
    position: relative;
    overflow: hidden;
    display: block;
-   transition: all 250ms ease-in-out;
-   transition-timing-function: cubic-bezier(0.1, 0.1, 0.6, 0.9);
+   transition: all var(--motion-duration-slow) var(--motion-ease-spring);
    border-radius: 10px;
 }
 
 .custom-card:hover,
 .custom-card:focus-within {
    cursor: pointer;
-   transform: scale(1.15);
+   transform: scale(1.15) translateY(-2px);
 }
 
 .custom-card:hover .content,

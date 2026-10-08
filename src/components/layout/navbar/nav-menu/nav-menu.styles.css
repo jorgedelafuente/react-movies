@@ -42,8 +42,8 @@
    height: 0.75em;
    opacity: 0.7;
    transition:
-      transform 0.2s ease,
-      opacity 0.2s ease;
+      transform var(--motion-duration-fast) var(--motion-ease-spring),
+      opacity var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .nav-menu__trigger[aria-expanded='true'] .nav-menu__caret {
@@ -73,17 +73,18 @@
 }
 
 .nav-menu__popover[data-entering] {
-   animation: nav-menu-in 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+   animation: nav-menu-in var(--motion-duration-fast) var(--motion-ease-spring);
 }
 
 .nav-menu__popover[data-exiting] {
-   animation: nav-menu-out 120ms ease-in forwards;
+   animation: nav-menu-out var(--motion-duration-instant)
+      var(--motion-ease-accelerate) forwards;
 }
 
 @keyframes nav-menu-in {
    from {
       opacity: 0;
-      transform: translateY(-6px) scale(0.98);
+      transform: translateY(-6px) scale(0.96);
    }
 }
 
@@ -116,8 +117,8 @@
    cursor: pointer;
    outline: none;
    transition:
-      background-color 0.15s ease,
-      color 0.15s ease;
+      background-color var(--motion-duration-fast) var(--motion-ease-standard),
+      color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 /* Decorative arrow that slides in on the active row; the empty alt keeps it out of the accessible name. */
@@ -128,8 +129,8 @@
    opacity: 0;
    transform: translateX(-4px);
    transition:
-      opacity 0.15s ease,
-      transform 0.15s ease;
+      opacity var(--motion-duration-fast) var(--motion-ease-standard),
+      transform var(--motion-duration-fast) var(--motion-ease-spring);
 }
 
 .nav-menu__item[data-focused],
@@ -149,15 +150,5 @@
    outline-offset: -2px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-   .nav-menu__popover[data-entering],
-   .nav-menu__popover[data-exiting] {
-      animation: none;
-   }
-
-   .nav-menu__caret,
-   .nav-menu__item,
-   .nav-menu__item::after {
-      transition: none;
-   }
-}
+/* All timings above read `--motion-*` tokens, so global.css's reduced-motion
+   block zeroes them without a local override here. */

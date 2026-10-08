@@ -16,3 +16,71 @@
    grid-template-columns: var(--card-columns);
    gap: var(--card-gap);
 }
+
+/*
+ * Entrance stagger. CSS has no "nth sibling index" function, so the delay
+ * step is spelled out per `nth-child` instead of computed — the only way to
+ * stagger an arbitrary list of children without every `CardGrid` caller
+ * threading an index prop down. Caps at 16 cards; anything past that still
+ * fades in via the base rule, just without its own delay.
+ */
+.card-grid > * {
+   animation: card-in var(--motion-duration-slow) var(--motion-ease-decelerate)
+      both;
+}
+
+@keyframes card-in {
+   from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.97);
+   }
+}
+
+.card-grid > *:nth-child(1) {
+   animation-delay: calc(var(--motion-stagger-step) * 0);
+}
+.card-grid > *:nth-child(2) {
+   animation-delay: calc(var(--motion-stagger-step) * 1);
+}
+.card-grid > *:nth-child(3) {
+   animation-delay: calc(var(--motion-stagger-step) * 2);
+}
+.card-grid > *:nth-child(4) {
+   animation-delay: calc(var(--motion-stagger-step) * 3);
+}
+.card-grid > *:nth-child(5) {
+   animation-delay: calc(var(--motion-stagger-step) * 4);
+}
+.card-grid > *:nth-child(6) {
+   animation-delay: calc(var(--motion-stagger-step) * 5);
+}
+.card-grid > *:nth-child(7) {
+   animation-delay: calc(var(--motion-stagger-step) * 6);
+}
+.card-grid > *:nth-child(8) {
+   animation-delay: calc(var(--motion-stagger-step) * 7);
+}
+.card-grid > *:nth-child(9) {
+   animation-delay: calc(var(--motion-stagger-step) * 8);
+}
+.card-grid > *:nth-child(10) {
+   animation-delay: calc(var(--motion-stagger-step) * 9);
+}
+.card-grid > *:nth-child(11) {
+   animation-delay: calc(var(--motion-stagger-step) * 10);
+}
+.card-grid > *:nth-child(12) {
+   animation-delay: calc(var(--motion-stagger-step) * 11);
+}
+.card-grid > *:nth-child(13) {
+   animation-delay: calc(var(--motion-stagger-step) * 12);
+}
+.card-grid > *:nth-child(14) {
+   animation-delay: calc(var(--motion-stagger-step) * 13);
+}
+.card-grid > *:nth-child(15) {
+   animation-delay: calc(var(--motion-stagger-step) * 14);
+}
+.card-grid > *:nth-child(16) {
+   animation-delay: calc(var(--motion-stagger-step) * 15);
+}

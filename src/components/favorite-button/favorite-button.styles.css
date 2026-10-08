@@ -1,4 +1,8 @@
 /*
+ * All timings come from the `--motion-*` tokens in global.css, so reduced
+ * motion is handled once, globally, by zeroing those durations — nothing
+ * here needs its own `prefers-reduced-motion` override.
+ *
  * The pop and burst only need to play once per toggle-to-favorited event.
  * Adding `--active` fires both because the browser starts a CSS animation
  * whenever `animation-name` changes away from `none`, even without
@@ -10,7 +14,7 @@
 }
 
 .favorite-button--active .favorite-button__icon-path {
-   animation: favorite-pop 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
+   animation: favorite-pop var(--motion-duration-slow) var(--motion-ease-spring);
 }
 
 /* A quick rebeccapurple flash at the peak of the overshoot, settling back to the accent fill set in JSX. */
@@ -33,7 +37,8 @@
 /* One-shot celebration layer: a glowing ring plus a handful of particles in
    two different shapes (round and diamond) so the burst reads as varied
    confetti rather than a single uniform ping. React unmounts it on a timer
-   that matches the longest child animation. */
+   (`BURST_DURATION_MS`) matched to `--motion-duration-celebrate`, the
+   longest-running child, so the particles are never cut off mid-flight. */
 .favorite-button__burst {
    position: absolute;
    inset: 0;
@@ -45,7 +50,8 @@
    inset: 0;
    border-radius: 9999px;
    border: 2px solid hsl(var(--color-accent) / 1);
-   animation: favorite-ring 500ms ease-out forwards;
+   animation: favorite-ring var(--motion-duration-slow)
+      var(--motion-ease-decelerate) forwards;
 }
 
 @keyframes favorite-ring {
@@ -72,7 +78,8 @@
    margin: -3px;
    border-radius: 9999px;
    background: hsl(var(--color-accent) / 1);
-   animation: favorite-particle 600ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+   animation: favorite-particle var(--motion-duration-celebrate)
+      var(--motion-ease-decelerate) forwards;
 }
 
 .favorite-button__particle--purple {
@@ -95,13 +102,5 @@
    100% {
       transform: rotate(var(--angle)) translateY(-27px) scale(0.4);
       opacity: 0;
-   }
-}
-
-@media (prefers-reduced-motion: reduce) {
-   .favorite-button--active .favorite-button__icon-path,
-   .favorite-button__ring,
-   .favorite-button__particle {
-      animation: none;
    }
 }

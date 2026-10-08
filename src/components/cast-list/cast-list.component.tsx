@@ -29,7 +29,7 @@ const CastList = ({ cast }: { cast: CastMemberType[] }) => {
                   path={member.profile_path}
                   alt=""
                   variant="person"
-                  className="aspect-[3/4] w-full rounded-2xl object-cover object-top transition-transform duration-200 group-hover:scale-105 group-focus-visible:scale-105 motion-reduce:transition-none"
+                  className="aspect-[3/4] w-full rounded-2xl object-cover object-top transition-transform duration-[var(--motion-duration-fast)] ease-[var(--motion-ease-spring)] group-hover:scale-105 group-focus-visible:scale-105"
                />
                <span className="relative z-10 font-display text-sm font-semibold leading-tight">
                   {member.name}

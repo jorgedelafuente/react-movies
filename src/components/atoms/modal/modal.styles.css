@@ -1,0 +1,46 @@
+/*
+ * Native <dialog> open/close transition. `display` and `overlay` are
+ * discrete properties (there's nothing to interpolate between `none` and
+ * `block`), so Chrome 117+/Safari 17.4+/Firefox 129+ need `allow-discrete`
+ * to keep the element rendered for the closing transition instead of
+ * yanking it out the instant `close()` runs; `@starting-style` supplies the
+ * "before" frame for the opposite case, the instant it opens. Everything
+ * before that support window just keeps the old instant open/close — this
+ * is additive, nothing here can make the modal fail to show.
+ */
+.modal-dialog {
+   opacity: 0;
+   transform: scale(0.94) translateY(8px);
+   transition:
+      opacity var(--motion-duration-slow) var(--motion-ease-decelerate),
+      transform var(--motion-duration-slow) var(--motion-ease-spring),
+      overlay var(--motion-duration-slow) var(--motion-ease-decelerate)
+         allow-discrete,
+      display var(--motion-duration-slow) var(--motion-ease-decelerate)
+         allow-discrete;
+}
+
+.modal-dialog[open] {
+   opacity: 1;
+   transform: scale(1) translateY(0);
+}
+
+.modal-dialog::backdrop {
+   opacity: 0;
+   transition: opacity var(--motion-duration-slow) var(--motion-ease-decelerate);
+}
+
+.modal-dialog[open]::backdrop {
+   opacity: 1;
+}
+
+@starting-style {
+   .modal-dialog[open] {
+      opacity: 0;
+      transform: scale(0.94) translateY(8px);
+   }
+
+   .modal-dialog[open]::backdrop {
+      opacity: 0;
+   }
+}

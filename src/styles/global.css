@@ -7,10 +7,11 @@
    *::before,
    *::after {
       transition:
-         background-color 0.25s ease,
-         color 0.25s ease,
-         border-color 0.25s ease,
-         fill 0.25s ease;
+         background-color var(--motion-duration-base)
+            var(--motion-ease-standard),
+         color var(--motion-duration-base) var(--motion-ease-standard),
+         border-color var(--motion-duration-base) var(--motion-ease-standard),
+         fill var(--motion-duration-base) var(--motion-ease-standard);
    }
 
    a:hover {
@@ -100,6 +101,46 @@
       */
       --navbar-height: 0px;
 
+      /*
+        Motion — the only timing values any component should write. Every
+        animation/transition in the app reads one of these instead of its own
+        literal ms/bezier, so the whole UI shares one rhythm and the
+        `prefers-reduced-motion` block below is the single place that turns
+        it off.
+
+        Durations:
+          `instant`   micro feedback that must feel attached to the pointer
+                      (button/chip press-down).
+          `fast`      hover/focus state changes.
+          `base`      the ambient color/background/border transition every
+                      element gets (below) and most UI entrances.
+          `slow`      a deliberate reveal (menus, modal, score ring sweep).
+          `celebrate` the favourites burst — the longest-lived effect in the
+                      app, so other one-shot celebrations should match it
+                      rather than invent a new number.
+
+        Easings:
+          `standard`    general move/fade, nothing overshoots.
+          `decelerate`  entrances: starts fast, settles gently (menus, modal).
+          `accelerate`  exits: mirror of `decelerate`.
+          `spring`      playful overshoot for anything that should feel
+                        "pressed" or "popped" (press feedback, the heart pop).
+      */
+      --motion-duration-instant: 120ms;
+      --motion-duration-fast: 180ms;
+      --motion-duration-base: 250ms;
+      --motion-duration-slow: 420ms;
+      --motion-duration-celebrate: 600ms;
+      /* Per-item delay step for a staggered entrance (card grid). A plain
+         duration, not a transition/animation shorthand, so it also needs
+         zeroing below — `animation-delay` ignores a 0ms *duration* but not
+         a non-zero *delay*. */
+      --motion-stagger-step: 30ms;
+      --motion-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+      --motion-ease-decelerate: cubic-bezier(0.22, 1, 0.36, 1);
+      --motion-ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+      --motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
       /* Global Variables */
       --primary-background-color: #dedede;
       --secondary-background-color: #a6a6a6;
@@ -171,5 +212,23 @@
    :root:has(.dark) {
       --color-scrollbar-thumb: var(--color-grey-60);
       --color-scrollbar-track: var(--color-grey-100);
+   }
+
+   /*
+     Single off-switch for motion: every component animation/transition in
+     the app is built from the `--motion-*` tokens above, so zeroing the
+     durations here is enough to make all of them instant. Components with a
+     one-shot celebration (favourites burst) still skip the *visual* effect
+     explicitly, since a 0ms "animation" would otherwise flash a stray frame.
+   */
+   @media (prefers-reduced-motion: reduce) {
+      :root {
+         --motion-duration-instant: 0ms;
+         --motion-duration-fast: 0ms;
+         --motion-duration-base: 0ms;
+         --motion-duration-slow: 0ms;
+         --motion-duration-celebrate: 0ms;
+         --motion-stagger-step: 0ms;
+      }
    }
 }

@@ -9,9 +9,10 @@ import { useFavorites } from '@/utils/hooks/useFavorites';
 /**
  * Eight particles alternating between two shapes and two colors (accent,
  * rebeccapurple) so the burst reads as varied confetti rather than a single
- * uniform ping. The longest particle animation is 600ms — `BURST_DURATION_MS`
- * below must match it so the celebration layer unmounts only once every
- * child has finished.
+ * uniform ping. The particle animation runs for `--motion-duration-celebrate`
+ * (favorite-button.styles.css, defined in global.css); `BURST_DURATION_MS`
+ * below must keep matching that token so the celebration layer unmounts
+ * only once every child has finished.
  */
 const BURST_PARTICLES = Array.from({ length: 8 }, (_, i) => ({
    angle: i * 45,
