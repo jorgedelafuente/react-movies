@@ -1,8 +1,9 @@
 import { QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createTestQueryClient } from '@/tests/test-utils';
+import { FAVORITE_STATUSES } from '@/types/favorites.types';
 import { MEDIA_TYPES } from '@/types/media.types';
 import { useAuth } from '@/utils/hooks/useAuth';
 import { useFavorites } from '@/utils/hooks/useFavorites';
@@ -32,6 +33,7 @@ vi.mock('@/services/supabase/favorites', () => ({
    getUserFavorites: vi.fn(),
    addFavorite: vi.fn(),
    removeFavorite: vi.fn(),
+   updateFavoriteStatus: vi.fn(),
 }));
 
 const MOCK_FAVORITES = [
@@ -44,6 +46,8 @@ const MOCK_FAVORITES = [
       film_poster_path: '/poster1.jpg',
       film_release_date: '2024-07-24',
       created_at: '2024-01-15T10:00:00.000Z',
+      status: FAVORITE_STATUSES.SAVED,
+      watched_at: null,
    },
    {
       id: 'fav-2',
@@ -54,6 +58,8 @@ const MOCK_FAVORITES = [
       film_poster_path: '/poster2.jpg',
       film_release_date: '2024-09-07',
       created_at: '2024-02-20T10:00:00.000Z',
+      status: FAVORITE_STATUSES.WATCH_NEXT,
+      watched_at: null,
    },
    {
       id: 'fav-3',
@@ -64,8 +70,12 @@ const MOCK_FAVORITES = [
       film_poster_path: '/poster3.jpg',
       film_release_date: '2011-04-17',
       created_at: '2024-03-01T10:00:00.000Z',
+      status: FAVORITE_STATUSES.WATCHED,
+      watched_at: '2024-04-01T10:00:00.000Z',
    },
 ];
+
+const mockSetStatus = vi.fn();
 
 const renderView = () =>
    render(
@@ -84,6 +94,7 @@ beforeEach(() => {
       isLoading: false,
       isFavorited: vi.fn().mockReturnValue(true),
       toggle: vi.fn(),
+      setStatus: mockSetStatus,
       isPending: false,
    });
 });
@@ -102,6 +113,7 @@ describe('FavoritesView', () => {
          isLoading: true,
          isFavorited: vi.fn(),
          toggle: vi.fn(),
+         setStatus: vi.fn(),
          isPending: false,
       });
 
@@ -115,6 +127,7 @@ describe('FavoritesView', () => {
          isLoading: false,
          isFavorited: vi.fn(),
          toggle: vi.fn(),
+         setStatus: vi.fn(),
          isPending: false,
       });
 
@@ -135,8 +148,10 @@ describe('FavoritesView', () => {
 
    it('labels each favorite as a film or a series', () => {
       renderView();
-      expect(screen.getAllByText('Film')).toHaveLength(2);
-      expect(screen.getAllByText('Series')).toHaveLength(1);
+      // Scoped to the table: the type filter above it also reads "Series".
+      const table = within(screen.getByRole('table'));
+      expect(table.getAllByText('Film')).toHaveLength(2);
+      expect(table.getAllByText('Series')).toHaveLength(1);
    });
 
    it('links series to the TV detail route and films to the film route', () => {
@@ -171,6 +186,159 @@ describe('FavoritesView', () => {
 
       fireEvent.click(yearHeader);
       expect(yearHeader.textContent).not.toBe(firstDir);
+   });
+
+   describe('status sections', () => {
+      it('shows every favorite under the All tab by default', () => {
+         renderView();
+         expect(screen.getByText('Deadpool & Wolverine')).toBeInTheDocument();
+         expect(screen.getByText('The Substance')).toBeInTheDocument();
+         expect(screen.getByText('Game of Thrones')).toBeInTheDocument();
+      });
+
+      it('counts each status on its tab', () => {
+         renderView();
+         const statusGroup = screen.getByRole('group', {
+            name: /filter by status/i,
+         });
+         expect(
+            within(statusGroup).getByRole('button', { name: /^All 3$/ })
+         ).toBeInTheDocument();
+         expect(
+            within(statusGroup).getByRole('button', { name: /^Saved 1$/ })
+         ).toBeInTheDocument();
+         expect(
+            within(statusGroup).getByRole('button', { name: /^Watchlist 1$/ })
+         ).toBeInTheDocument();
+         expect(
+            within(statusGroup).getByRole('button', { name: /^Seen 1$/ })
+         ).toBeInTheDocument();
+      });
+
+      it('narrows the table to the selected status', () => {
+         renderView();
+         fireEvent.click(screen.getByRole('button', { name: /^Watchlist 1$/ }));
+
+         expect(screen.getByText('The Substance')).toBeInTheDocument();
+         expect(
+            screen.queryByText('Deadpool & Wolverine')
+         ).not.toBeInTheDocument();
+         expect(screen.queryByText('Game of Thrones')).not.toBeInTheDocument();
+      });
+
+      it('marks the active tab with aria-pressed', () => {
+         renderView();
+         const seen = screen.getByRole('button', { name: /^Seen 1$/ });
+         fireEvent.click(seen);
+         expect(seen).toHaveAttribute('aria-pressed', 'true');
+      });
+
+      it('explains an empty section instead of the onboarding copy', () => {
+         vi.mocked(useFavorites).mockReturnValue({
+            favorites: [MOCK_FAVORITES[0]],
+            isLoading: false,
+            isFavorited: vi.fn().mockReturnValue(true),
+            toggle: vi.fn(),
+            setStatus: mockSetStatus,
+            isPending: false,
+         });
+
+         renderView();
+         fireEvent.click(screen.getByRole('button', { name: /^Seen 0$/ }));
+
+         expect(screen.getByText(/nothing here yet/i)).toBeInTheDocument();
+         expect(
+            screen.queryByText(/you haven't saved any favorites yet/i)
+         ).not.toBeInTheDocument();
+      });
+   });
+
+   describe('type filter', () => {
+      it('narrows the table to films only', () => {
+         renderView();
+         fireEvent.click(screen.getByRole('button', { name: 'Films' }));
+
+         expect(screen.getByText('Deadpool & Wolverine')).toBeInTheDocument();
+         expect(screen.getByText('The Substance')).toBeInTheDocument();
+         expect(screen.queryByText('Game of Thrones')).not.toBeInTheDocument();
+      });
+
+      it('narrows the table to series only', () => {
+         renderView();
+         fireEvent.click(
+            within(
+               screen.getByRole('group', { name: /filter by type/i })
+            ).getByRole('button', { name: 'Series' })
+         );
+
+         expect(screen.getByText('Game of Thrones')).toBeInTheDocument();
+         expect(
+            screen.queryByText('Deadpool & Wolverine')
+         ).not.toBeInTheDocument();
+      });
+
+      it('recounts the status tabs against the selected type', () => {
+         renderView();
+         fireEvent.click(screen.getByRole('button', { name: 'Films' }));
+
+         const statusGroup = screen.getByRole('group', {
+            name: /filter by status/i,
+         });
+         expect(
+            within(statusGroup).getByRole('button', { name: /^All 2$/ })
+         ).toBeInTheDocument();
+         expect(
+            within(statusGroup).getByRole('button', { name: /^Seen 0$/ })
+         ).toBeInTheDocument();
+      });
+
+      it('combines with the status filter', () => {
+         renderView();
+         fireEvent.click(screen.getByRole('button', { name: 'Films' }));
+         fireEvent.click(screen.getByRole('button', { name: /^Saved 1$/ }));
+
+         expect(screen.getByText('Deadpool & Wolverine')).toBeInTheDocument();
+         expect(screen.queryByText('The Substance')).not.toBeInTheDocument();
+      });
+   });
+
+   describe('status control', () => {
+      it('shows each row at its current status', () => {
+         renderView();
+         expect(
+            screen.getByLabelText('Status for Game of Thrones')
+         ).toHaveValue(FAVORITE_STATUSES.WATCHED);
+         expect(
+            screen.getByLabelText('Status for Deadpool & Wolverine')
+         ).toHaveValue(FAVORITE_STATUSES.SAVED);
+      });
+
+      it('moves a favorite to another status', () => {
+         renderView();
+         fireEvent.change(
+            screen.getByLabelText('Status for Deadpool & Wolverine'),
+            { target: { value: FAVORITE_STATUSES.WATCHED } }
+         );
+
+         expect(mockSetStatus).toHaveBeenCalledWith(
+            533535,
+            MEDIA_TYPES.MOVIE,
+            FAVORITE_STATUSES.WATCHED
+         );
+      });
+
+      it('passes the series media type through for a series row', () => {
+         renderView();
+         fireEvent.change(screen.getByLabelText('Status for Game of Thrones'), {
+            target: { value: FAVORITE_STATUSES.WATCH_NEXT },
+         });
+
+         expect(mockSetStatus).toHaveBeenCalledWith(
+            1399,
+            MEDIA_TYPES.TV,
+            FAVORITE_STATUSES.WATCH_NEXT
+         );
+      });
    });
 
    it('renders poster images when poster path is provided', () => {

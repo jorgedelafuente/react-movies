@@ -44,6 +44,7 @@ beforeEach(() => {
       isLoading: false,
       isFavorited: vi.fn().mockReturnValue(false),
       toggle: mockToggle,
+      setStatus: vi.fn(),
       isPending: false,
    });
 });
@@ -71,6 +72,7 @@ describe('FavoriteButton', () => {
             isLoading: false,
             isFavorited: vi.fn().mockReturnValue(true),
             toggle: mockToggle,
+            setStatus: vi.fn(),
             isPending: false,
          });
 
@@ -122,6 +124,7 @@ describe('FavoriteButton', () => {
             isLoading: false,
             isFavorited,
             toggle: mockToggle,
+            setStatus: vi.fn(),
             isPending: false,
          });
 
@@ -146,6 +149,7 @@ describe('FavoriteButton', () => {
             isLoading: false,
             isFavorited: vi.fn().mockReturnValue(false),
             toggle: mockToggle,
+            setStatus: vi.fn(),
             isPending: true,
          });
 

@@ -1,17 +1,40 @@
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 
+import Chip from '@/components/atoms/chip/chip.component';
 import MediaLink from '@/components/atoms/link/media-link.component';
 import MediaImage from '@/components/atoms/media-image/media-image.component';
 import SortableHeader from '@/components/atoms/sortable-header/sortable-header.component';
 import FavoriteButton from '@/components/favorite-button/favorite-button.component';
 import Container from '@/components/layout/container/container.component';
 import type { FavoriteRow } from '@/services/supabase/favorites';
-import { MEDIA_TYPE_LABELS } from '@/types/media.types';
+import {
+   FAVORITE_STATUS_LABELS,
+   FAVORITE_STATUS_ORDER,
+   type FavoriteStatus,
+} from '@/types/favorites.types';
+import {
+   MEDIA_TYPE_LABELS,
+   MEDIA_TYPE_PLURAL_LABELS,
+   MEDIA_TYPES,
+   type MediaType,
+} from '@/types/media.types';
 import { useFavorites } from '@/utils/hooks/useFavorites';
 
 type SortKey = 'created_at' | 'film_release_date' | 'media_type';
 type SortDir = 'asc' | 'desc';
+
+/** `all` is the unfiltered tab, not a status a row can hold. */
+const ALL = 'all' as const;
+
+/**
+ * Compact sibling of `FIELD_CONTROL` for the in-row status picker. The native
+ * arrow is kept rather than swapped for the chevron the filter selects use:
+ * one `<select>` per row makes the extra markup cost real, and the control is
+ * small enough that the platform arrow reads better here.
+ */
+const ROW_SELECT =
+   'h-8 rounded-md border border-solid border-bold/40 bg-neutral px-2 text-xs font-medium text-copy hover:border-bold/70 focus-visible:border-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent';
 
 const formatDate = (iso: string) => {
    if (!iso) return '—';
@@ -32,9 +55,13 @@ const extractYear = (dateStr: string) => {
 };
 
 const FavoritesView = () => {
-   const { favorites, isLoading } = useFavorites();
+   const { favorites, isLoading, setStatus } = useFavorites();
    const [sortKey, setSortKey] = useState<SortKey>('created_at');
    const [sortDir, setSortDir] = useState<SortDir>('desc');
+   const [statusFilter, setStatusFilter] = useState<
+      FavoriteStatus | typeof ALL
+   >(ALL);
+   const [typeFilter, setTypeFilter] = useState<MediaType | typeof ALL>(ALL);
 
    const handleSort = (key: SortKey) => {
       if (sortKey === key) {
@@ -45,7 +72,19 @@ const FavoritesView = () => {
       }
    };
 
-   const sorted = [...favorites].sort((a: FavoriteRow, b: FavoriteRow) => {
+   // The type filter is applied first so the status counts describe what the
+   // table would actually show, rather than the whole collection.
+   const byType =
+      typeFilter === ALL
+         ? favorites
+         : favorites.filter((f) => f.media_type === typeFilter);
+
+   const visible =
+      statusFilter === ALL
+         ? byType
+         : byType.filter((f) => f.status === statusFilter);
+
+   const sorted = [...visible].sort((a: FavoriteRow, b: FavoriteRow) => {
       const av = a[sortKey] ?? '';
       const bv = b[sortKey] ?? '';
       return sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
@@ -84,6 +123,70 @@ const FavoritesView = () => {
             )}
 
             {!isLoading && favorites.length > 0 && (
+               <div className="mb-6 flex flex-col gap-4">
+                  <div
+                     role="group"
+                     aria-label="Filter by status"
+                     className="flex flex-wrap gap-2"
+                  >
+                     <Chip
+                        selected={statusFilter === ALL}
+                        onClick={() => setStatusFilter(ALL)}
+                     >
+                        All
+                        <span className="tabular-nums opacity-70">
+                           {byType.length}
+                        </span>
+                     </Chip>
+                     {FAVORITE_STATUS_ORDER.map((status) => (
+                        <Chip
+                           key={status}
+                           selected={statusFilter === status}
+                           onClick={() => setStatusFilter(status)}
+                        >
+                           {FAVORITE_STATUS_LABELS[status]}
+                           <span className="tabular-nums opacity-70">
+                              {byType.filter((f) => f.status === status).length}
+                           </span>
+                        </Chip>
+                     ))}
+                  </div>
+
+                  <div
+                     role="group"
+                     aria-label="Filter by type"
+                     className="flex flex-wrap gap-2"
+                  >
+                     <Chip
+                        selected={typeFilter === ALL}
+                        onClick={() => setTypeFilter(ALL)}
+                     >
+                        All types
+                     </Chip>
+                     {[MEDIA_TYPES.MOVIE, MEDIA_TYPES.TV].map((mediaType) => (
+                        <Chip
+                           key={mediaType}
+                           selected={typeFilter === mediaType}
+                           onClick={() => setTypeFilter(mediaType)}
+                        >
+                           {MEDIA_TYPE_PLURAL_LABELS[mediaType]}
+                        </Chip>
+                     ))}
+                  </div>
+               </div>
+            )}
+
+            {!isLoading && favorites.length > 0 && sorted.length === 0 && (
+               <p className="max-w-prose leading-relaxed text-copy opacity-70">
+                  Nothing here yet. Move something into{' '}
+                  {statusFilter === ALL
+                     ? 'this list'
+                     : FAVORITE_STATUS_LABELS[statusFilter]}{' '}
+                  using the Status control on a row, or widen the filters above.
+               </p>
+            )}
+
+            {!isLoading && sorted.length > 0 && (
                <div className="overflow-x-auto">
                   <table className="w-full border-collapse text-left text-sm text-copy">
                      <thead className="text-xs uppercase tracking-wider text-copy/70">
@@ -122,6 +225,7 @@ const FavoritesView = () => {
                            >
                               Added
                            </SortableHeader>
+                           <th className="py-2 pr-4 font-semibold">Status</th>
                            <th className="py-2 font-semibold">Remove</th>
                         </tr>
                      </thead>
@@ -158,6 +262,26 @@ const FavoritesView = () => {
                               </td>
                               <td className="whitespace-nowrap py-2 pr-4 tabular-nums">
                                  {formatDate(fav.created_at)}
+                              </td>
+                              <td className="whitespace-nowrap py-2 pr-4">
+                                 <select
+                                    aria-label={`Status for ${fav.film_title || 'Unknown title'}`}
+                                    className={ROW_SELECT}
+                                    value={fav.status}
+                                    onChange={(e) =>
+                                       setStatus(
+                                          fav.film_id,
+                                          fav.media_type,
+                                          e.target.value as FavoriteStatus
+                                       )
+                                    }
+                                 >
+                                    {FAVORITE_STATUS_ORDER.map((status) => (
+                                       <option key={status} value={status}>
+                                          {FAVORITE_STATUS_LABELS[status]}
+                                       </option>
+                                    ))}
+                                 </select>
                               </td>
                               <td className="py-2">
                                  <FavoriteButton

@@ -6,7 +6,12 @@ import {
    type FavoriteInput,
    type FavoriteRow,
    removeFavorite,
+   updateFavoriteStatus,
 } from '@/services/supabase/favorites';
+import {
+   FAVORITE_STATUSES,
+   type FavoriteStatus,
+} from '@/types/favorites.types';
 import type { MediaType } from '@/types/media.types';
 
 import { useAuth } from './useAuth';
@@ -48,6 +53,8 @@ export const useFavorites = () => {
                   film_title: filmTitle,
                   film_poster_path: filmPosterPath,
                   film_release_date: filmReleaseDate,
+                  status: FAVORITE_STATUSES.SAVED,
+                  watched_at: null,
                } satisfies FavoriteRow,
             ],
             error: null,
@@ -84,6 +91,50 @@ export const useFavorites = () => {
       },
    });
 
+   const statusMutation = useMutation({
+      mutationFn: ({
+         filmId,
+         mediaType,
+         status,
+      }: FavoriteKey & { status: FavoriteStatus }) =>
+         updateFavoriteStatus(userId, filmId, mediaType, status),
+      onMutate: async ({ filmId, mediaType, status }) => {
+         await queryClient.cancelQueries({ queryKey: queryOpts.queryKey });
+         const previous = queryClient.getQueryData(queryOpts.queryKey);
+         queryClient.setQueryData(queryOpts.queryKey, (old) => ({
+            data: (old?.data ?? []).map((f) =>
+               f.film_id === filmId && f.media_type === mediaType
+                  ? {
+                       ...f,
+                       status,
+                       watched_at:
+                          status === FAVORITE_STATUSES.WATCHED
+                             ? new Date().toISOString()
+                             : null,
+                    }
+                  : f
+            ),
+            error: null,
+         }));
+         return { previous };
+      },
+      onError: (_err, _key, context) => {
+         queryClient.setQueryData(queryOpts.queryKey, context?.previous);
+      },
+      onSettled: () => {
+         queryClient.invalidateQueries({ queryKey: queryOpts.queryKey });
+      },
+   });
+
+   const setStatus = (
+      filmId: number,
+      mediaType: MediaType,
+      status: FavoriteStatus
+   ) => {
+      if (!userId) return;
+      statusMutation.mutate({ filmId, mediaType, status });
+   };
+
    const toggle = (
       favorite: FavoriteInput,
       options?: { onSuccess?: () => void }
@@ -104,6 +155,10 @@ export const useFavorites = () => {
       isLoading,
       isFavorited,
       toggle,
-      isPending: addMutation.isPending || removeMutation.isPending,
+      setStatus,
+      isPending:
+         addMutation.isPending ||
+         removeMutation.isPending ||
+         statusMutation.isPending,
    };
 };

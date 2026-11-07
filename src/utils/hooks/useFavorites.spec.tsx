@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { FavoriteInput } from '@/services/supabase/favorites';
 import { createTestQueryClient } from '@/tests/test-utils';
+import { FAVORITE_STATUSES } from '@/types/favorites.types';
 import { MEDIA_TYPES } from '@/types/media.types';
 
 import { useAuth } from './useAuth';
@@ -20,6 +21,8 @@ const MOCK_FAVORITE = {
    film_poster_path: '/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg',
    film_release_date: '2024-07-24',
    created_at: '2024-01-01T00:00:00.000Z',
+   status: FAVORITE_STATUSES.SAVED,
+   watched_at: null,
 };
 
 const MOCK_FILM_INPUT: FavoriteInput = {
@@ -42,17 +45,20 @@ vi.mock('@/services/supabase/favorites', () => ({
    getUserFavorites: vi.fn(),
    addFavorite: vi.fn(),
    removeFavorite: vi.fn(),
+   updateFavoriteStatus: vi.fn(),
 }));
 
 import {
    addFavorite,
    getUserFavorites,
    removeFavorite,
+   updateFavoriteStatus,
 } from '@/services/supabase/favorites';
 
 const mockGetUserFavorites = vi.mocked(getUserFavorites);
 const mockAddFavorite = vi.mocked(addFavorite);
 const mockRemoveFavorite = vi.mocked(removeFavorite);
+const mockUpdateFavoriteStatus = vi.mocked(updateFavoriteStatus);
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
    <QueryClientProvider client={createTestQueryClient()}>
@@ -71,6 +77,10 @@ beforeEach(() => {
    });
    mockAddFavorite.mockResolvedValue({ data: MOCK_FAVORITE, error: null });
    mockRemoveFavorite.mockResolvedValue({ error: null });
+   mockUpdateFavoriteStatus.mockResolvedValue({
+      data: { ...MOCK_FAVORITE, status: FAVORITE_STATUSES.WATCHED },
+      error: null,
+   });
 });
 
 describe('useFavorites', () => {
@@ -371,6 +381,160 @@ describe('useFavorites', () => {
          await waitFor(() => expect(result.current.isPending).toBe(false));
          expect(result.current.isFavorited(533535, MEDIA_TYPES.MOVIE)).toBe(
             true
+         );
+      });
+   });
+
+   describe('setStatus', () => {
+      it('sends the new status for the matching film and media type', async () => {
+         const { result } = renderHook(() => useFavorites(), { wrapper });
+         await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+         act(() => {
+            result.current.setStatus(
+               533535,
+               MEDIA_TYPES.MOVIE,
+               FAVORITE_STATUSES.WATCH_NEXT
+            );
+         });
+
+         await waitFor(() =>
+            expect(mockUpdateFavoriteStatus).toHaveBeenCalledWith(
+               MOCK_USER_ID,
+               533535,
+               MEDIA_TYPES.MOVIE,
+               FAVORITE_STATUSES.WATCH_NEXT
+            )
+         );
+      });
+
+      it('does nothing when no user is logged in', async () => {
+         useAuth.setState({ user: null });
+
+         const { result } = renderHook(() => useFavorites(), { wrapper });
+         await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+         act(() => {
+            result.current.setStatus(
+               533535,
+               MEDIA_TYPES.MOVIE,
+               FAVORITE_STATUSES.WATCHED
+            );
+         });
+
+         expect(mockUpdateFavoriteStatus).not.toHaveBeenCalled();
+      });
+
+      it('optimistically moves the row before the server responds', async () => {
+         mockUpdateFavoriteStatus.mockImplementation(
+            () => new Promise(() => {})
+         );
+
+         const { result } = renderHook(() => useFavorites(), { wrapper });
+         await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+         act(() => {
+            result.current.setStatus(
+               533535,
+               MEDIA_TYPES.MOVIE,
+               FAVORITE_STATUSES.WATCHED
+            );
+         });
+
+         await waitFor(() =>
+            expect(result.current.favorites[0].status).toBe(
+               FAVORITE_STATUSES.WATCHED
+            )
+         );
+         expect(result.current.favorites[0].watched_at).not.toBeNull();
+      });
+
+      it('clears watched_at when a row moves back out of watched', async () => {
+         mockGetUserFavorites.mockResolvedValue({
+            data: [
+               {
+                  ...MOCK_FAVORITE,
+                  status: FAVORITE_STATUSES.WATCHED,
+                  watched_at: '2024-05-01T00:00:00.000Z',
+               },
+            ],
+            error: null,
+         });
+         mockUpdateFavoriteStatus.mockImplementation(
+            () => new Promise(() => {})
+         );
+
+         const { result } = renderHook(() => useFavorites(), { wrapper });
+         await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+         act(() => {
+            result.current.setStatus(
+               533535,
+               MEDIA_TYPES.MOVIE,
+               FAVORITE_STATUSES.WATCH_NEXT
+            );
+         });
+
+         await waitFor(() =>
+            expect(result.current.favorites[0].watched_at).toBeNull()
+         );
+      });
+
+      it('only moves the row matching both id and media type', async () => {
+         mockGetUserFavorites.mockResolvedValue({
+            data: [
+               MOCK_FAVORITE,
+               {
+                  ...MOCK_FAVORITE,
+                  id: 'fav-2',
+                  media_type: MEDIA_TYPES.TV,
+                  film_title: 'Some Series',
+               },
+            ],
+            error: null,
+         });
+         mockUpdateFavoriteStatus.mockImplementation(
+            () => new Promise(() => {})
+         );
+
+         const { result } = renderHook(() => useFavorites(), { wrapper });
+         await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+         act(() => {
+            result.current.setStatus(
+               533535,
+               MEDIA_TYPES.TV,
+               FAVORITE_STATUSES.WATCHED
+            );
+         });
+
+         await waitFor(() =>
+            expect(result.current.favorites[1].status).toBe(
+               FAVORITE_STATUSES.WATCHED
+            )
+         );
+         expect(result.current.favorites[0].status).toBe(
+            FAVORITE_STATUSES.SAVED
+         );
+      });
+
+      it('rolls back the optimistic move on server error', async () => {
+         mockUpdateFavoriteStatus.mockRejectedValue(new Error('Server error'));
+
+         const { result } = renderHook(() => useFavorites(), { wrapper });
+         await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+         act(() => {
+            result.current.setStatus(
+               533535,
+               MEDIA_TYPES.MOVIE,
+               FAVORITE_STATUSES.WATCHED
+            );
+         });
+
+         await waitFor(() => expect(result.current.isPending).toBe(false));
+         expect(result.current.favorites[0].status).toBe(
+            FAVORITE_STATUSES.SAVED
          );
       });
    });
