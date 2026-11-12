@@ -27,7 +27,7 @@
 
 ## Getting started
 
-Requires **Node 22** and **pnpm 11** (pinned in `package.json`).
+Requires **Node 26.13.1** and **pnpm 11** (pinned in `package.json`).
 
 ```sh
 cp .env.example .env.local   # add your TMDB + Supabase keys
